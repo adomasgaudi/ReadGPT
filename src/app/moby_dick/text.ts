@@ -1,3 +1,43 @@
+export const moby_dick_jp = [
+  { tag: 'easy', text: '私の名前はイシュマエルと呼んでください。' },
+  { tag: 'kanji', text: '何年か前', furigana: 'なんねんかまえ' },
+  { tag: 'easy', text: '、私はお金があまりなく、興味を引くことも何もなかった時、' },
+  { tag: 'kanji', text: '海', furigana: 'うみ' },
+  { tag: 'easy', text: 'を見てみようと思いました。それは私が元気を出すための方法です。' },
+  { tag: 'kanji', text: '口元', furigana: 'くちもと' },
+  { tag: 'easy', text: 'が厳しい表情になったり、悲しい気持ちになったりしたとき、私は海に行くことに決めます。それは私が人々を傷つけるのを防ぐための方法です。この考えは私にとって大切なものです。' },
+  { tag: 'kanji', text: '商業', furigana: 'しょうぎょう' },
+  { tag: 'easy', text: 'がその周りに広がっています。左右どちらに行っても、海に向かっています。町の中心部には海からの風が吹いています。たくさんの人々が海を見ています。' },
+  { tag: 'kanji', text: '日曜日', furigana: 'にちようび' },
+  { tag: 'easy', text: 'の午後、町を散歩しましょう。何を見ますか？何千もの人々が海に夢中になっています。しかし、彼らはすべて陸の人々です。では、どうしてここにいるのでしょうか？' },
+  { tag: 'easy', text: 'もっと多くの人々が海に向かって歩いてきます。彼らは海のすぐ近くに行きたいのです。そしてそこに立っています。彼らは町の様々な場所から来ています。しかし、ここでは全員が一つになります。教えてください、これらの船の方角が彼らを引きつけるのでしょうか？' }
+]
+
+
+const moby_dick_jp_en = [
+  { original: 'Call me Ishmael.', jap: '私の名をイシュマエルと呼んでください。' },
+  {
+    original: `Some years ago- never mind how long precisely-
+  having little or no money in my purse, and nothing particular to interest
+  me on shore, I thought I would sail about a little and see the watery part
+  of the world.`, jap: `数年前 - 正確にどれくらいの時間が経ったのかはさておき - 財布にはほとんどお金もなく、陸の上で特別興味を引くものもなかった私は、少し海を巡って世界の海洋部分を見てみることにしました。`, japn5: `数年前、お金がなかった。陸には面白いことがなかった。だから、海を見に行くことにしました。`
+  }
+]
+export const moby_dick_jp_en2 = [
+  { tag: 'easy', text: '私をイシュマエルと呼んでください。数年前に' },
+  { tag: 'eng', text: 'never mind how long precisely' },
+  { tag: 'easy', text: '、私の財布にはあまりお金がなく、海辺で面白いことがないから、少し船で旅をすることにしました。' },
+  { tag: 'eng', text: 'It is a way I have of driving off the spleen and regulating the circulation' },
+  { tag: 'easy', text: 'いつも私が悲しそうに見える時、心が寒くて濡れている時、無意識に棺前で止まる時、人々の帽子を落とさないようにする強い決心が必要な時、そんな時、早く海に行くべきだと思います。' },
+  { tag: 'eng', text: 'This is my substitute for pistol and ball. With a philosophical flourish Cato throws himself upon his sword; I quietly take to the ship' },
+  { tag: 'easy', text: 'これは驚くことではありません。彼らがそれを知っていれば、ほとんどの男性は、私と同じように海を好きになります。' },
+  { tag: 'eng', text: 'There now is your insular city of the Manhattoes' },
+  { tag: 'easy', text: '、それは桟橋{さんばし}で囲まれています。' },
+  { tag: 'eng', text: 'Right and left, the streets take you waterward' },
+  { tag: 'easy', text: 'その中心部は、波で洗われ、風で冷やされる場所です。' },
+  { tag: 'eng', text: 'Look at the crowds of water-gazers there' }
+]
+
 export const moby_dick = [
   {
     part: 1,

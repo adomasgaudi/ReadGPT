@@ -16,24 +16,25 @@
       "never"
     ],
     "react/jsx-max-props-per-line": [
-      "error",
+      "warn",
       {
         "maximum": 3,
         "when": "multiline"
       }
     ],
+    "react/jsx-closing-bracket-location": [
+      "warn",
+      {
+        "nonEmpty": "after-props",
+        "selfClosing": "after-props"
+      }
+    ]
     "no-console": "warn",
     "react/react-in-jsx-scope": "off",
     "react/no-unknown-property": "off",
     "react/no-unescaped-entities": "off",
     "antfu/top-level-function": "off",
     "eslint-comments/no-unlimited-disable": "off",
-    "react/jsx-closing-bracket-location": [
-      "error",
-      {
-        "nonEmpty": "after-props",
-        "selfClosing": "after-props"
-      }
-    ]
+    "array-bracket-newline": ["warn", "always"]
   }
 }
