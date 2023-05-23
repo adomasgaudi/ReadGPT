@@ -1,0 +1,59 @@
+{
+  "name": "next-ts-boiler",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint:next": "next lint",
+    "lint": "eslint . --fix",
+    "lint:fix": "eslint . --fix"
+  },
+  "dependencies": {
+    "@emotion/css": "^11.10.8",
+    "@emotion/react": "^11.10.8",
+    "@reduxjs/toolkit": "^1.8.2",
+    "@types/node": "20.1.0",
+    "@types/react": "18.2.6",
+    "@types/react-dom": "18.2.4",
+    "@types/styled-components": "^5.1.25",
+    "autoprefixer": "10.4.14",
+    "chainedcss": "^0.1.5",
+    "chroma-js": "^2.4.2",
+    "eslint": "8.40.0",
+    "eslint-config-next": "13.4.1",
+    "framer-motion": "^10.12.10",
+    "next": "13.4.1",
+    "postcss": "8.4.23",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-redux": "^8.0.2",
+    "react-syntax-highlighter": "^15.5.0",
+    "styled-components": "^5.3.5",
+    "swr": "^2.1.2",
+    "tailwindcss": "3.3.2",
+    "typescript": "5.0.4",
+    "eventsource-parser": "^1.0.0",
+    "openai": "^3.2.1"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^0.38.5",
+    "@types/chroma-js": "^2.4.0",
+    "@types/node": "^18.15.11",
+    "@types/react-syntax-highlighter": "^15.5.6",
+    "autoprefixer": "^10.4.14",
+    "babel-plugin-macros": "^3.1.0",
+    "eslint": "8.38.0",
+    "eslint-config-next": "12.1.6",
+    "eslint-plugin-react": "^7.32.2",
+    "postcss": "^8.4.14",
+    "tailwindcss": "^3.3.1",
+    "twin.macro": "^2.8.2"
+  },
+  "babelMacros": {
+    "twin": {
+      "preset": "styled-components"
+    }
+  }
+}
