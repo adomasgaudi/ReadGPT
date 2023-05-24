@@ -57,7 +57,7 @@ const HomePage = () => {
 
       <Div_HScreen className='flex flex-row justify-center items-center'>
         <Link href="/home">
-          <H1 className='hover:bg-[#619ee7] p-1'>Explore</H1>
+          <H1 css={[hoverStyles, tw`p-2`]}>Explore</H1>
         </Link>
       </Div_HScreen>
     </In>
