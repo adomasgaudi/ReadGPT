@@ -1,4 +1,4 @@
-import './css/globals.css'
+import '../css/globals.css'
 
 export const metadata = {
   title: 'The big bad title',
@@ -12,7 +12,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className='bg-main text-main'>
+      <body className='bg-white text-[#333]'>
         <div className="container mx-auto h-full">
           {children}
         </div>

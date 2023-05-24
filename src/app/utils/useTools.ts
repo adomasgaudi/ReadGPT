@@ -1,22 +1,27 @@
 import { useEffect } from 'react'
 
-export function useCssOutline() {
+export function useCssOutline(val: boolean) {
   return useEffect(() => {
+    const all = document.querySelectorAll('*')
+    if (val) {
+      all.forEach((ele: HTMLElement) => {
+        ele.style.outline = '1px dashed #fbc7c7'
+      })
+    }
     document.addEventListener('keypress', (e) => {
       if (e.key === 'm') {
-        const all = document.querySelectorAll('*')
         all.forEach((ele: HTMLElement) => {
           ele.style.outline = '1px dashed #fbc7c7'
         })
       }
       if (e.key === 'n') {
-        const all = document.querySelectorAll('*')
         all.forEach((ele: HTMLElement) => {
           ele.style.outline = 'none'
         })
       }
     })
-  }, [])
+  }, [
+  ])
 }
 
 export function useSquare(id: string) {
@@ -24,7 +29,8 @@ export function useSquare(id: string) {
     const el = document.getElementById(id)
     if (el)
       el.style.height = `${el.offsetWidth}px`
-  }, [])
+  }, [
+  ])
 }
 
 export function useWindow(handleScroll: any) {
@@ -33,5 +39,6 @@ export function useWindow(handleScroll: any) {
     return () => {
       window.removeEventListener('scroll', handleScroll)
     }
-  }, [])
+  }, [
+  ])
 }

@@ -28,13 +28,18 @@
         "nonEmpty": "after-props",
         "selfClosing": "after-props"
       }
-    ]
+    ],
     "no-console": "warn",
     "react/react-in-jsx-scope": "off",
     "react/no-unknown-property": "off",
     "react/no-unescaped-entities": "off",
     "antfu/top-level-function": "off",
     "eslint-comments/no-unlimited-disable": "off",
-    "array-bracket-newline": ["warn", "always"]
+    "no-trailing-spaces": "warn",
+    "no-multi-spaces": "warn",
+    "array-bracket-newline": [
+      "warn",
+      "always"
+    ]
   }
 }
