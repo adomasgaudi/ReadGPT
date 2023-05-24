@@ -1,5 +1,5 @@
+import LayoutWrapper from './components/LayoutWrapper'
 import './css/globals.css'
-import LayoutWrapper from './LayoutWrapper'
 
 export const metadata = {
   title: 'The big bad title',
@@ -13,13 +13,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`bg-main text-main ${true ? 'dark' : 'light'}`}>
-        <div className="container mx-auto h-full">
-          <LayoutWrapper>
-            {children}
-          </LayoutWrapper>
-        </div>
-      </body>
+      <LayoutWrapper>
+        {children}
+      </LayoutWrapper>
     </html>
   )
 }

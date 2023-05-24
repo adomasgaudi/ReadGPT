@@ -1,3 +1,4 @@
+import LayoutWrapper from '../components/LayoutWrapper'
 import '../css/globals.css'
 
 export const metadata = {
@@ -12,11 +13,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className='bg-white text-[#333]'>
-        <div className="container mx-auto h-full">
-          {children}
-        </div>
-      </body>
+      <LayoutWrapper>
+        {children}
+      </LayoutWrapper>
     </html>
   )
 }

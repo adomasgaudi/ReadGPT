@@ -21,6 +21,7 @@ import tw, { styled } from 'twin.macro'
 // const Component = () => (
 //   <div css={ xlBreakPoint(`${tw`block`} color: red;`)} />
 // )
+export const Container = tw.div`container mx-auto`
 export const Div_HScreen = tw.div`h-[100vh]`
 export const In = tw.div`h-full`
 
