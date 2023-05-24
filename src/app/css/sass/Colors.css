@@ -1,7 +1,37 @@
+.light {
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F1F5F9;
+  --text-primary: #475569;
+  --text-secondary: #1E293B;
+  --color-primary: #E11D48;
+  --text-main: #2822d7;
+  --bg-main: #ebe5dc;
+  --accent-main: #ebd971;
+}
+
+.dark {
+  --accent-main: #ebd971;
+  --text-main: #f37689;
+  --bg-main: #37313e;
+  --bg-primary: #0F172A;
+  --bg-secondary: #1E293B;
+  --text-primary: #CBD5E1;
+  --text-secondary: #FFFFFF;
+  --color-primary: #2563EB;
+}
+
 .bg-main {
-  background: #37313e;
+  background: var(--bg-main);
 }
 
 .text-main {
-  color: #f37689;
+  color: var(--text-main);
+}
+
+.border-main {
+  border-color: var(--text-main);
+}
+
+.bg-accent {
+  background: var(--accent-main);
 }

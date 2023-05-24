@@ -1,12 +1,35 @@
 'use client'
 import Link from 'next/link'
-import tw from 'twin.macro'
+import tw, { css, styled } from 'twin.macro'
 import { Div_HScreen, In, In_Center, In_WHalf } from './css/chunky'
 import { useCssOutline } from './utils/useTools'
 
 const H1 = tw.h1`text-6xl`
-const Button_X1 = ({ className, ...props }: any) => <button className={`text-main bg-main ${className}`} {...props} />
-const Button_X = tw(Button_X1)`py-1 px-3 mr-3 mt-3 font-bold`
+// const Button_X1 = ({ className, ...props }: any) => <button className={`text-main border-main hover:bg-accent ${className}`} {...props} />
+// const Button_X = tw(Button_X1)`border py-1 px-3 mr-3 mt-3 font-bold`
+// // export const Button_X = ({ ...props }: any) => (
+// //   <Button_X_ css={[
+// //     'background: var(--bg-accent)',
+// //   ]} {...props}/>
+// // )
+
+const hoverStyles = css`
+  &&:hover {
+    background: var(--accent-main);
+  }
+  background: var(--bg-main);
+  color: var(--text-main);
+  border-color: var(--text-main);
+  `
+// /* ${tw`text-black`} */
+// const Input = () => (
+//   <button css={[tw`border py-1 px-3 mr-3 mt-3 font-bold`, hoverStyles]} />
+// )
+
+const Button_X = styled.button(() => [
+  tw`border py-1 px-3 mr-3 mt-3 font-bold`,
+  hoverStyles,
+])
 
 const HomePage = () => {
   useCssOutline(true)

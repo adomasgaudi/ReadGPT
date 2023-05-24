@@ -36,10 +36,10 @@
     "antfu/top-level-function": "off",
     "eslint-comments/no-unlimited-disable": "off",
     "no-trailing-spaces": "warn",
-    "no-multi-spaces": "warn",
+    "no-multi-spaces": "off",
     "array-bracket-newline": [
-      "warn",
-      "always"
+      "off",
+      "off"
     ]
   }
 }
