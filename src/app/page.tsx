@@ -16,7 +16,7 @@ const App = () => {
           </div>
         </Link>
         <Link href="/the_great_gatsby">
-          <div tw='inline-block border p-10'>
+          <div className='inline-block border p-10'>
           The Great Gatsby
           </div>
         </Link>

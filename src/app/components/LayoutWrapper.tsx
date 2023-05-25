@@ -8,7 +8,7 @@ const App = ({ children }: any) => {
   return (
     <body className={`bg-main text-main ${theme ? 'dark' : 'light'}`}>
       <div className="container mx-auto h-full">
-        <button onClick={() => setTheme(prev => !prev)}>theme</button>
+        <button className='pl-40' onClick={() => setTheme(prev => !prev)}>theme</button>
         {children}
       </div>
     </body>

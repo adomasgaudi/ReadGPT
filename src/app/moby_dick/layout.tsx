@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import LayoutWrapper from '../components/LayoutWrapper'
 import SidebarWrap from './SidebarWrap'
 
 export const metadata = {
@@ -13,9 +14,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <LayoutWrapper>
         <SidebarWrap>
-
           <div className="container mx-auto">
             {children}
           </div>
@@ -31,7 +31,8 @@ export default function RootLayout({
             </div>
           </header>
         </SidebarWrap>
-      </body>
+      </LayoutWrapper>
+
     </html>
   )
 }
