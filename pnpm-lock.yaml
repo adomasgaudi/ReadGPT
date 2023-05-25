@@ -27,7 +27,7 @@ dependencies:
     version: 10.4.14(postcss@8.4.23)
   babel-plugin-styled-components:
     specifier: ^2.1.3
-    version: 2.1.3(styled-components@5.3.10)
+    version: 2.1.3(styled-components@5.3.5)
   chainedcss:
     specifier: ^0.1.5
     version: 0.1.5(@types/react@18.2.6)(react@18.2.0)
@@ -67,6 +67,9 @@ dependencies:
   react-syntax-highlighter:
     specifier: ^15.5.0
     version: 15.5.0(react@18.2.0)
+  styled-components:
+    specifier: 5.3.5
+    version: 5.3.5(react-dom@18.2.0)(react-is@18.2.0)(react@18.2.0)
   swr:
     specifier: ^2.1.2
     version: 2.1.2(react@18.2.0)
@@ -1042,7 +1045,7 @@ packages:
       cosmiconfig: 7.1.0
       resolve: 1.22.2
 
-  /babel-plugin-styled-components@2.1.3(styled-components@5.3.10):
+  /babel-plugin-styled-components@2.1.3(styled-components@5.3.5):
     resolution: {integrity: sha512-jBioLwBVHpOMU4NsueH/ADcHrjS0Y/WTpt2eGVmmuSFNEv2DF3XhcMncuZlbbjxQ4vzxg+yEr6E6TNjrIQbsJQ==}
     peerDependencies:
       styled-components: '>= 2'
@@ -1052,7 +1055,7 @@ packages:
       babel-plugin-syntax-jsx: 6.18.0
       lodash: 4.17.21
       picomatch: 2.3.1
-      styled-components: 5.3.10(react-dom@18.2.0)(react-is@18.2.0)(react@18.2.0)
+      styled-components: 5.3.5(react-dom@18.2.0)(react-is@18.2.0)(react@18.2.0)
     dev: false
 
   /babel-plugin-syntax-jsx@6.18.0:
@@ -3654,9 +3657,10 @@ packages:
     resolution: {integrity: sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==}
     engines: {node: '>=8'}
 
-  /styled-components@5.3.10(react-dom@18.2.0)(react-is@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-3kSzSBN0TiCnGJM04UwO1HklIQQSXW7rCARUk+VyMR7clz8XVlA3jijtf5ypqoDIdNMKx3la4VvaPFR855SFcg==}
+  /styled-components@5.3.5(react-dom@18.2.0)(react-is@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-ndETJ9RKaaL6q41B69WudeqLzOpY1A/ET/glXkNZ2T7dPjPqpPCXXQjDFYZWwNnE5co0wX+gTCqx9mfxTmSIPg==}
     engines: {node: '>=10'}
+    requiresBuild: true
     peerDependencies:
       react: '>= 16.8.0'
       react-dom: '>= 16.8.0'
@@ -3667,7 +3671,7 @@ packages:
       '@emotion/is-prop-valid': 1.2.1
       '@emotion/stylis': 0.8.5
       '@emotion/unitless': 0.7.5
-      babel-plugin-styled-components: 2.1.3(styled-components@5.3.10)
+      babel-plugin-styled-components: 2.1.3(styled-components@5.3.5)
       css-to-react-native: 3.2.0
       hoist-non-react-statics: 3.3.2
       react: 18.2.0
