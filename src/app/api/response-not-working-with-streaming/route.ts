@@ -1,4 +1,3 @@
-import type { OpenAIStreamPayload } from '@/app/utils/OpenAIStream'
 import { OpenAIStream } from '@/app/utils/OpenAIStream'
 
 interface RequestData {
@@ -17,7 +16,7 @@ export async function POST(request: Request) {
   if (!message)
     return new Response('No message in the request', { status: 400 })
 
-  const payload: OpenAIStreamPayload = {
+  const payload: any = {
     model: 'gpt-3.5-turbo',
     // model: `${currentModel}`,
     messages: [{ role: 'user', content: message }],

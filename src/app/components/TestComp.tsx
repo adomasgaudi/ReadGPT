@@ -7,6 +7,7 @@ import tw, { theme } from 'twin.macro'
 // import Head from "../share/bones/components/Head";
 
 function PP({ children }: any) {
+  // @ts-ignore
   return <p css={css({ color: theme`colors.red.500` })}>{children}</p>
 }
 
@@ -48,12 +49,12 @@ function Test() {
       <TW>styled with TW</TW>
       <E800>800</E800>
       <PP>jojo pp</PP>
+      {/* @ts-ignore */}
       <div theme={{ textCol: 'red' }}
         css={`
-              color: ${({ theme }) => theme.textCol};
-            `}
-      >
-            styled with css
+              color: ${({ theme }: any) => theme.textCol};
+            `}>
+        styled with css
       </div>
     </div>
   )

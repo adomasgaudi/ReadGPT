@@ -1,6 +1,6 @@
 import React from 'react'
 
-export function base(DefComp: any, propsBASE: any) {
+export const base = (DefComp: any, propsBASE: any) => {
   const MyComponent = ({ ...propsNEW }) => {
     const propsCOMBO: any = {}
 

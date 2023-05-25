@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { base } from '../utils/tools/baseHOC'
+import { base } from '@/shared/utils/tools/baseHOC'
 
 function FiftyFiftyRight({ children, ...props }: any) {
   return <div {...props}>{children}</div>

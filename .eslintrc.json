@@ -1,12 +1,14 @@
 {
   "extends": [
     "@antfu",
-    "plugin:react/recommended"
+    "plugin:react/recommended",
+    "next/core-web-vitals"
   ],
   "plugins": [
     "react"
   ],
   "rules": {
+    "@typescript-eslint/ban-ts-comment": "off",
     "indent": [
       "warn",
       2
@@ -31,7 +33,6 @@
     ],
     "no-console": "warn",
     "react/react-in-jsx-scope": "off",
-    "react/no-unknown-property": "off",
     "react/no-unescaped-entities": "off",
     "antfu/top-level-function": "off",
     "eslint-comments/no-unlimited-disable": "off",
@@ -40,6 +41,16 @@
     "array-bracket-newline": [
       "off",
       "off"
+    ],
+    "@typescript-eslint/prefer-ts-expect-error": "off",
+    "react/no-unknown-property": [
+      "off",
+      {
+        "ignore": [
+          "tw",
+          "css"
+        ]
+      }
     ]
   }
 }

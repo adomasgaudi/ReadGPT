@@ -1,5 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react'
+
+// @ts-ignore
 import tw, { css, styled } from 'twin.macro'
 
 import { moby_dick } from './text'
@@ -13,7 +15,7 @@ const Wrapper = styled.div`
   }
 `
 
-const InteractiveButton = styled.button(({ isPressed }) => [
+const InteractiveButton = styled.button(({ isPressed }: any) => [
   tw`w-full`,
   tw`transition-all duration-1000 ease-in-out`,
   css`
@@ -52,19 +54,19 @@ const App = () => {
   const [isButtonPressed, setIsButtonPressed] = useState(false)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
-  const handleButtonPress = () => {
-    setIsButtonPressed(true)
-  }
-  const handleButtonRelease = () => {
-    setIsButtonPressed(false)
-    flipPage(1) // flip to the next page when button is released.
-  }
   const flipPage = (val: number) => {
     const newPage = currentPage + val
     if (newPage >= 0 && newPage < moby_dick.length) {
       setCurrentPage(newPage)
       setMainText(moby_dick[newPage].text)
     }
+  }
+  const handleButtonPress = () => {
+    setIsButtonPressed(true)
+  }
+  const handleButtonRelease = () => {
+    setIsButtonPressed(false)
+    flipPage(1) // flip to the next page when button is released.
   }
 
   const clearLocalStorage = () => {
@@ -130,7 +132,7 @@ const App = () => {
               <button className="border m-3 p-3 rounded-xl text-blue-800 bg-blue-300" onClick={sayHiInLithuanian}>submit now</button>
               {response.map((res, index) => (
                 <h3 key={index}>
-              GPT Response: {res}
+                  GPT Response: {res}
                 </h3>
               ))}
             </div>

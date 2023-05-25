@@ -1,27 +1,27 @@
-/** @jsxImportSource @emotion/react */
-import { _ } from 'chainedcss'
+// /** @jsxImportSource @emotion/react */
+// import { _ } from 'chainedcss'
 
-function OButtonBase({ children, ver }: any) {
-  const btn = () =>
-    _.style`cursor: pointer`
-      .px5()
-      .py1()
-      .rounded(5)
-      .borderTeal800()
-      .style(ver)
+// function OButtonBase({ children, ver }: any) {
+//   const btn = () =>
+//     _.style`cursor: pointer`
+//       .px5()
+//       .py1()
+//       .rounded(5)
+//       .borderTeal800()
+//       .style(ver)
 
-  return <button {...btn()}>{children}</button>
-}
+//   return <button {...btn()}>{children}</button>
+// }
 
-function OButtonWide({ children, ver }: any) {
-  return <OButtonBase {..._.w('100').style(ver)}>{children}</OButtonBase>
-}
+// function OButtonWide({ children, ver }: any) {
+//   return <OButtonBase {..._.w('100').style(ver)}>{children}</OButtonBase>
+// }
 
-const OButton = {
-  base: OButtonBase,
-  wide: OButtonWide,
-}
+// const OButton = {
+//   base: OButtonBase,
+//   wide: OButtonWide,
+// }
 
-export { OButton }
+// export { OButton }
 
-export { OButtonBase }
+// export { OButtonBase }

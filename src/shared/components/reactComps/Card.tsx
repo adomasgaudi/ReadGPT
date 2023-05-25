@@ -2,8 +2,8 @@ import type { FC, ReactNode } from 'react'
 import React from 'react'
 import styled from 'styled-components'
 import tw from 'twin.macro'
-import { base } from '../utils/tools/baseHOC'
 import { Div } from './Div'
+import { base } from '@/shared/utils/tools/baseHOC'
 
 function Card1up({ children, ...props }: any) {
   return <div {...props}>{children}</div>

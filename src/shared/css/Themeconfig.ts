@@ -1,6 +1,6 @@
 import { createGlobalStyle } from 'styled-components'
 
-export function themeFn(font, col) {
+export function themeFn(font: any, col: any) {
   const fonts = ['m', 'inter']
   const colors = ['#333', '#f00']
 

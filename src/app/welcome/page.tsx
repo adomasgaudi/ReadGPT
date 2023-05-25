@@ -1,5 +1,5 @@
 'use client'
-import Link from 'next/link'
+import Link from 'next/link' // @ts-expect-error
 import tw, { css, styled } from 'twin.macro'
 import { Div_HScreen, In, In_Center, In_WHalf } from '../css/chunky'
 import { useCssOutline } from '../utils/useTools'
@@ -58,6 +58,7 @@ const HomePage = () => {
 
       <Div_HScreen className='flex flex-row justify-center items-center'>
         <Link href="/">
+          {/* @ts-ignore */}
           <H1 css={[hoverStyles, tw`p-2`]}>Explore</H1>
         </Link>
       </Div_HScreen>

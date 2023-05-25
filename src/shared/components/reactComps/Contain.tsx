@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import React from 'react'
-import { base } from '../utils/tools/baseHOC'
+import { base } from '@/shared/utils/tools/baseHOC'
 
 interface propT {
   children: ReactNode
