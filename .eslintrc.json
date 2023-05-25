@@ -1,14 +1,13 @@
 {
   "extends": [
-    "@antfu",
-    "plugin:react/recommended"
+    "next"
   ],
   "plugins": [
     "react"
   ],
   "rules": {
     "indent": [
-      "warn",
+      "off",
       2
     ],
     "semi": [

@@ -1,4 +1,4 @@
-import tw, { styled } from 'twin.macro'
+import tw from 'twin.macro'
 
 // const hoverStyles = css`
 //   &:hover {
@@ -25,8 +25,9 @@ export const Container = tw.div`container mx-auto`
 export const Div_HScreen = tw.div`h-[100vh]`
 export const In = tw.div`h-full`
 
-export const In_WHalf = styled.div`
-  ${tw`h-full md:w-[50%]`}
-  flex-grow: 1;
-`
+export const In_WHalf = tw.div`h-full w-[100%] md:w-[50%]`
+// export const In_WHalf = styled.div`
+//   ${tw`h-full md:w-[50%]`}
+//   flex-grow: 1;
+// `
 export const In_Center = tw.div`h-full flex justify-center items-center`

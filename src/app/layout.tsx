@@ -1,5 +1,5 @@
-import LayoutWrapper from './components/LayoutWrapper'
-import './css/globals.css'
+// import LayoutWrapper from './components/LayoutWrapper'
+// import './css/globals.css'
 
 export const metadata = {
   title: 'The big bad title',
@@ -13,9 +13,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <LayoutWrapper>
+      {/* <LayoutWrapper> */}
         {children}
-      </LayoutWrapper>
+      {/* </LayoutWrapper> */}
     </html>
   )
 }
