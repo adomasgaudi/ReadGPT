@@ -58,7 +58,6 @@ const HomePage = () => {
 
       <Div_HScreen className='flex flex-row justify-center items-center'>
         <Link href="/">
-          {/* @ts-ignore */}
           <H1 css={[hoverStyles, tw`p-2`]}>Explore</H1>
         </Link>
       </Div_HScreen>
