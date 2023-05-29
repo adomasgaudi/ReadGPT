@@ -33,7 +33,7 @@ const Button_X = styled.button(() => [
 ])
 
 const HomePage = () => {
-  useCssOutline(true)
+  useCssOutline(false)
   return (
     <In>
       <Div_HScreen className='flex flex-col md:flex-row'>

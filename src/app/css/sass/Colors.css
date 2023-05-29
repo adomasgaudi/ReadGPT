@@ -8,6 +8,7 @@
   --bg-main: #ebe5dc;
   --accent-main: #ebd971;
   --accent-text: #2822d7;
+  --text-read: #333;
 }
 
 .dark {
@@ -15,6 +16,7 @@
   --accent-text: #f71e8e;
   --text-main: #f37689;
   --bg-main: #37313e;
+  --text-read: #fff;
   --bg-primary: #0F172A;
   --bg-secondary: #1E293B;
   --text-primary: #CBD5E1;
@@ -24,6 +26,10 @@
 
 .bg-main {
   background: var(--bg-main);
+}
+
+.text-read {
+  color: var(--text-read);
 }
 
 .text-main {

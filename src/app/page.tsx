@@ -1,17 +1,12 @@
-'use client'
 import Link from 'next/link'
 
-import tw from 'twin.macro' // eslint-disable-line
-import { Container } from './css/chunky'
-import { useCssOutline } from './utils/useTools'
-
 const App = () => {
-  useCssOutline(true)
+  // useCssOutline(false)
   return (
     <>
-      <Container tw='pt-[100px]'>
+      <div className='pt-[100px]'>
         <Link href="/moby_dick">
-          <div tw='inline-block border p-10 mr-10'>
+          <div className='inline-block border p-10 mr-10'>
             Moby dick
           </div>
         </Link>
@@ -20,7 +15,7 @@ const App = () => {
             The Great Gatsby
           </div>
         </Link>
-      </Container>
+      </div>
     </>
   )
 }

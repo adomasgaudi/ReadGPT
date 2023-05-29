@@ -1,7 +1,8 @@
+'use client'
 import Link from 'next/link'
 import LayoutWrapper from '../components/LayoutWrapper'
-
-// import SidebarWrap from './SidebarWrap'
+import { useCssOutline } from '../utils/useTools'
+import SidebarWrap from './SidebarWrap'
 
 export const metadata = {
   title: 'The big bad title',
@@ -13,25 +14,23 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  useCssOutline(true)
   return (
     <html lang="en">
       <LayoutWrapper>
-        {/* <SidebarWrap> */}
-        <div className="container mx-auto">
-          {children}
-        </div>
-        <header className="border-t">
-          <div className='container mx-auto flex flex-row justify-between py-3'>
-            <Link href="/">
-              <h3 className="text-xl">BookGPT</h3>
-            </Link>
-            <ul className='flex flex-row gap-3'>
-              {/* <li>tab 1</li>
-              <li>tab 2</li> */}
-            </ul>
+        <SidebarWrap>
+          <p>hi</p>
+          <div className="container mx-auto">
+            {children}
           </div>
-        </header>
-        {/* </SidebarWrap> */}
+          <header className="border-t">
+            <div className='container mx-auto flex flex-row justify-between py-3'>
+              <Link href="/">
+                <h3 className="text-xl">BookGPT</h3>
+              </Link>
+            </div>
+          </header>
+        </SidebarWrap>
       </LayoutWrapper>
 
     </html>
