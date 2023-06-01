@@ -27,12 +27,12 @@ const IconSendArrow = () => <svg
   <path d='M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z'></path>
 </svg>
 
-const FormInput = ({ handleSubmit, messageInput, handleEnter, isLoading }) => <form
+const FormInput = ({ handleSubmit, messageInput, handleEnter, isLoading, placeholder }) => <form
   onSubmit={handleSubmit}
   className=''>
   <textarea
     name='Message'
-    placeholder='Type your query'
+    placeholder={placeholder || 'Type a message...'}
     ref={messageInput}
     onKeyDown={handleEnter}
     className='w-full resize-none bg-transparent outline-none pt-4 pl-4 translate-y-1' />
@@ -109,30 +109,38 @@ const runChatGPT = async ({
   setDialogueFunc,
   setFullDialogueFunc,
   setIsLoadingFunc,
+  isConversation = true,
 }) => {
-  const ResponsesWithPrompts = dialogue.map(
-    (item, idx) => `${idx % 2 === 0 ? 'Prompt' : 'Response'}: ${item}`,
-  )
+  let completeMessage = ''
 
-  const combinePrevious = [...ResponsesWithPrompts, `Prompt: ${message}\n Response:`].join('\n')
+  if (isConversation) {
+    const ResponsesWithPrompts = dialogue.map(
+      (item, idx) => `${idx % 2 === 0 ? 'Prompt' : 'Response'}: ${item}`,
+    )
+
+    completeMessage = [...ResponsesWithPrompts, `Prompt: ${message}\n Response:`].join('\n')
+  }
+  else {
+    completeMessage = message
+  }
 
   if (message !== undefined) {
     setDialogueFunc(prev => [...prev, message])
     if (setFullDialogueFunc !== false)
-      setFullDialogueFunc(prev => [...prev, combinePrevious])
+      setFullDialogueFunc(prev => [...prev, completeMessage])
   }
 
   if (!message)
     return
 
-  console.log(combinePrevious)
+  console.log(completeMessage)
   const resp = await fetch('/api/response', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      message: combinePrevious,
+      message: completeMessage,
       currentModel: model,
     }),
   })
@@ -192,14 +200,24 @@ const Form = () => {
   const handleSubmit2 = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const message = messageInput2.current?.value
-
+    const promptadd = `Task: convert japanese into enligh
+    Prompt: 悪魔
+    Response: Devil
+    Prompt: 悪魔の弟子
+    Response: Devil's Disciple
+    Prompt: 浜尾四郎
+    Response: Shiro Hamao
+    Prompt: 目次
+    Response: Table of Contents
+    Prompt: `
     runChatGPT({
-      message,
+      message: `${promptadd}${message}\n Response:`,
       dialogue: dialogue2,
       model: currentModel,
       setDialogueFunc: setDialogue2,
       setFullDialogueFunc: false,
       setIsLoadingFunc: setIsLoading2,
+      isConversation: false,
     })
     messageInput.current!.value = ''
     //
@@ -243,24 +261,10 @@ const Form = () => {
         {/* <button onClick={() => submitPrompt(prompt2, 'say hi in LT')}>get {prompt2}</button> */}
         <div>
 
-          {isLoading2
-            ? dialogue2.map((item: any, index: number) => {
-              return (
-                <div
-                  key={index}>
-                  <p>{item}</p>
-                </div>
-              )
-            })
-            : dialogue2
-              ? dialogue2.map((item: string, index: number) => {
-                return (
-                  <div
-                    key={index}>
-                    <p>{item}</p>
-                  </div>
-                )
-              })
+          {isLoading2 && dialogue2.length > 1 && dialogue2.length % 2 == 0
+            ? <div>{dialogue2.slice(-1)[0]}</div>
+            : dialogue2 && dialogue2.length > 1 && dialogue2.length % 2 == 0
+              ? <div>{dialogue2.slice(-1)[0]}</div>
               : null}
         </div>
         <div css={[fontNotoSerifJp]}>{book1}</div>
@@ -295,6 +299,7 @@ const Form = () => {
           messageInput: messageInput2,
           handleEnter: null,
           isLoading: isLoading2,
+          placeholder: 'convert text',
         }} />
       </div>
 
