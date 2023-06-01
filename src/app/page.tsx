@@ -15,6 +15,11 @@ const App = () => {
             The Great Gatsby
           </div>
         </Link>
+        <Link href="/knyga">
+          <div className='inline-block border p-10'>
+            knyga
+          </div>
+        </Link>
       </div>
     </>
   )
