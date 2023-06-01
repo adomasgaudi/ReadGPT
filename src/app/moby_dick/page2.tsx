@@ -25,7 +25,7 @@ const InteractiveButton = styled.button(({ isPressed }: any) => [
 ])
 
 const fetchApi = async (message: string) => {
-  console.log(message)
+  // console.log(message)
   const response = await fetch('/api/response', {
     method: 'POST',
     headers: {
@@ -76,12 +76,12 @@ const App = () => {
 
   const getAuthorInfo = async () => {
     const localStorageData = localStorage.getItem('authorInfo')
-    console.log('ran author', localStorage)
+    // console.log('ran author', localStorage)
     if (localStorageData) {
       setMainText(localStorageData)
     }
     else {
-      console.log('ran author', 'else')
+      // console.log('ran author', 'else')
       const message = 'give me info on the author of moby dick'
       const data = await fetchApi(message)
       localStorage.setItem('authorInfo', data)
@@ -114,7 +114,7 @@ const App = () => {
   }
 
   useEffect(() => {
-    console.log({ response })
+    // console.log({ response })
   }, [response])
 
   return (

@@ -1,14 +1,7 @@
-export const book1 = `悪魔の弟子
-浜尾四郎
-
-
-+目次
-
-一
-
-　××地方裁判所検事土田八郎殿。
+export const book1 = `地方裁判所検事土田八郎殿。
 　一未決囚徒たる私、即ち島浦英三は、其の旧友にして嘗かつては兄弟より親しかりし土田検事殿に、此の手紙を送ります。
 　検事殿、あなたは私を無論思い出して居おらるる事でしょうね。仮令たとい他の検事によって取り調べられ、次で予審判事の手に移されてしまった私であっても、あの、世間を騒がした美人殺しの犯人として伝えられ、新聞紙上に其の名を謳うたわれたに違いない以上、同じ裁判所に居るあなたが、今度の事件に就て私の名を見ない筈はなく、又聞かない筈もありません。`
+
 
 export const IconSendArrow = () => <svg
   stroke='currentColor'
@@ -24,7 +17,7 @@ export const IconSendArrow = () => <svg
 
 export const FormInput = ({ handleSubmit, messageInput, handleEnter, isLoading, placeholder }: any) => <form
   onSubmit={handleSubmit}
-  className=''>
+  className='flex px-4'>
   <textarea
     name='Message'
     placeholder={placeholder || 'Type a message...'}
@@ -83,6 +76,7 @@ export const readResponse = async (
     const chunkValue = decoder.decode(value)
     currentResponse = [...currentResponse, chunkValue]
     setResponseFunc((prev: any) => [...prev.slice(0, -1), currentResponse.join('')])
+    console.log('GPT')
   }
   if (setFullDialogueFunc !== false)
     setFullDialogueFunc((prev: any) => [...prev.slice(0, -1), currentResponse.join('')])
@@ -104,9 +98,9 @@ export const readSimpleResponse = async (data: any) => {
     done = doneReading
     const chunkValue = decoder.decode(value)
     currentResponse = [...currentResponse, chunkValue]
-    console.log('RAN RAN RAN')
+    console.log('simpleGPT')
   }
-  console.log('now we go', currentResponse.join(''))
+  // console.log('now we go', currentResponse.join(''))
   return currentResponse.join('')
 }
 
@@ -146,7 +140,7 @@ export const runChatGPT = async ({
   if (!message)
     return
 
-  console.log(completeMessage)
+  // console.log(completeMessage)
   const resp = await fetch('/api/response', {
     method: 'POST',
     headers: {
@@ -157,9 +151,9 @@ export const runChatGPT = async ({
       currentModel: model,
     }),
   })
-  console.log('Edge function returned.')
+  // console.log('Edge function returned.')
 
-  console.log(resp)
+  // console.log(resp)
 
   if (!resp.ok)
     throw new Error(resp.statusText)
@@ -179,7 +173,7 @@ export const runSimpleGPT: any = async (message: any) => {
 
 
   isLoading = true;
-
+  // console.log(message, '---------------------------------------------------------------')
   const resp = await fetch('/api/response', {
     method: 'POST',
     headers: {
