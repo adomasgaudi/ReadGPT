@@ -29,7 +29,7 @@ const IconSendArrow = () => <svg
 
 const FormInput = ({ handleSubmit, messageInput, handleEnter, isLoading }) => <form
   onSubmit={handleSubmit}
-  className='fixed bottom-0 w-full md:max-w-3xl bg-gray-700 rounded-md shadow-[0_0_10px_rgba(0,0,0,0.10)] mb-4'>
+  className=''>
   <textarea
     name='Message'
     placeholder='Type your query'
@@ -39,7 +39,7 @@ const FormInput = ({ handleSubmit, messageInput, handleEnter, isLoading }) => <f
   <button
     disabled={isLoading}
     type='submit'
-    className='absolute top-[1.4rem] right-5 p-1 rounded-md text-gray-500 dark:hover:text-gray-400 dark:hover:bg-gray-900 disabled:hover:bg-transparent dark:disabled:hover:bg-transparent'>
+    className='p-1 rounded-md text-gray-500 dark:hover:text-gray-400 dark:hover:bg-gray-900 disabled:hover:bg-transparent dark:disabled:hover:bg-transparent'>
     <IconSendArrow />
   </button>
 </form>
@@ -78,7 +78,8 @@ const readResponse = async (
 
   let currentResponse = []
   setResponseFunc(prev => [...prev, ''])
-  setFullDialogueFunc(prev => [...prev, ''])
+  if (setFullDialogueFunc !== false)
+    setFullDialogueFunc(prev => [...prev, ''])
   while (!done) {
     const { value, done: doneReading } = await reader.read()
     done = doneReading
@@ -86,7 +87,8 @@ const readResponse = async (
     currentResponse = [...currentResponse, chunkValue]
     setResponseFunc(prev => [...prev.slice(0, -1), currentResponse.join('')])
   }
-  setFullDialogueFunc(prev => [...prev.slice(0, -1), currentResponse.join('')])
+  if (setFullDialogueFunc !== false)
+    setFullDialogueFunc(prev => [...prev.slice(0, -1), currentResponse.join('')])
 
   // Store the response
   localStorage.setItem('response', JSON.stringify(currentResponse))
@@ -98,23 +100,26 @@ const isNoData = (data) => {
     return true
 }
 
-const runChatGPT = async (
-  message: any,
-  setResponse: any,
-  setIsLoading: any,
-  setFullDialogue: any,
-  response: any,
-  currentModel: any,
-) => {
-  const ResponsesWithPrompts = response.map(
+// runChatGPT({ message, dialogue, model, setDialogue, setFullDialogue })
+
+const runChatGPT = async ({
+  message,
+  dialogue,
+  model,
+  setDialogueFunc,
+  setFullDialogueFunc,
+  setIsLoadingFunc,
+}) => {
+  const ResponsesWithPrompts = dialogue.map(
     (item, idx) => `${idx % 2 === 0 ? 'Prompt' : 'Response'}: ${item}`,
   )
 
   const combinePrevious = [...ResponsesWithPrompts, `Prompt: ${message}\n Response:`].join('\n')
 
   if (message !== undefined) {
-    setResponse(prev => [...prev, message])
-    setFullDialogue(prev => [...prev, combinePrevious])
+    setDialogueFunc(prev => [...prev, message])
+    if (setFullDialogueFunc !== false)
+      setFullDialogueFunc(prev => [...prev, combinePrevious])
   }
 
   if (!message)
@@ -128,7 +133,7 @@ const runChatGPT = async (
     },
     body: JSON.stringify({
       message: combinePrevious,
-      currentModel,
+      currentModel: model,
     }),
   })
   console.log('Edge function returned.')
@@ -143,16 +148,20 @@ const runChatGPT = async (
 
   const data = resp.body
 
-  readResponse(data, setResponse, setIsLoading, setFullDialogue)
+  readResponse(data, setDialogueFunc, setIsLoadingFunc, setFullDialogueFunc)
 }
 
 const Form = () => {
   const messageInput = useRef<HTMLTextAreaElement | null>(null)
-  const [response, setResponse] = useState<string[]>([])
+  const [dialogue, setDialogue] = useState<string[]>([])
   const [fullDialogue, setFullDialogue] = useState<any>([])
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [models, setModels] = useState<ModelType[]>([])
   const [currentModel, setCurrentModel] = useState<string>('gpt-3.5-turbo')
+
+  const messageInput2 = useRef<HTMLTextAreaElement | null>(null)
+  const [dialogue2, setDialogue2] = useState<string[]>([])
+  const [isLoading2, setIsLoading2] = useState<boolean>(false)
 
   const handleEnter = (
     e: React.KeyboardEvent<HTMLTextAreaElement> &
@@ -169,16 +178,36 @@ const Form = () => {
     e.preventDefault()
     const message = messageInput.current?.value
 
-    runChatGPT(
-      message, setResponse, setIsLoading, setFullDialogue, response, currentModel,
-    )
+    runChatGPT({
+      message,
+      dialogue,
+      model: currentModel,
+      setDialogueFunc: setDialogue,
+      setFullDialogueFunc: setFullDialogue,
+      setIsLoadingFunc: setIsLoading,
+    })
     messageInput.current!.value = ''
-    // runChatGPT({ message, dialogue, model, setDialogue, setFullDialogue })
+    //
+  }
+  const handleSubmit2 = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const message = messageInput2.current?.value
+
+    runChatGPT({
+      message,
+      dialogue: dialogue2,
+      model: currentModel,
+      setDialogueFunc: setDialogue2,
+      setFullDialogueFunc: false,
+      setIsLoadingFunc: setIsLoading2,
+    })
+    messageInput.current!.value = ''
+    //
   }
 
   const handleReset = () => {
     localStorage.removeItem('response')
-    setResponse([])
+    setDialogue([])
   }
 
   useSWR('fetchingResponse', async () => {
@@ -212,11 +241,10 @@ const Form = () => {
 
       <div className='w-full mx-2 flex flex-col items-start gap-3 pt-6 last:mb-6 md:mx-auto md:max-w-3xl pb-[500px] mt-[100px] text-2xl' css={[fontNotoSerifJp]}>
         {/* <button onClick={() => submitPrompt(prompt2, 'say hi in LT')}>get {prompt2}</button> */}
-        <div css={[fontNotoSerifJp]}>{book1}</div>
         <div>
 
-          {isLoading
-            ? response.map((item: any, index: number) => {
+          {isLoading2
+            ? dialogue2.map((item: any, index: number) => {
               return (
                 <div
                   key={index}>
@@ -224,8 +252,31 @@ const Form = () => {
                 </div>
               )
             })
-            : response
-              ? response.map((item: string, index: number) => {
+            : dialogue2
+              ? dialogue2.map((item: string, index: number) => {
+                return (
+                  <div
+                    key={index}>
+                    <p>{item}</p>
+                  </div>
+                )
+              })
+              : null}
+        </div>
+        <div css={[fontNotoSerifJp]}>{book1}</div>
+        <div>
+
+          {isLoading
+            ? dialogue.map((item: any, index: number) => {
+              return (
+                <div
+                  key={index}>
+                  <p>{item}</p>
+                </div>
+              )
+            })
+            : dialogue
+              ? dialogue.map((item: string, index: number) => {
                 return (
                   <div
                     key={index}>
@@ -236,7 +287,16 @@ const Form = () => {
               : null}
         </div>
       </div>
-      <FormInput {...{ handleSubmit, messageInput, handleEnter, isLoading }} />
+      <div className='fixed bottom-0 w-full md:max-w-3xl bg-gray-700 rounded-md shadow-[0_0_10px_rgba(0,0,0,0.10)] mb-4'>
+
+        <FormInput {...{ handleSubmit, messageInput, handleEnter, isLoading }} />
+        <FormInput {...{
+          handleSubmit: handleSubmit2,
+          messageInput: messageInput2,
+          handleEnter: null,
+          isLoading: isLoading2,
+        }} />
+      </div>
 
     </div>
   )
