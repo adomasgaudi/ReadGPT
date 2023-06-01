@@ -19,7 +19,7 @@ export async function POST(request: Request) {
   }
 
   const payload: OpenAIStreamPayload = {
-    model: 'gpt-3.5-turbo',
+    model: 'gpt-4',
     // model: `${currentModel}`,
     messages: [{ role: 'user', content: message }],
     temperature: 0.7,
