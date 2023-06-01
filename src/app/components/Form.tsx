@@ -1,163 +1,70 @@
 'use client'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import useSWR from 'swr'
 import { fontNotoSerifJp } from '../css/twinStyles'
+import { ClearHistoryButton, FormInput, ModelSelector, ModelType, book1, runChatGPT, runSimpleGPT } from './FormLogic'
 
-const book1 = `悪魔の弟子
-浜尾四郎
+const convertJPToENGPrompt = `Task: convert japanese into enligh
+    Prompt: 悪魔
+    Response: Devil
+    Prompt: 悪魔の弟子
+    Response: Devil's Disciple
+    Prompt: 浜尾四郎
+    Response: Shiro Hamao
+    Prompt: 目次
+    Response: Table of Contents
+    Prompt: `
+
+const SelectedTextPopup = ({ handleButtonClick, returnResp }: any) => {
+  const [selection, setSelection] = useState('');
+  const [coords, setCoords] = useState({ x: 0, y: 0 });
+  const [response, setResponse] = useState<string | null>(null);  // Add this state for storing the response
+  const popupRef = useRef(null);
+
+  useEffect(() => {
+    setResponse(returnResp)
+  }, [returnResp])
+
+  useEffect(() => {
+    const handleTextSelection = () => {
+      const selectedText = window.getSelection()?.toString();
+      if (selectedText) {
+        setSelection(selectedText);
+        const range = window.getSelection()?.getRangeAt(0);
+        const rect = range?.getBoundingClientRect();
+        if (rect) {
+          setCoords({ x: rect.left, y: rect.top - 40 }); // Adjust y position to show above the selected text
+        }
+      } else {
+        setSelection('');
+      }
+    };
+
+    document.addEventListener('mouseup', handleTextSelection);
+    return () => document.removeEventListener('mouseup', handleTextSelection);
+  }, []);
+
+  useEffect(() => {
+    const popup = popupRef.current;
+    if (popup) {
+      popup.style!.left = `${coords.x}px`;
+      popup.style!.top = `${coords.y}px`;
+    }
+  }, [coords, popupRef]);
 
 
-+目次
+  if (!selection) return null;
 
-一
-
-　××地方裁判所検事土田八郎殿。
-　一未決囚徒たる私、即ち島浦英三は、其の旧友にして嘗かつては兄弟より親しかりし土田検事殿に、此の手紙を送ります。
-　検事殿、あなたは私を無論思い出して居おらるる事でしょうね。仮令たとい他の検事によって取り調べられ、次で予審判事の手に移されてしまった私であっても、あの、世間を騒がした美人殺しの犯人として伝えられ、新聞紙上に其の名を謳うたわれたに違いない以上、同じ裁判所に居るあなたが、今度の事件に就て私の名を見ない筈はなく、又聞かない筈もありません。`
-
-const IconSendArrow = () => <svg
-  stroke='currentColor'
-  fill='currentColor'
-  strokeWidth='0'
-  viewBox='0 0 20 20'
-  className='h-4 w-4 rotate-90'
-  height='1em'
-  width='1em'
-  xmlns='http://www.w3.org/2000/svg'>
-  <path d='M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z'></path>
-</svg>
-
-const FormInput = ({ handleSubmit, messageInput, handleEnter, isLoading, placeholder }) => <form
-  onSubmit={handleSubmit}
-  className=''>
-  <textarea
-    name='Message'
-    placeholder={placeholder || 'Type a message...'}
-    ref={messageInput}
-    onKeyDown={handleEnter}
-    className='w-full resize-none bg-transparent outline-none pt-4 pl-4 translate-y-1' />
-  <button
-    disabled={isLoading}
-    type='submit'
-    className='p-1 rounded-md text-gray-500 dark:hover:text-gray-400 dark:hover:bg-gray-900 disabled:hover:bg-transparent dark:disabled:hover:bg-transparent'>
-    <IconSendArrow />
-  </button>
-</form>
-
-const ModelSelector = ({ currentModel, handleModelChange, models }) => <select
-  value={currentModel}
-  onChange={handleModelChange}
-  className='w-72 fixed top-5 left-5 outline-none border-none p-4 rounded-md bg-white text-gray-500 dark:hover:text-gray-400 dark:hover:bg-gray-900'>
-  {models.map(model => (
-    <option key={model.id} value={model.id}>
-      {model.id}
-    </option>
-  ))}
-</select>
-
-const ClearHistoryButton = ({ handleReset }) => <button
-  onClick={handleReset}
-  type='reset'
-  className='fixed top-5 right-5 p-4 rounded-md bg-white text-gray-500 dark:hover:text-gray-400 dark:hover:bg-gray-900 disabled:hover:bg-transparent dark:disabled:hover:bg-transparent'>
-  Clear History
-</button>
-interface ModelType {
-  object: 'engine'
-  id: string
-  ready: boolean
-  owner: string
-  permissions: null
-  created: string
-}
-const readResponse = async (
-  data, setResponseFunc, setIsLoadingFunc, setFullDialogueFunc,
-) => {
-  const reader = data.getReader()
-  const decoder = new TextDecoder()
-  let done = false
-
-  let currentResponse = []
-  setResponseFunc(prev => [...prev, ''])
-  if (setFullDialogueFunc !== false)
-    setFullDialogueFunc(prev => [...prev, ''])
-  while (!done) {
-    const { value, done: doneReading } = await reader.read()
-    done = doneReading
-    const chunkValue = decoder.decode(value)
-    currentResponse = [...currentResponse, chunkValue]
-    setResponseFunc(prev => [...prev.slice(0, -1), currentResponse.join('')])
-  }
-  if (setFullDialogueFunc !== false)
-    setFullDialogueFunc(prev => [...prev.slice(0, -1), currentResponse.join('')])
-
-  // Store the response
-  localStorage.setItem('response', JSON.stringify(currentResponse))
-  setIsLoadingFunc(false)
-}
-
-const isNoData = (data) => {
-  if (!data)
-    return true
-}
-
-// runChatGPT({ message, dialogue, model, setDialogue, setFullDialogue })
-
-const runChatGPT = async ({
-  message,
-  dialogue,
-  model,
-  setDialogueFunc,
-  setFullDialogueFunc,
-  setIsLoadingFunc,
-  isConversation = true,
-}) => {
-  let completeMessage = ''
-
-  if (isConversation) {
-    const ResponsesWithPrompts = dialogue.map(
-      (item, idx) => `${idx % 2 === 0 ? 'Prompt' : 'Response'}: ${item}`,
-    )
-
-    completeMessage = [...ResponsesWithPrompts, `Prompt: ${message}\n Response:`].join('\n')
-  }
-  else {
-    completeMessage = message
-  }
-
-  if (message !== undefined) {
-    setDialogueFunc(prev => [...prev, message])
-    if (setFullDialogueFunc !== false)
-      setFullDialogueFunc(prev => [...prev, completeMessage])
-  }
-
-  if (!message)
-    return
-
-  console.log(completeMessage)
-  const resp = await fetch('/api/response', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      message: completeMessage,
-      currentModel: model,
-    }),
-  })
-  console.log('Edge function returned.')
-
-  console.log(resp)
-
-  if (!resp.ok)
-    throw new Error(resp.statusText)
-
-  if (isNoData(resp))
-    return
-
-  const data = resp.body
-
-  readResponse(data, setDialogueFunc, setIsLoadingFunc, setFullDialogueFunc)
-}
+  return (
+    <div
+      ref={popupRef}
+      style={{ position: 'fixed', background: 'white', border: '1px solid black', padding: '10px' }}
+    >
+      {selection} = {response}
+      <button onClick={() => handleButtonClick(selection)}>Translate</button>
+    </div>
+  );
+};
 
 const Form = () => {
   const messageInput = useRef<HTMLTextAreaElement | null>(null)
@@ -166,6 +73,7 @@ const Form = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [models, setModels] = useState<ModelType[]>([])
   const [currentModel, setCurrentModel] = useState<string>('gpt-3.5-turbo')
+  const [translation, setTranslation] = useState<string>('')
 
   const messageInput2 = useRef<HTMLTextAreaElement | null>(null)
   const [dialogue2, setDialogue2] = useState<string[]>([])
@@ -195,23 +103,14 @@ const Form = () => {
       setIsLoadingFunc: setIsLoading,
     })
     messageInput.current!.value = ''
-    //
+
   }
   const handleSubmit2 = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const message = messageInput2.current?.value
-    const promptadd = `Task: convert japanese into enligh
-    Prompt: 悪魔
-    Response: Devil
-    Prompt: 悪魔の弟子
-    Response: Devil's Disciple
-    Prompt: 浜尾四郎
-    Response: Shiro Hamao
-    Prompt: 目次
-    Response: Table of Contents
-    Prompt: `
+
     runChatGPT({
-      message: `${promptadd}${message}\n Response:`,
+      message: `${convertJPToENGPrompt}${message}\n Response:`,
       dialogue: dialogue2,
       model: currentModel,
       setDialogueFunc: setDialogue2,
@@ -222,6 +121,12 @@ const Form = () => {
     messageInput.current!.value = ''
     //
   }
+
+  const handleButtonClick = async (text: any) => {
+    const { response, isLoading } = await runSimpleGPT('say hi')
+    setTranslation(response)
+  }
+  const returnResp = 'hi'
 
   const handleReset = () => {
     localStorage.removeItem('response')
@@ -258,7 +163,6 @@ const Form = () => {
       <ClearHistoryButton {...{ handleReset }} />
 
       <div className='w-full mx-2 flex flex-col items-start gap-3 pt-6 last:mb-6 md:mx-auto md:max-w-3xl pb-[500px] mt-[100px] text-2xl' css={[fontNotoSerifJp]}>
-        {/* <button onClick={() => submitPrompt(prompt2, 'say hi in LT')}>get {prompt2}</button> */}
         <div>
 
           {isLoading2 && dialogue2.length > 1 && dialogue2.length % 2 == 0
@@ -302,6 +206,8 @@ const Form = () => {
           placeholder: 'convert text',
         }} />
       </div>
+      trans: {translation}
+      <SelectedTextPopup {...{ handleButtonClick, returnResp: translation }} />
 
     </div>
   )

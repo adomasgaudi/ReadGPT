@@ -1,4 +1,4 @@
-import { OpenAIStream, OpenAIStreamPayload } from '@/utils/OpenAIStream'
+import { OpenAIStream, OpenAIStreamPayload } from "@/app/utils/OpenAIStream"
 
 type RequestData = {
   currentModel: string
@@ -19,8 +19,7 @@ export async function POST(request: Request) {
   }
 
   const payload: OpenAIStreamPayload = {
-    model: 'gpt-4',
-    // model: `${currentModel}`,
+    model: `${currentModel}`,
     messages: [{ role: 'user', content: message }],
     temperature: 0.7,
     top_p: 1,

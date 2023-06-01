@@ -18,8 +18,7 @@ export default async function handler(request: Request) {
     return new Response('No message in the request', { status: 400 })
 
   const payload: OpenAIStreamPayload = {
-    model: 'gpt-3.5-turbo',
-    // model: `${currentModel}`,
+    model: `${currentModel}`,
     messages: [{ role: 'user', content: message }],
     temperature: 0.7,
     top_p: 1,
