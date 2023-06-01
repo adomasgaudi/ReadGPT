@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from 'react'
 import useSWR from 'swr'
 import { fontNotoSerifJp } from '../css/twinStyles'
 import { ClearHistoryButton, FormInput, ModelSelector, ModelType, book1, runChatGPT, runSimpleGPT } from './FormLogic'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faBook } from '@fortawesome/free-solid-svg-icons'
 
 const convertJPToENGPrompt = `Task: convert japanese into enligh
     Prompt: 悪魔
@@ -14,6 +16,8 @@ const convertJPToENGPrompt = `Task: convert japanese into enligh
     Prompt: 目次
     Response: Table of Contents
     Prompt: `
+
+
 
 const SelectedTextPopup = ({ handleButtonClick, returnResp }: any) => {
   const [selection, setSelection] = useState('');
@@ -60,11 +64,28 @@ const SelectedTextPopup = ({ handleButtonClick, returnResp }: any) => {
       ref={popupRef}
       style={{ position: 'fixed', background: 'white', border: '1px solid black', padding: '10px' }}
     >
-      {selection} = {response}
-      <button onClick={() => handleButtonClick(selection)}>Translate</button>
+      <span className='mr-4'>
+        {selection}: {response}
+      </span>
+
+      <button onClick={() => handleButtonClick(selection)}>
+        <FontAwesomeIcon icon={faBook} />
+      </button>
     </div>
   );
 };
+
+
+
+
+
+
+
+
+
+
+
+
 
 const Form = () => {
   const messageInput = useRef<HTMLTextAreaElement | null>(null)
@@ -123,7 +144,7 @@ const Form = () => {
   }
 
   const handleButtonClick = async (text: any) => {
-    const { response, isLoading } = await runSimpleGPT('say hi')
+    const { response, isLoading } = await runSimpleGPT(`${convertJPToENGPrompt}${text}\n Response:`)
     setTranslation(response)
   }
   const returnResp = 'hi'
@@ -206,7 +227,6 @@ const Form = () => {
           placeholder: 'convert text',
         }} />
       </div>
-      trans: {translation}
       <SelectedTextPopup {...{ handleButtonClick, returnResp: translation }} />
 
     </div>

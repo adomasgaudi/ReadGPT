@@ -186,7 +186,7 @@ export const runSimpleGPT: any = async (message: any) => {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      message: 'say hi',
+      message: message,
       currentModel: 'gpt-3.5-turbo',
     }),
   })
