@@ -1,30 +1,16 @@
 import Link from 'next/link'
+// import { linkStyles } from './components/link'
 
 const App = () => {
   // useCssOutline(false)
   return (
     <>
       <div className='pt-[100px]'>
-        <Link href="/moby_dick">
-          <div className='inline-block border p-10 mr-10'>
-            Moby dick
-          </div>
-        </Link>
-        <Link href="/the_great_gatsby">
-          <div className='inline-block border p-10'>
-            The Great Gatsby
-          </div>
-        </Link>
-        <Link href="/knyga">
-          <div className='inline-block border p-10'>
-            knyga
-          </div>
-        </Link>
-        <Link href="/knyga2">
-          <div className='inline-block border p-10'>
-            knyga2
-          </div>
-        </Link>
+        {[{ href: '/knyga2', title: 'JAP' }, { href: '/knyga', title: "Knyga" }].map((item, index) =>
+          <Link key="index" href={item.href}>
+            <div> {item.title}</div>
+          </Link>
+        )}
       </div>
     </>
   )
