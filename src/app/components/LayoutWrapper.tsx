@@ -8,7 +8,7 @@ const App = ({ children }: any) => {
   return (
     <body className={`bg-main text-main ${theme ? 'light' : 'dark'}`}>
       <div className="container mx-auto max-w-[1000px] h-full">
-        <header className='flex justify-between'>
+        <header className='flex justify-between container p-2 pl-5 pr-9 border-b border-gray-200'>
           <Link href="/">
             <div className=''>
               BookGPT

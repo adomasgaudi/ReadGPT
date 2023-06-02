@@ -3,6 +3,8 @@ import { useRef, useState } from "react";
 import tw, { css } from "twin.macro";
 import { fontNotoSerifJp } from "@/app/css/twinStyles";
 import { Box, Slider, SliderTrack, SliderFilledTrack, SliderThumb, Flex } from "@chakra-ui/react";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCaretUp, faCaretDown } from '@fortawesome/free-solid-svg-icons'
 
 
 function divideBySentence(text) {
@@ -29,27 +31,50 @@ export default function BookGPT({ text }: any) {
 
   return (
     <Flex>
-      <Box flex="1" pr="0">
-        <div ref={containerRef} className="container pt-5 pl-5 text-xl" css={[fontNotoSerifJp]}>{divideBySentence(text).join(" ")}</div>
-      </Box>
-      <Box width="30px">
-        <Slider
-          aria-label="slider-ex-4"
-          orientation="vertical"
-          defaultValue={30}
-          onChange={(val) => setSliderValue(val)}
-          height="300px"
-        >
-          <SliderTrack bg="red.100">
-            <SliderFilledTrack bg="tomato" />
-          </SliderTrack>
-          <SliderThumb boxSize={6}>
-            <Box color="tomato" as="span">
-              {sliderValue}
-            </Box>
-          </SliderThumb>
-        </Slider>
-      </Box>
+      <div>
+        <div className="flex justify-center">
+          <button className=' rounded-full h-[50px] w-[50px]'>
+            <FontAwesomeIcon icon={faCaretUp} />
+          </button>
+        </div>
+        <div className="flex">
+
+          <div ref={containerRef} className="container pt-1 pl-5 text-xl" css={[fontNotoSerifJp]}>{divideBySentence(text).join(" ")}</div>
+          <Box width="30px">
+            <Slider
+              aria-label="slider-ex-4"
+              orientation="vertical"
+              defaultValue={30}
+              onChange={(val) => setSliderValue(val)}
+              height="300px"
+              css={css`
+            opacity: 0.1;
+            transition: opacity 0.3s ease-in-out;
+
+            &:hover,
+            &:focus,
+            &:active {
+              opacity: 1;
+            }
+          `}
+            >
+              <SliderTrack bg="gray.100">
+                <SliderFilledTrack bg="gray.200" />
+              </SliderTrack>
+              <SliderThumb boxSize={6}>
+                <Box color="gray.300" as="span">
+                  {sliderValue}
+                </Box>
+              </SliderThumb>
+            </Slider>
+          </Box>
+        </div>
+        <div className="flex justify-center">
+          <button className=' rounded-full h-[50px] w-[50px]'>
+            <FontAwesomeIcon icon={faCaretDown} />
+          </button>
+        </div>
+      </div>
     </Flex>
   );
 }
