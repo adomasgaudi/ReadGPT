@@ -20,6 +20,11 @@ const App = () => {
             knyga
           </div>
         </Link>
+        <Link href="/knyga2">
+          <div className='inline-block border p-10'>
+            knyga2
+          </div>
+        </Link>
       </div>
     </>
   )

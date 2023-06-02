@@ -1,4 +1,4 @@
-'use client'
+
 import Link from 'next/link'
 import LayoutWrapper from '../components/LayoutWrapper'
 import { useCssOutline } from '../utils/useTools'
@@ -17,11 +17,14 @@ export default function RootLayout({
   useCssOutline(true)
   return (
     <html lang="en">
-      <LayoutWrapper>
+      <body>
+
+        {children}
+      </body>
+      {/* <LayoutWrapper>
         <SidebarWrap>
           <p>hi</p>
           <div className="container mx-auto">
-            {children}
           </div>
           <header className="border-t">
             <div className='container mx-auto flex flex-row justify-between py-3'>
@@ -31,7 +34,7 @@ export default function RootLayout({
             </div>
           </header>
         </SidebarWrap>
-      </LayoutWrapper>
+      </LayoutWrapper> */}
 
     </html>
   )

@@ -35,7 +35,7 @@ import tw, { styled } from 'twin.macro'
 
 // export const Div_FlexRow = tw.div`flex flex-row`
 
-export const Container = tw.div`container mx-auto`
+export const Container = tw.div`container`
 export const Div_HScreen = tw.div`h-[100vh]`
 export const In = tw.div`h-full`
 
