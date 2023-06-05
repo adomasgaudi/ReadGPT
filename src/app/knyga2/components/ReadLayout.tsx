@@ -17,7 +17,7 @@ const TextOrientate = ({ vertical, containerRef, text }: any) => {
   //   display: none;
   // }
   return (
-    <div ref={containerRef} className="container pt-1 pl-5 text-xl w-full overflow-scroll h-[400px]" css={[fontNotoSerifJp]}>
+    <div ref={containerRef} className="container pt-1 pl-5 text-xl w-full overflow-scroll grow max-h-[380px] " css={[fontNotoSerifJp]}>
       <p css={[vertical ? verticalTextStyle : ""]} lang={vertical ? 'ja' : 'en'}>{divideBySentence(text).join(" ")}</p></div>
   )
 }
@@ -54,8 +54,8 @@ export default function ReadLayout({ text, children }: any) {
 
 
   return (
-    <div className="container mx-auto max-w-[1000px] h-full">
-      <header className='flex justify-between container p-2 pl-5 pr-9 border-b border-gray-200'>
+    <div className="container mx-auto max-w-[1000px] h-[100%] max-h-[100%] flex flex-col">
+      <header className='flex justify-between items-start container p-2 pl-5 pr-9 border-b border-gray-200'>
         <button className='' onClick={() => setIsSidebarOpen(true)}>
           <FontAwesomeIcon icon={faBars} />
         </button>
@@ -77,7 +77,7 @@ export default function ReadLayout({ text, children }: any) {
         </SidebarContainer>
       )}
 
-      <Flex className="w-full pb-[100px]">
+      <Flex className="w-full">
         <div className="w-full">
           <div className="flex justify-center">
             <button className=' rounded-full h-[50px] w-[50px]' onClick={() => setPagePart(prev => prev - 1)} disabled={pagePart === 1} >
@@ -134,6 +134,8 @@ export default function ReadLayout({ text, children }: any) {
             ))}
 
           </div>
+
+          <div className="flex flex-col justify-end items-end grow" css={['background: red;']}>hi there</div>
 
         </div>
       </Flex>
