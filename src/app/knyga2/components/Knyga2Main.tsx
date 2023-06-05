@@ -2,14 +2,14 @@
 
 import { useCssOutline } from "@/app/utils/useTools"
 import BookGPT from "./BookGPT"
-import { book1 } from "@/app/components/FormLogic"
 import { ChakraProvider } from "@chakra-ui/react"
+import { 悪魔の弟子 } from "./text"
 
 export default function Knyga2Main() {
   useCssOutline(false)
   return (
     <ChakraProvider>
-      <BookGPT text={book1} />
+      <BookGPT text={悪魔の弟子} />
     </ChakraProvider>
   )
 }

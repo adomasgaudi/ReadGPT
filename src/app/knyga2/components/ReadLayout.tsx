@@ -12,26 +12,24 @@ const TextOrientate = ({ vertical, containerRef, text }: any) => {
   -moz-writing-mode: vertical-rl;
   -ms-writing-mode: vertical-rl;
   writing-mode: vertical-rl;
-  &&::-webkit-scrollbar {
-    display: none;
-  }
   `
+  // &&::-webkit-scrollbar {
+  //   display: none;
+  // }
   return (
     <div ref={containerRef} className="container pt-1 pl-5 text-xl w-full overflow-scroll h-[400px]" css={[fontNotoSerifJp]}>
-      <p css={[vertical ? verticalTextStyle : ""]} lang={vertical ? 'ja' : 'en'}>{divideBySentence(text).join(" ")}<br />{divideBySentence(text).join(" ")}</p></div>
+      <p css={[vertical ? verticalTextStyle : ""]} lang={vertical ? 'ja' : 'en'}>{divideBySentence(text).join(" ")}</p></div>
   )
 }
 const SidebarContainer = tw.div`absolute top-0 left-0 h-screen w-[85%] max-w-[400px] z-10 border-r `
 const MenuButton = tw.button`fixed top-0 left-0 py-2 px-4 z-20`
 const CloseButton = tw.button`py-2 px-4 mt-2`
 
-function divideBySentence(text) {
-  // Split text by "。", "！", "？", and map over the results to trim whitespace and add the punctuation back
-  let sentences = text.split(/(。|！|？)/)
+function divideBySentence(givenText: string) {
+  let sentences = givenText.split(/(。|！|？)/)
     .filter(sentence => sentence)
     .map(sentence => sentence.trim());
 
-  // Combine every two elements into a single sentence (since split creates an element for the punctuation as well)
   let formattedSentences = [];
   for (let i = 0; i < sentences.length; i += 2) {
     formattedSentences.push(sentences[i] + (sentences[i + 1] || ''));
@@ -40,19 +38,20 @@ function divideBySentence(text) {
   return formattedSentences;
 }
 
+
 export default function ReadLayout({ text, children }: any) {
   const [theme, setTheme] = useState(true)
   const containerRef = useRef(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
-
+  const [pagePart, setPagePart] = useState(1)
   // State for slider value
   const [sliderValue, setSliderValue] = useState(0);
 
-  // State for selected number
-  const [selectedNumber, setSelectedNumber] = useState(1);
 
-  // List of numbers
-  const numbers = Array.from({ length: 16 }, (_, i) => i + 1);
+  const allPages = text.reduce((acc: any, chapter: any) => acc.concat(chapter.pages), []);
+
+  const [selectedPage, setSelectedPage] = useState(1);
+
 
   return (
     <div className="container mx-auto max-w-[1000px] h-full">
@@ -81,12 +80,12 @@ export default function ReadLayout({ text, children }: any) {
       <Flex className="w-full pb-[100px]">
         <div className="w-full">
           <div className="flex justify-center">
-            <button className=' rounded-full h-[50px] w-[50px]'>
+            <button className=' rounded-full h-[50px] w-[50px]' onClick={() => setPagePart(prev => prev - 1)} disabled={pagePart === 1} >
               <FontAwesomeIcon icon={faCaretUp} />
             </button>
           </div>
           <div className="flex">
-            <TextOrientate vertical={true} containerRef={containerRef} text={text} />
+            <TextOrientate vertical={false} containerRef={containerRef} text={allPages[selectedPage - 1][pagePart - 1]} />
 
             <Box width="30px">
               <Slider
@@ -118,21 +117,22 @@ export default function ReadLayout({ text, children }: any) {
             </Box>
           </div>
           <div className="flex justify-center">
-            <button className=' rounded-full h-[50px] w-[50px]'>
+            <button className=' rounded-full h-[50px] w-[50px]' onClick={() => setPagePart(prev => prev + 1)} disabled={pagePart === allPages[selectedPage - 1].length} >
               <FontAwesomeIcon icon={faCaretDown} />
             </button>
           </div>
 
           <div className="flex flex-row flex-nowrap max-w-full w-full overflow-scroll p-5 " css={[tw`border-2`]}>
-            {numbers.map(number => (
-              <div
-                key={number}
-                className={`flex min-w-[40px] m-1 min-h-[40px] items-center justify-center border border-gray-200 ${selectedNumber === number ? 'bg-gray-300' : ''}`}
-                onClick={() => setSelectedNumber(number)}
+            {allPages.map((item: any, idx: any) => (
+              <button
+                key={idx}
+                className={`flex min-w-[40px] m-1 min-h-[40px] items-center justify-center border border-gray-200 ${selectedPage === item ? 'bg-gray-300' : ''}`}
+                onClick={() => { setSelectedPage(idx + 1); setPagePart(1) }}
               >
-                {number}
-              </div>
+                {idx + 1}
+              </button>
             ))}
+
           </div>
 
         </div>
