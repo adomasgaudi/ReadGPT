@@ -47,7 +47,11 @@ const ButtonUp = ({ pagePartPos, setPagePartPos }: any) =>
     <FontAwesomeIcon icon={faCaretUp} />
   </button>
 
-const Center = tw.div`flex justify-center items-center`
+const gradientStyles = (deg: any) => css`
+  background: rgb(255,255,255);
+  background: linear-gradient(${deg}deg, var(--bg-main-opq) 20%, var(--bg-main-trn) 100%);
+`
+
 //
 
 //
@@ -72,6 +76,7 @@ export default function ReadINT() {
       const scrollHeight = containerRef.current.scrollHeight
       const elementHeight = containerRef.current.offsetHeight
       const numberOfElements = allPages[pagePos].length
+      console.log(scrollHeight, elementHeight, numberOfElements)
 
       const scrollPos = (scrollHeight - elementHeight) / (numberOfElements - 1) * pagePartPos
 
@@ -104,18 +109,23 @@ export default function ReadINT() {
         </>
       }
     >
-      <div>
-        <Center>
-          <ButtonUp {...{ setPagePartPos, pagePartPos }} />
-        </Center>
-        <div ref={containerRef} css={[tw`h-80 overflow-scroll`]}>
+      <div css={[tw`relative`]}>
+        {pagePartPos !== 0
+          && <div css={[tw`absolute top-0 w-full flex justify-center items-center -mb-10 z-10`, gradientStyles(180)]} >
+            <ButtonUp {...{ setPagePartPos, pagePartPos }} />
+          </div>
+        }
+        <div ref={containerRef} css={[tw`h-80 overflow-scroll `]}>
           {allPages[pagePos].map((page, index) => (
-            <p key={index} css={[tw`bg-blue`, tw`p-2`, fontNotoSerifJp]}>{page}</p>
+            <p key={index} css={[tw`text-xl`, tw`p-2 pt-5`, fontNotoSerifJp]}>{page}</p>
           ))}
         </div>
-        <Center>
-          <ButtonDown {...{ setPagePartPos, pagePartPos, allPages, selectedPagePos }} />
-        </Center>
+        {pagePartPos + 1 !== allPages[selectedPagePos].length
+          && <div css={[tw`absolute bottom-10 w-full flex justify-center items-center -mb-10 z-10`, gradientStyles(0)]} >
+            <ButtonDown {...{ setPagePartPos, pagePartPos, allPages, selectedPagePos }} />
+          </div>
+        }
+
       </div>
     </ ReadINTInfra>
   )

@@ -27,7 +27,7 @@ const DivScreenHeight = ({ children }: any) => {
 //
 
 export default function ClientComp() {
-  useCssOutline(true)
+  useCssOutline(false)
 
   return (
     <ChakraProvider>

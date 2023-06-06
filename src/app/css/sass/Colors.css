@@ -6,6 +6,8 @@
   --color-primary: #E11D48;
   --text-main: #17262a;
   --bg-main: #f7f6f7;
+  --bg-main-opq: #f7f6f7ff;
+  --bg-main-trn: #f7f6f700;
   --accent-main: #ebd971;
   --accent-text: #2822d7;
   --text-read: #333;
@@ -42,4 +44,6 @@
 
 .bg-accent {
   background: var(--accent-main);
-}/*# sourceMappingURL=Colors.css.map */
+}
+
+/*# sourceMappingURL=Colors.css.map */
