@@ -7,50 +7,52 @@
   "plugins": [
     "react"
   ],
-  // "rules": {
-  //   "@typescript-eslint/ban-ts-comment": "off",
-  //   "indent": [
-  //     "warn",
-  //     2
-  //   ],
-  //   "semi": [
-  //     "warn",
-  //     "never"
-  //   ],
-  //   "react/jsx-max-props-per-line": [
-  //     "warn",
-  //     {
-  //       "maximum": 3,
-  //       "when": "multiline"
-  //     }
-  //   ],
-  //   "react/jsx-closing-bracket-location": [
-  //     "warn",
-  //     {
-  //       "nonEmpty": "after-props",
-  //       "selfClosing": "after-props"
-  //     }
-  //   ],
-  //   "no-console": "warn",
-  //   "react/react-in-jsx-scope": "off",
-  //   "react/no-unescaped-entities": "off",
-  //   "antfu/top-level-function": "off",
-  //   "eslint-comments/no-unlimited-disable": "off",
-  //   "no-trailing-spaces": "warn",
-  //   "no-multi-spaces": "off",
-  //   "array-bracket-newline": [
-  //     "off",
-  //     "off"
-  //   ],
-  //   "@typescript-eslint/prefer-ts-expect-error": "off",
-  //   "react/no-unknown-property": [
-  //     "off",
-  //     {
-  //       "ignore": [
-  //         "tw",
-  //         "css"
-  //       ]
-  //     }
-  //   ]
-  // }
+  "rules": {
+    "@typescript-eslint/ban-ts-comment": "off",
+    "indent": [
+      "warn",
+      2
+    ],
+    "semi": [
+      "warn",
+      "never"
+    ],
+    "react/jsx-max-props-per-line": [
+      "warn",
+      {
+        "maximum": 3,
+        "when": "multiline"
+      }
+    ],
+    "react/jsx-closing-bracket-location": [
+      "warn",
+      {
+        "nonEmpty": "tag-aligned",
+        "selfClosing": "tag-aligned"
+      }
+    ],
+    "no-console": "warn",
+    "react/react-in-jsx-scope": "off",
+    "react/no-unescaped-entities": "off",
+    "antfu/top-level-function": "off",
+    "eslint-comments/no-unlimited-disable": "off",
+    "no-trailing-spaces": "warn",
+    "no-multi-spaces": "off",
+    "react/no-children-prop": "off",
+    "array-bracket-newline": [
+      "off",
+      "off"
+    ],
+    "@typescript-eslint/prefer-ts-expect-error": "off",
+    "react/no-unknown-property": [
+      "off",
+      {
+        "ignore": [
+          "tw",
+          "css",
+          "icon"
+        ]
+      }
+    ]
+  }
 }

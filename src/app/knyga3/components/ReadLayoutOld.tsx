@@ -1,13 +1,13 @@
 'use client'
-import { useRef, useState } from "react";//@ts-ignore
-import tw, { css } from "twin.macro";
-import { fontNotoSerifJp } from "@/app/css/twinStyles";
-import { Box, Slider, SliderTrack, SliderFilledTrack, SliderThumb, Flex } from "@chakra-ui/react";
+import { useRef, useState } from 'react'// @ts-expect-error
+import tw, { css } from 'twin.macro'
+import { Box, Flex, Slider, SliderFilledTrack, SliderThumb, SliderTrack } from '@chakra-ui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCaretUp, faCaretDown, faBars, faXmark } from '@fortawesome/free-solid-svg-icons'
-import Link from "next/link";
+import { faBars, faCaretDown, faCaretUp, faXmark } from '@fortawesome/free-solid-svg-icons'
+import Link from 'next/link'
+import { fontNotoSerifJp } from '@/app/css/twinStyles'
 
-const TextOrientate = ({ vertical, containerRef, text }: any) => {
+function TextOrientate({ vertical, containerRef, text }: any) {
   const verticalTextStyle = css`-webkit-writing-mode: vertical-rl;
   -moz-writing-mode: vertical-rl;
   -ms-writing-mode: vertical-rl;
@@ -18,7 +18,7 @@ const TextOrientate = ({ vertical, containerRef, text }: any) => {
   // }
   return (
     <div ref={containerRef} className="container pt-1 pl-5 text-xl w-full overflow-scroll grow max-h-[380px] " css={[fontNotoSerifJp]}>
-      <p css={[vertical ? verticalTextStyle : ""]} lang={vertical ? 'ja' : 'en'}>{divideBySentence(text).join(" ")}</p></div>
+      <p css={[vertical ? verticalTextStyle : '']} lang={vertical ? 'ja' : 'en'}>{divideBySentence(text).join(' ')}</p></div>
   )
 }
 const SidebarContainer = tw.div`absolute top-0 left-0 h-screen w-[85%] max-w-[400px] z-10 border-r `
@@ -26,32 +26,28 @@ const MenuButton = tw.button`fixed top-0 left-0 py-2 px-4 z-20`
 const CloseButton = tw.button`py-2 px-4 mt-2`
 
 function divideBySentence(givenText: string) {
-  let sentences = givenText.split(/(。|！|？)/)
+  const sentences = givenText.split(/(。|！|？)/)
     .filter(sentence => sentence)
-    .map(sentence => sentence.trim());
+    .map(sentence => sentence.trim())
 
-  let formattedSentences = [];
-  for (let i = 0; i < sentences.length; i += 2) {
-    formattedSentences.push(sentences[i] + (sentences[i + 1] || ''));
-  }
+  const formattedSentences = []
+  for (let i = 0; i < sentences.length; i += 2)
+    formattedSentences.push(sentences[i] + (sentences[i + 1] || ''))
 
-  return formattedSentences;
+  return formattedSentences
 }
-
 
 export default function ReadLayout({ text, children }: any) {
   const [theme, setTheme] = useState(true)
-  const containerRef = useRef(null);
+  const containerRef = useRef(null)
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   const [pagePart, setPagePart] = useState(1)
   // State for slider value
-  const [sliderValue, setSliderValue] = useState(0);
+  const [sliderValue, setSliderValue] = useState(0)
 
+  const allPages = text.reduce((acc: any, chapter: any) => acc.concat(chapter.pages), [])
 
-  const allPages = text.reduce((acc: any, chapter: any) => acc.concat(chapter.pages), []);
-
-  const [selectedPage, setSelectedPage] = useState(1);
-
+  const [selectedPage, setSelectedPage] = useState(1)
 
   return (
     <div className="container mx-auto max-w-[1000px] h-[100%] max-h-[100%] flex flex-col">
@@ -92,7 +88,7 @@ export default function ReadLayout({ text, children }: any) {
                 aria-label="slider-ex-4"
                 orientation="vertical"
                 defaultValue={30}
-                onChange={(val) => setSliderValue(val)}
+                onChange={val => setSliderValue(val)}
                 height="300px"
                 css={css`
             opacity: 0.1;
@@ -140,5 +136,5 @@ export default function ReadLayout({ text, children }: any) {
         </div>
       </Flex>
     </div>
-  );
+  )
 }
