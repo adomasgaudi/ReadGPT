@@ -1,4 +1,4 @@
-import ClientComp from "./components/ClientComp";
+import ClientComp from './components/ClientComp'
 
 export default function Page() {
   return (
