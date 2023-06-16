@@ -33,8 +33,8 @@ const ButtonSidebarClose = ({ setIsSidebarOpen }: any) =>
     <FontAwesomeIcon icon={faXmark} />
   </button>
 const gradientStyles = (deg: any) => css`
-  background: rgb(255,255,255);
-  background: linear-gradient(${deg}deg, var(--bg-main-opq) 20%, var(--bg-main-trn) 100%);`
+  background: red;
+  background: linear-gradient(${deg}deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);`
 
 const ButtonUpBlock = ({ setPagePartPos, pagePartPos, setSelectedPagePos }: any) =>
   <div css={[tw`absolute top-0 w-full -mb-10 z-10`, ins.center, gradientStyles(180)]} >
