@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { createRef, useEffect, useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars, faCaretDown, faCaretUp, faXmark } from '@fortawesome/free-solid-svg-icons'
 
@@ -70,6 +70,7 @@ export default function ReadINT() {
 
   const [selectedPagePos, setSelectedPagePos] = useState(1)
   const containerRef = useRef(null)
+  const [heights, setHeights] = useState([])
 
   useEffect(() => {
     if (containerRef.current) {
@@ -83,6 +84,48 @@ export default function ReadINT() {
       containerRef.current.scrollTo({ top: scrollPos, behavior: 'smooth' })
     }
   }, [pagePartPos])
+
+  const pageRefs = useRef([])
+  pageRefs.current = allPages[pagePos].map((_, i) => pageRefs.current[i] ?? createRef())
+
+  const scrollThreshold = 100 // The scroll threshold in pixels
+
+  // Handle the scroll event
+  const handleScroll = (e) => {
+    // const { scrollTop } = e.target;
+    // const nextElementIndex = heights.findIndex((height, i) => scrollTop >= height && scrollTop < heights[i+1]);
+
+    // if(nextElementIndex >= 0 && nextElementIndex !== pagePartPos){
+    //   setPagePartPos(nextElementIndex);
+    // }
+  }
+  useEffect(() => {
+    const currentHeights = pageRefs.current.map(ref => ref.current.offsetTop)
+    setHeights(currentHeights)
+  }, [])
+
+  useEffect(() => {
+    // Add the scroll event listener
+    const scrollContainer = containerRef.current
+    if (scrollContainer) {
+      scrollContainer.addEventListener('scroll', handleScroll)
+      return () => {
+        // Clean up the scroll event listener
+        scrollContainer.removeEventListener('scroll', handleScroll)
+      }
+    }
+  }, [containerRef])
+
+  useEffect(() => {
+    const currentRef = pageRefs.current[pagePartPos]
+    if (currentRef && currentRef.current) {
+      currentRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      })
+    }
+  }, [pagePartPos])
+
   return (
 
     <ReadINTInfra
@@ -115,9 +158,15 @@ export default function ReadINT() {
             <ButtonUp {...{ setPagePartPos, pagePartPos }} />
           </div>
         }
-        <div ref={containerRef} css={[tw`h-80 overflow-scroll `]}>
+        <div ref={containerRef} css={[tw`h-80 overflow-scroll`]}>
           {allPages[pagePos].map((page, index) => (
-            <p key={index} css={[tw`text-xl`, tw`p-2 pt-5`, fontNotoSerifJp]}>{page}</p>
+            <p
+              ref={pageRefs.current[index]}
+              key={index}
+              css={[tw`text-xl`, tw`p-2 pt-8`, fontNotoSerifJp]}
+            >
+              {page}
+            </p>
           ))}
         </div>
         {pagePartPos + 1 !== allPages[selectedPagePos].length
