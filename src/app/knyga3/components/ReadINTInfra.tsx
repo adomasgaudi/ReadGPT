@@ -4,7 +4,7 @@ import { useWindowHeight } from '../utils/utils'
 
 const ss = {
   center: css`${tw`flex justify-center items-center`}`,
-  e1stl: css`background: red; ${tw`border-r`}`,
+  e1stl: css`background: lightgray; ${tw`border-r z-20`}`,
   e2stl: css`background: white; ${tw`border-2 rounded`}`,
   e2form: css`${tw`h-10 w-10`}`,
   e2loc: css`${tw`absolute top-0 right-[-43px] ml-2 mt-2`}`,
