@@ -1,26 +1,16 @@
-import { createRef, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars, faCaretDown, faCaretUp, faXmark } from '@fortawesome/free-solid-svg-icons'
 
-import Link from 'next/link' // @ts-ignore
+// @ts-ignore
 import tw, { css } from 'twin.macro'
-import ReadINTInfra from './ReadINTInfra'
-import { 悪魔の弟子 } from './text'
-import { fontNotoSerifJp } from '@/app/css/twinStyles'
+import SidebarHeader from './SidebarHeader'
 
-const textContent = 悪魔の弟子
 const ins = {
   center: css`${tw`flex justify-center items-center`}`,
   e3: css`${tw`flex justify-between items-start p-2 pl-5 pr-9`}`,
+  e4: css`${tw`flex justify-between items-end p-2`}`,
   // e4: css`${tw`flex justify-center items-center `}`,
-}
-
-const ss = {
-  e1: css`border-bottom: 1px solid #e2e8f0;`,
-  e2: css`background: white; ${tw`border-2 rounded`}`,
-  e3: css` border-bottom: 1px solid #e2e8f0;`,
-  e4: css`${tw`rounded-full`}`,
-  e5: css`background: var(--bg-main); ${tw`border rounded-full border-[#000]`}`,
 }
 
 const ButtonSidebarClose = ({ setIsSidebarOpen }: any) =>
@@ -34,12 +24,22 @@ const ButtonSidebarClose = ({ setIsSidebarOpen }: any) =>
   >
     <FontAwesomeIcon icon={faXmark} />
   </button>
+
+const ss = {
+  e1: css`border-bottom: 1px solid #e2e8f0;`,
+  e2: css`background: white; ${tw`border-2 rounded`}`,
+  e3: css` border-bottom: 1px solid #e2e8f0;`,
+  e4: css`${tw`rounded-full`}`,
+  e5: css`background: #f7f6f7; ${tw`border rounded-full border-[#000]`}`,
+  border: css`border: 1px solid #e2e8f0;`,
+}
+
 const gradientStyles = (deg: any) => css`
   background: red;
   background: linear-gradient(
-    ${deg}deg, var(--bg-main-opq) 20%, 
-    var(--bg-main-semi-opq) 65%, 
-    var(--bg-main-trn) 100%
+    ${deg}deg, #f7f6f7 20%, 
+    #f7f6f7aa 65%, 
+    #f7f6f700 100%
   );
   `
 
@@ -60,12 +60,12 @@ const ButtonUpBlock = ({ setPagePartPos, pagePartPos, setSelectedPagePos }: any)
 const ButtonDownBlock = ({
   setPagePartPos, pagePartPos, allPages, selectedPagePos, setSelectedPagePos, setIsPagesVisible,
 }: any) =>
-  <div css={[tw`absolute bottom-10 w-full -mb-10 z-10`, ins.center, gradientStyles(0)]} >
+  <div css={[tw`absolute bottom-10 w-full -mb-10 z-10`, ins.e4, gradientStyles(0)]} >
     <button css={[tw`w-[50px]`]}>
 
     </button>
     <button
-      css={[ss.e4, ss.e5, tw` w-[50px] m-2`]}
+      css={[ss.e4, ss.e5, tw`w-[50px] m-2`]}
       onClick={() => {
         setPagePartPos((prev: any) => prev + 1)
         setSelectedPagePos((prev: any) => prev + 1)
@@ -89,12 +89,13 @@ const ButtonDownBlock = ({
 
 //
 
-export default function ReadINT() {
+export default function ReadINT({ allPages, child }: any) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [pagePos, setPagePos] = useState(0)
   const [pagePartPos, setPagePartPos] = useState(0)
   const [isPagesVisible, setIsPagesVisible] = useState(false)
-  const allPages = textContent.reduce((acc: any, chapter: any) => acc.concat(chapter.pages), [])
+  const [isExtraVisible, setIsExtraVisible] = useState(0)
+  const [isChoice, setIsChoice] = useState(0)
 
   const [selectedPagePos, setSelectedPagePos] = useState(0)
   const containerRef = useRef(null)
@@ -111,17 +112,6 @@ export default function ReadINT() {
     }
   }, [pagePartPos])
 
-  const pageRefs = useRef([])
-  pageRefs.current = allPages[pagePos].map((_, i) => pageRefs.current[i] ?? createRef())
-
-  useEffect(() => {
-    const currentRef: any = pageRefs.current[pagePartPos]
-    currentRef.current.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    })
-  }, [pagePartPos])
-
   const buttonDownLogic = () => pagePartPos + 1 !== allPages[selectedPagePos].length
     && <ButtonDownBlock {...{
       setPagePartPos, setSelectedPagePos, pagePartPos, allPages, selectedPagePos, setIsPagesVisible,
@@ -132,67 +122,116 @@ export default function ReadINT() {
 
   return (
 
-    <ReadINTInfra
-      text={textContent}
+    <SidebarHeader
       {...{ isSidebarOpen }}
       childHeader={
         <>
-          <button onClick={() => setIsSidebarOpen(true)}>
-            <FontAwesomeIcon icon={faBars} />
-          </button>
-          <Link href="/">
-            <div className=''>
-              ReadGPT
-            </div>
-          </Link>
+          {child.header}
         </>
       }
       childSidebar={
         <>
           <ButtonSidebarClose {...{ setIsSidebarOpen }} />
-          <div>
-            hi sidebar
-          </div>
+          {child.sidebar}
         </>
       }
     >
-      <div css={[tw`relative`]}>
-        {buttonUpLogic()}
-        <div ref={containerRef} css={[tw`h-[400px] overflow-scroll`]}>
-          {allPages[pagePos].map((page: any, index: any) => (
+      <div css={[tw`row-start-2 grid grid-rows-[1fr, 50px] max-w-[800px] mx-auto `]}>
+        <div css={['background: white;', tw`row-start-1 grid grid-rows-[1fr] max-h-[500px] overflow-scroll`]}>
+          <div css={[tw`relative row-start-1 `]}>
+            {child.pageContent}
+            {/* {buttonUpLogic()}
+            {buttonDownLogic()} */}
 
-            <div ref={pageRefs.current[index]} key={index}>
-              <p css={[
-                index !== selectedPagePos && 'color: lightgray;',
-                tw`text-xl `,
-                tw`p-2 pt-8`,
-                fontNotoSerifJp]}
-              >
-                {page}
-              </p>
-            </div>
-
-          ))}
+          </div>
+          <div css={[tw`absolute`]}>
+            {isPagesVisible && (child.pagesList)}
+            {[
+              { id: 1, text: <>{child.chatExtra}</> },
+              { id: 2, text: <>{child.addExtra}</> },
+              { id: 3, text: <>{child.replaceExtra}</> },
+              { id: 4, text: <>{child.translateExtra}</> },
+            ].map(({ id, text }) =>
+              isExtraVisible === id && <div key={id} css={[tw`border`]}>{text}</div>,
+            )}
+          </div>
         </div>
-        {buttonDownLogic()}
+
+        <div css={['', tw`row-start-2 grid grid-cols-4`]}>
+          {isChoice === 0
+            && <>
+              <div
+                css={[tw`col-span-1 `, ss.border]}
+                onClick={() => {
+                  setIsExtraVisible(prev => prev !== 1 ? 1 : 0)
+                  setIsChoice(1)
+                }}
+              >chat</div>
+              <div
+                css={[tw`col-span-1 `, ss.border]}
+                onClick={() => {
+                  setIsExtraVisible(prev => prev !== 2 ? 2 : 0)
+                  setIsChoice(2)
+                }}
+              >add</div>
+              <div
+                css={[tw`col-span-1 `, ss.border]}
+                onClick={() => {
+                  setIsExtraVisible(prev => prev !== 3 ? 3 : 0)
+                  setIsChoice(3)
+                }}
+              >replace</div>
+              <div
+                css={[tw`col-span-1 `, ss.border]}
+                onClick={() => {
+                  setIsExtraVisible(prev => prev !== 4 ? 4 : 0)
+                  setIsChoice(4)
+                }}
+              >translate</div>
+            </>
+          }
+
+          {isChoice === 1 && <>
+            <div
+              css={[tw`col-span-3 `, ss.border]}
+            >{child.chat}</div>
+            <div
+              css={[tw`col-span-1 `, ss.border]}
+              onClick={() => setIsChoice(0)}
+            >back</div>
+          </>}
+
+          {isChoice === 2 && <>
+            <div
+              css={[tw`col-span-3 `, ss.border]}
+            >{child.addContent}</div>
+            <div
+              css={[tw`col-span-1 `, ss.border]}
+              onClick={() => setIsChoice(0)}
+            >back</div>
+          </>}
+
+          {isChoice === 3 && <>
+            <div
+              css={[tw`col-span-3 `, ss.border]}
+            >{child.replaceContent}</div>
+            <div
+              css={[tw`col-span-1 `, ss.border]}
+              onClick={() => setIsChoice(0)}
+            >back</div>
+          </>}
+          {isChoice === 4 && <>
+            <div
+              css={[tw`col-span-3 `, ss.border]}
+            >{child.translate}</div>
+            <div
+              css={[tw`col-span-1 `, ss.border]}
+              onClick={() => setIsChoice(0)}
+            >back</div>
+          </>}
+        </div>
 
       </div>
-      {isPagesVisible && (
-        <div className="flex flex-row flex-nowrap max-w-full w-full overflow-scroll p-5 " css={[tw`border-2`]}>
-          {allPages.map((item: any, idx: any) => (
-            <button
-              key={idx}
-              className={`flex min-w-[40px] m-1 min-h-[40px] items-center justify-center border border-gray-200 ${selectedPagePos + 1 === item ? 'bg-gray-300' : ''}`}
-              onClick={() => {
-                setSelectedPagePos(idx + 1)
-                setPagePartPos(0)
-              }}
-            >
-              {idx + 1}
-            </button>
-          ))}
-
-        </div>)}
-    </ ReadINTInfra >
+    </ SidebarHeader >
   )
 }

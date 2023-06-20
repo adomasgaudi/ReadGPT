@@ -4,7 +4,7 @@ import { ChakraProvider } from '@chakra-ui/react' // @ts-ignore
 import { css } from 'twin.macro'
 
 import { useWindowHeight } from '../utils/utils'
-import ReadINT from './ReadINT'
+import ReadGPTLogic from './ReadGPTLogic'
 import { useCssOutline } from '@/app/utils/useTools'
 
 const ss = {
@@ -32,7 +32,7 @@ export default function ClientComp() {
   return (
     <ChakraProvider>
       <DivScreenHeight css={[ss.e1stl]} >
-        <ReadINT />
+        <ReadGPTLogic />
       </DivScreenHeight>
     </ChakraProvider>
   )

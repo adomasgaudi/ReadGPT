@@ -2,7 +2,6 @@ export const book1 = `地方裁判所検事土田八郎殿。
 　一未決囚徒たる私、即ち島浦英三は、其の旧友にして嘗かつては兄弟より親しかりし土田検事殿に、此の手紙を送ります。
 　検事殿、あなたは私を無論思い出して居おらるる事でしょうね。仮令たとい他の検事によって取り調べられ、次で予審判事の手に移されてしまった私であっても、あの、世間を騒がした美人殺しの犯人として伝えられ、新聞紙上に其の名を謳うたわれたに違いない以上、同じ裁判所に居るあなたが、今度の事件に就て私の名を見ない筈はなく、又聞かない筈もありません。`
 
-
 export const IconSendArrow = () => <svg
   stroke='currentColor'
   fill='currentColor'
@@ -11,23 +10,27 @@ export const IconSendArrow = () => <svg
   className='h-4 w-4 rotate-90'
   height='1em'
   width='1em'
-  xmlns='http://www.w3.org/2000/svg'>
+  xmlns='http://www.w3.org/2000/svg'
+>
   <path d='M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z'></path>
 </svg>
 
 export const FormInput = ({ handleSubmit, messageInput, handleEnter, isLoading, placeholder }: any) => <form
   onSubmit={handleSubmit}
-  className='flex px-4'>
+  className='flex px-4'
+>
   <textarea
     name='Message'
     placeholder={placeholder || 'Type a message...'}
     ref={messageInput}
     onKeyDown={handleEnter}
-    className='w-full resize-none bg-transparent outline-none pt-4 pl-4 translate-y-1' />
+    className='w-full resize-none bg-transparent outline-none pt-4 pl-4 translate-y-1'
+  />
   <button
     disabled={isLoading}
     type='submit'
-    className='p-1 rounded-md text-gray-500 dark:hover:text-gray-400 dark:hover:bg-gray-900 disabled:hover:bg-transparent dark:disabled:hover:bg-transparent'>
+    className='p-1 rounded-md text-gray-500 dark:hover:text-gray-400 dark:hover:bg-gray-900 disabled:hover:bg-transparent dark:disabled:hover:bg-transparent'
+  >
     <IconSendArrow />
   </button>
 </form>
@@ -35,7 +38,8 @@ export const FormInput = ({ handleSubmit, messageInput, handleEnter, isLoading, 
 export const ModelSelector = ({ currentModel, handleModelChange, models }) => <select
   value={currentModel}
   onChange={handleModelChange}
-  className='w-72 fixed top-5 left-5 outline-none border-none p-4 rounded-md bg-white text-gray-500 dark:hover:text-gray-400 dark:hover:bg-gray-900'>
+  className='w-72 fixed top-5 left-5 outline-none border-none p-4 rounded-md bg-white text-gray-500 dark:hover:text-gray-400 dark:hover:bg-gray-900'
+>
   {models.map(model => (
     <option key={model.id} value={model.id}>
       {model.id}
@@ -46,7 +50,8 @@ export const ModelSelector = ({ currentModel, handleModelChange, models }) => <s
 export const ClearHistoryButton = ({ handleReset }) => <button
   onClick={handleReset}
   type='reset'
-  className='fixed top-5 right-5 p-4 rounded-md bg-white text-gray-500 dark:hover:text-gray-400 dark:hover:bg-gray-900 disabled:hover:bg-transparent dark:disabled:hover:bg-transparent'>
+  className='fixed top-5 right-5 p-4 rounded-md bg-white text-gray-500 dark:hover:text-gray-400 dark:hover:bg-gray-900 disabled:hover:bg-transparent dark:disabled:hover:bg-transparent'
+>
   Clear History
 </button>
 
@@ -166,13 +171,11 @@ export const runChatGPT = async ({
   readResponse(data, setDialogueFunc, setIsLoadingFunc, setFullDialogueFunc)
 }
 
-
 export const runSimpleGPT: any = async (message: any) => {
-  let isLoading = false;
-  let response;
+  let isLoading = false
+  let response
 
-
-  isLoading = true;
+  isLoading = true
   // console.log(message, '---------------------------------------------------------------')
   const resp = await fetch('/api/response', {
     method: 'POST',
@@ -180,14 +183,13 @@ export const runSimpleGPT: any = async (message: any) => {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      message: message,
+      message,
       currentModel: 'gpt-3.5-turbo',
     }),
   })
 
-  if (!resp.ok) {
-    throw new Error(resp.statusText);
-  }
+  if (!resp.ok)
+    throw new Error(resp.statusText)
 
   if (isNoData(resp))
     return
@@ -196,7 +198,5 @@ export const runSimpleGPT: any = async (message: any) => {
 
   const respp = readSimpleResponse(data)
 
-
-  return { response: respp, isLoading };
-};
-
+  return { response: respp, isLoading }
+}

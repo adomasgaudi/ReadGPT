@@ -1,19 +1,18 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
 import useSWR from 'swr'
-import { fontNotoSerifJp } from '../css/twinStyles'
-import { ClearHistoryButton, FormInput, ModelSelector, ModelType, runChatGPT, runSimpleGPT } from './FormLogic'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBook } from '@fortawesome/free-solid-svg-icons'
+import { fontNotoSerifJp } from '../css/twinStyles'
+import type { ModelType } from './FormLogic'
+import { ClearHistoryButton, FormInput, ModelSelector, runChatGPT, runSimpleGPT } from './FormLogic'
 import { convertJPToENGPrompt, convertTextToJSONArrayPrompt, separateByCommaPrompt, simplifySentencePrompt } from './prompt'
 
-
-
 const SelectedTextPopup = ({ handleButtonClick, returnResp }: any) => {
-  const [selection, setSelection] = useState('');
-  const [coords, setCoords] = useState({ x: 0, y: 0 });
-  const [response, setResponse] = useState<string | null>(null);  // Add this state for storing the response
-  const popupRef = useRef(null);
+  const [selection, setSelection] = useState('')
+  const [coords, setCoords] = useState({ x: 0, y: 0 })
+  const [response, setResponse] = useState<string | null>(null)  // Add this state for storing the response
+  const popupRef = useRef(null)
 
   useEffect(() => {
     setResponse(returnResp)
@@ -21,33 +20,33 @@ const SelectedTextPopup = ({ handleButtonClick, returnResp }: any) => {
 
   useEffect(() => {
     const handleTextSelection = () => {
-      const selectedText = window.getSelection()?.toString();
+      const selectedText = window.getSelection()?.toString()
       if (selectedText) {
-        setSelection(selectedText);
-        const range = window.getSelection()?.getRangeAt(0);
-        const rect = range?.getBoundingClientRect();
-        if (rect) {
-          setCoords({ x: rect.left, y: rect.top - 40 }); // Adjust y position to show above the selected text
-        }
-      } else {
-        setSelection('');
+        setSelection(selectedText)
+        const range = window.getSelection()?.getRangeAt(0)
+        const rect = range?.getBoundingClientRect()
+        if (rect)
+          setCoords({ x: rect.left, y: rect.top - 40 }) // Adjust y position to show above the selected text
       }
-    };
+      else {
+        setSelection('')
+      }
+    }
 
-    document.addEventListener('mouseup', handleTextSelection);
-    return () => document.removeEventListener('mouseup', handleTextSelection);
-  }, []);
+    document.addEventListener('mouseup', handleTextSelection)
+    return () => document.removeEventListener('mouseup', handleTextSelection)
+  }, [])
 
   useEffect(() => {
-    const popup: any = popupRef.current;
+    const popup: any = popupRef.current
     if (popup) {
-      popup.style!.left = `${coords.x}px`;
-      popup.style!.top = `${coords.y}px`;
+      popup.style!.left = `${coords.x}px`
+      popup.style!.top = `${coords.y}px`
     }
-  }, [coords, popupRef]);
+  }, [coords, popupRef])
 
-
-  if (!selection) return null;
+  if (!selection)
+    return null
 
   return (
     <div
@@ -62,20 +61,8 @@ const SelectedTextPopup = ({ handleButtonClick, returnResp }: any) => {
         <FontAwesomeIcon icon={faBook} />
       </button>
     </div>
-  );
-};
-
-
-
-
-
-
-
-
-
-
-
-
+  )
+}
 
 const Form = ({ text }: any) => {
   const messageInput = useRef<HTMLTextAreaElement | null>(null)
@@ -122,7 +109,6 @@ const Form = ({ text }: any) => {
       setIsLoadingFunc: setIsLoading,
     })
     messageInput.current!.value = ''
-
   }
   const handleSubmit2 = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -142,23 +128,22 @@ const Form = ({ text }: any) => {
   }
 
   const handleSubmit3 = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const message = messageInput3.current?.value;
+    e.preventDefault()
+    const message = messageInput3.current?.value
 
     // Await the first call
-    const result1 = await runSimpleGPT(`${separateByCommaPrompt}${message}\n Response:`);
+    const result1 = await runSimpleGPT(`${separateByCommaPrompt}${message}\n Response:`)
     // console.log(result1.response, 'first');
 
     // Here, ensure that you are awaiting the response before passing it to the second function
-    const awaitedResponse1 = await result1.response;
+    const awaitedResponse1 = await result1.response
 
-    const result2 = await runSimpleGPT(`${convertTextToJSONArrayPrompt}${awaitedResponse1}\n Response:`);
+    const result2 = await runSimpleGPT(`${convertTextToJSONArrayPrompt}${awaitedResponse1}\n Response:`)
     // console.log(awaitedResponse1, await result2.response);
 
     setNewVal(result2.response)
-    messageInput.current!.value = '';
-  };
-
+    messageInput.current!.value = ''
+  }
 
   const handleButtonClick = async (text: any) => {
     const { response, isLoading } = await runSimpleGPT(`${convertJPToENGPrompt}${text}\n Response:`)
@@ -197,31 +182,29 @@ const Form = ({ text }: any) => {
 
   console.log(text.split('。').filter((item: any) => item.trim() !== ''))
   useEffect(() => {
-    const storedResults = localStorage.getItem('textSimplified');
+    const storedResults = localStorage.getItem('textSimplified')
 
     if (storedResults) {
-      const parsedResults = JSON.parse(storedResults);
-      console.log(parsedResults);
-      setNewText(parsedResults.join('。'));
-      return;
+      const parsedResults = JSON.parse(storedResults)
+      console.log(parsedResults)
+      setNewText(parsedResults.join('。'))
+      return
     }
 
     (async () => {
-      const bookParts = text.split('。').filter((item: any) => item.trim() !== '');
-      const results = [];
+      const bookParts = text.split('。').filter((item: any) => item.trim() !== '')
+      const results = []
 
       for (let i = 0; i < bookParts.length; i++) {
-        const result1 = await runSimpleGPT(`${simplifySentencePrompt}${bookParts[i]}\n Response:`);
-        const awaitedResponse1 = await result1.response;
-        results.push(awaitedResponse1);
+        const result1 = await runSimpleGPT(`${simplifySentencePrompt}${bookParts[i]}\n Response:`)
+        const awaitedResponse1 = await result1.response
+        results.push(awaitedResponse1)
       }
-      console.log(results);
-      setNewText(results.join('。'));
-      localStorage.setItem('textSimplified', JSON.stringify(results));
-    })();
-  }, []);
-
-
+      console.log(results)
+      setNewText(results.join('。'))
+      localStorage.setItem('textSimplified', JSON.stringify(results))
+    })()
+  }, [])
 
   return (
     <div className='flex justify-center '>
@@ -229,7 +212,7 @@ const Form = ({ text }: any) => {
       <ClearHistoryButton {...{ handleReset }} />
 
       <div className='w-full mx-2 flex flex-col items-start gap-3 pt-6 last:mb-6 md:mx-auto md:max-w-3xl pb-[500px] mt-[100px] text-2xl' css={[fontNotoSerifJp]}>
-        <div>
+        <div css={['background: red;']}>
 
           {isLoading2 && dialogue2.length > 1 && dialogue2.length % 2 == 0
             ? <div>{dialogue2.slice(-1)[0]}</div>
@@ -237,14 +220,15 @@ const Form = ({ text }: any) => {
               ? <div>{dialogue2.slice(-1)[0]}</div>
               : null}
         </div>
-        <div css={[fontNotoSerifJp]}>{switches === 0 ? text : newText}</div>
+        <div css={['background: red;', fontNotoSerifJp]}>{switches === 0 ? text : newText}</div>
         <div>
 
           {isLoading
             ? dialogue.map((item: any, index: number) => {
               return (
                 <div
-                  key={index}>
+                  key={index}
+                >
                   <p>{item}</p>
                 </div>
               )
@@ -253,7 +237,8 @@ const Form = ({ text }: any) => {
               ? dialogue.map((item: string, index: number) => {
                 return (
                   <div
-                    key={index}>
+                    key={index}
+                  >
                     <p>{item}</p>
                   </div>
                 )
@@ -261,8 +246,8 @@ const Form = ({ text }: any) => {
               : null}
         </div>
       </div>
-      <div className='fixed bottom-0 w-full md:max-w-3xl bg-gray-700 rounded-md shadow-[0_0_10px_rgba(0,0,0,0.10)] mb-4' css={[`background: white;`]}>
-        <div css={[`background: #aaa;`]}>
+      <div className='fixed bottom-0 w-full md:max-w-3xl bg-gray-700 rounded-md shadow-[0_0_10px_rgba(0,0,0,0.10)] mb-4' css={['background: white;']}>
+        <div css={['background: #aaa;']}>
           newVal: {newVal}
         </div>
         <FormInput {...{ handleSubmit, messageInput, handleEnter, isLoading }} />
@@ -271,13 +256,15 @@ const Form = ({ text }: any) => {
           messageInput: messageInput2,
           isLoading: isLoading2,
           placeholder: 'convert text',
-        }} />
+        }}
+        />
         <FormInput {...{
           handleSubmit: handleSubmit3,
           messageInput: messageInput3,
           isLoading: isLoading3,
-          placeholder: 'to brackets'
-        }} />
+          placeholder: 'to brackets',
+        }}
+        />
         <button onClick={() => setSwitches(1)}>switch</button>
       </div>
       <SelectedTextPopup {...{ handleButtonClick, returnResp: translation }} />
