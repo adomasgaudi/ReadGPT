@@ -1,13 +1,14 @@
 import { createRef, useRef, useState } from 'react'
 import tw, { css } from 'twin.macro'
+import Link from 'next/link'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faBars } from '@fortawesome/free-solid-svg-icons'
+
 import ReadINT from './ReadINT'
 import { 悪魔の弟子 } from './text'
 import { runChatGPT, runSimpleGPT } from '@/app/components/FormLogic'
 import { fontNotoSerifJp } from '@/app/css/twinStyles'
 import { simplifySentencePrompt } from '@/app/components/prompt'
-import Link from 'next/link'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars } from '@fortawesome/free-solid-svg-icons'
 
 const ins = {
   center: css`${tw`flex justify-center items-center`}`,
@@ -16,24 +17,20 @@ const ins = {
   // e4: css`${tw`flex justify-center items-center `}`,
 }
 
-const ss = {
-}
-
-
-
 const textContent = 悪魔の弟子
-export const IconSendArrow = () => <svg
-  stroke='currentColor'
-  fill='currentColor'
-  strokeWidth='0'
-  viewBox='0 0 20 20'
-  className='h-4 w-4 rotate-90'
-  height='1em'
-  width='1em'
-  xmlns='http://www.w3.org/2000/svg'
->
-  <path d='M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z'></path>
-</svg>
+export const IconSendArrow = () =>
+  <svg
+    stroke='currentColor'
+    fill='currentColor'
+    strokeWidth='0'
+    viewBox='0 0 20 20'
+    className='h-4 w-4 rotate-90'
+    height='1em'
+    width='1em'
+    xmlns='http://www.w3.org/2000/svg'
+  >
+    <path d='M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z'></path>
+  </svg>
 
 export const FormInput = ({ handleSubmit, messageInput, handleEnter, isLoading, placeholder }: any) =>
   <form
@@ -102,14 +99,27 @@ export default function ReadGPTLogic() {
       }
       console.log(results)
       setNewText(results.join('。'))
-      localStorage.setItem('textSimplified', JSON.stringify(results))
+      localStorage.setItem('allPages-1', JSON.stringify(results.join('。')))
     })()
   }
 
+  const final = []
+  allPages[0].forEach((page: any, index) => {
+    console.log(`allPages-${index}`)
+    const storage = localStorage.getItem('allPages-1')
+    console.log({ storage })
+    if (storage && index === 0) {
+      final.push(storage)
+    }
+    else {
+      final.push(page)
+    }
+  })
+
+  console.log({ final })
   return (
     <>
       <ReadINT
-        allPages={allPages}
         child={{
           replaceExtra:
             <div css={['background: white;']}>
@@ -154,7 +164,7 @@ export default function ReadGPTLogic() {
           pagesList:
             <>
               <div css={[tw`max-w-full w-full overflow-scroll`, tw`flex flex-row flex-nowrap`, tw`border-2`]}>
-                {allPages.map((item: any, idx: any) => (
+                {final.map((item: any, idx: any) => (
                   <button
                     key={idx}
                     css={[tw`min-w-[40px] m-1 min-h-[40px]`, ins.center, tw` border`, selectedPagePos + 1 === item ? '' : '']}
@@ -172,7 +182,7 @@ export default function ReadGPTLogic() {
           pageContent:
             <>
               <div ref={containerRef} css={[tw``]}>
-                {allPages[pagePos].map((page: any, index: any) => (
+                {final.map((page: any, index: any) => (
 
                   <div ref={pageRefs.current[index]} key={index}>
                     <p css={[

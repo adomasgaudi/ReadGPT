@@ -39,6 +39,7 @@
     "no-trailing-spaces": "warn",
     "no-multi-spaces": "off",
     "react/no-children-prop": "off",
+    "curly": "off",
     "array-bracket-newline": [
       "off",
       "off"
