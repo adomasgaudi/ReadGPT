@@ -68,6 +68,25 @@ export default function ReadGPTLogic() {
   const [pagePartPos, setPagePartPos] = useState(0)
   const containerRef = useRef(null)
 
+  // const [localStorageState, setLocalStorageState] = useState<any>({})
+
+  // useEffect(() => {
+  //   const keys = Object.keys(localStorage)
+  //   console.log({ keys })
+  //   const allLocalStorageItems: any = {}
+
+  //   keys.forEach((key) => {
+  //     try {
+  //       allLocalStorageItems[key] = JSON.parse(localStorage.getItem(key) || '')
+  //     }
+  //     catch (e) {
+  //       allLocalStorageItems[key] = localStorage.getItem(key)
+  //     }
+  //   })
+
+  //   setLocalStorageState(allLocalStorageItems)
+  // }, [])
+
   const pageRefs = useRef([])
   pageRefs.current = allPages[pagePos].map((_: any, i: any) => pageRefs.current[i] ?? createRef())
 
@@ -100,21 +119,24 @@ export default function ReadGPTLogic() {
       }
       console.log(results)
       setNewText(results.join('。'))
-      // localStorage.setItem('allPages-1', JSON.stringify(results.join('。')))
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('allPages-1', JSON.stringify(results.join('。')))
+      }
     })()
   }
 
   const final = []
   allPages[0].forEach((page: any, index) => {
-    console.log(`allPages-${index}`)
-    // const storage = localStorage.getItem('allPages-1')
-    const storage = null
-    console.log({ storage })
-    if (storage && index === 0) {
-      final.push(storage)
-    }
-    else {
-      final.push(page)
+    if (typeof window !== 'undefined') {
+      const storage = localStorage.getItem(`allPages-${index + 1}`)
+      if (storage) {
+        if (index === 0) {
+          final.push(storage)
+        }
+      }
+      else {
+        final.push(page)
+      }
     }
   })
 
