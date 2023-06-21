@@ -3,10 +3,11 @@ import { createRef, useEffect, useRef, useState } from 'react'
 import tw, { css } from 'twin.macro'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars, faBook } from '@fortawesome/free-solid-svg-icons'
+import { faBars, faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 
-import { 悪魔の弟子 } from '../../const/text'
+import { 悪魔の弟子 } from '../const/text'
 import ReadINT from './ReadINT'
+import SelectedTextPopup from './SelectedTextPopup'
 import { runChatGPT, runSimpleGPT } from '@/app/const/GPTLogic'
 import { fontNotoSerifJp } from '@/app/css/twinStyles'
 import { contextPrompt, convertJPToENGPrompt, simplifySentencePrompt } from '@/app/const/prompt'
@@ -15,79 +16,9 @@ const ins = {
   center: css`${tw`flex justify-center items-center`}`,
   e3: css`${tw`flex justify-between items-start p-2 pl-5 pr-9`}`,
   e4: css`${tw`flex justify-between items-end p-2`}`,
-  // e4: css`${tw`flex justify-center items-center `}`,
-}
-
-const SelectedTextPopup = ({ handleButtonClick, returnResp }: any) => {
-  const [selection, setSelection] = useState('')
-  const [coords, setCoords] = useState({ x: 0, y: 0 })
-  const [response, setResponse] = useState<string | null>(null)  // Add this state for storing the response
-  const popupRef = useRef(null)
-
-  useEffect(() => {
-    setResponse(returnResp)
-  }, [returnResp])
-
-  useEffect(() => {
-    const handleTextSelection = () => {
-      const selectedText = window.getSelection()?.toString()
-      if (selectedText) {
-        setSelection(selectedText)
-        const range = window.getSelection()?.getRangeAt(0)
-        const rect = range?.getBoundingClientRect()
-        if (rect)
-          setCoords({ x: rect.left, y: rect.top - 40 }) // Adjust y position to show above the selected text
-      }
-      else {
-        setSelection('')
-      }
-    }
-
-    document.addEventListener('mouseup', handleTextSelection)
-    return () => document.removeEventListener('mouseup', handleTextSelection)
-  }, [])
-
-  useEffect(() => {
-    const popup: any = popupRef.current
-    if (popup) {
-      popup.style!.left = `${coords.x}px`
-      popup.style!.top = `${coords.y}px`
-    }
-  }, [coords, popupRef])
-
-  if (!selection)
-    return null
-
-  return (
-    <div
-      ref={popupRef}
-      style={{ position: 'fixed', background: 'white', border: '1px solid black', padding: '10px' }}
-    >
-      <span className='mr-4'>
-        {selection}: {response}
-      </span>
-
-      <button onClick={() => handleButtonClick(selection)}>
-        <FontAwesomeIcon icon={faBook} />
-      </button>
-    </div>
-  )
 }
 
 const textContent = 悪魔の弟子
-export const IconSendArrow = () =>
-  <svg
-    stroke='currentColor'
-    fill='currentColor'
-    strokeWidth='0'
-    viewBox='0 0 20 20'
-    className='h-4 w-4 rotate-90'
-    height='1em'
-    width='1em'
-    xmlns='http://www.w3.org/2000/svg'
-  >
-    <path d='M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z'></path>
-  </svg>
 
 export const FormInput = ({ handleSubmit, messageInput, handleEnter, isLoading, placeholder }: any) =>
   <form
@@ -104,7 +35,7 @@ export const FormInput = ({ handleSubmit, messageInput, handleEnter, isLoading, 
       disabled={isLoading}
       type='submit'
     >
-      <IconSendArrow />
+      <FontAwesomeIcon icon={faPaperPlane} />
     </button>
   </form>
 
@@ -137,6 +68,8 @@ export default function ReadGPTLogic() {
   const [isLoadingReplace, setIsLoadingReplace] = useState<boolean>(false)
   const [fullDialogueReplace, setFullDialogueReplace] = useState<any>([])
   const [dialogueReplace, setDialogueReplace] = useState<string[]>([])
+
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false)
   // const [vars, setVars] = useState<any>({})
 
   const [currentModel, setCurrentModel] = useState<string>('gpt-3.5-turbo-16k-0613')

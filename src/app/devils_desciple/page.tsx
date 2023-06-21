@@ -1,5 +1,5 @@
 'use client'
-import ClientComp from './components/ClientComp'
+import ClientComp from './ClientComp'
 
 export default function Page() {
   return (
