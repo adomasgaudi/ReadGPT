@@ -115,7 +115,7 @@ export const isNoData = (data) => {
 export const runChatGPT = async ({
   message,
   dialogue,
-  model = 'gpt-3.5-turbo',
+  model = 'gpt-3.5-turbo-16k-0613',
   setDialogueFunc,
   setFullDialogueFunc,
   setIsLoadingFunc,
@@ -182,7 +182,7 @@ export const runSimpleGPT: any = async (message: any) => {
     },
     body: JSON.stringify({
       message,
-      currentModel: 'gpt-3.5-turbo',
+      currentModel: 'gpt-3.5-turbo-16k-0613',
     }),
   })
 

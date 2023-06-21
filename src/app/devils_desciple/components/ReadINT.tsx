@@ -171,24 +171,10 @@ export default function ReadINT({ child }: any) {
               <div
                 css={[tw`col-span-1 `, ss.border]}
                 onClick={() => {
-                  setIsExtraVisible(prev => prev !== 2 ? 2 : 0)
-                  setIsChoice(2)
-                }}
-              >add</div>
-              <div
-                css={[tw`col-span-1 `, ss.border]}
-                onClick={() => {
                   setIsExtraVisible(prev => prev !== 3 ? 3 : 0)
                   setIsChoice(3)
                 }}
               >replace</div>
-              <div
-                css={[tw`col-span-1 `, ss.border]}
-                onClick={() => {
-                  setIsExtraVisible(prev => prev !== 4 ? 4 : 0)
-                  setIsChoice(4)
-                }}
-              >translate</div>
             </>
           }
 
