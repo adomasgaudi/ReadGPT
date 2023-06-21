@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars, faCaretDown, faCaretUp, faXmark } from '@fortawesome/free-solid-svg-icons'
+import { faXmark } from '@fortawesome/free-solid-svg-icons'
 
 // @ts-ignore
 import tw, { css } from 'twin.macro'
@@ -37,8 +37,8 @@ const ss = {
 // const gradientStyles = (deg: any) => css`
 //   background: red;
 //   background: linear-gradient(
-//     ${deg}deg, #f7f6f7 20%, 
-//     #f7f6f7aa 65%, 
+//     ${deg}deg, #f7f6f7 20%,
+//     #f7f6f7aa 65%,
 //     #f7f6f700 100%
 //   );
 //   `
@@ -136,25 +136,26 @@ export default function ReadINT({ child }: any) {
         </>
       }
     >
-      <div css={[tw`row-start-2 grid grid-rows-[1fr, 50px] max-w-[800px] mx-auto `]}>
+      <div css={[tw`row-start-2 grid grid-rows-[1fr, 50px] max-w-[800px] mx-auto relative`]}>
         <div css={['background: white;', tw`row-start-1 grid grid-rows-[1fr] max-h-[500px] overflow-scroll`]}>
-          <div css={[tw`relative row-start-1 `]}>
+          <div css={[tw` row-start-1 `]}>
             {child.pageContent}
             {/* {buttonUpLogic()}
             {buttonDownLogic()} */}
 
           </div>
-          <div css={[tw`absolute`]}>
-            {isPagesVisible && (child.pagesList)}
-            {[
-              { id: 1, text: <>{child.chatExtra}</> },
-              { id: 2, text: <>{child.addExtra}</> },
-              { id: 3, text: <>{child.replaceExtra}</> },
-              { id: 4, text: <>{child.translateExtra}</> },
-            ].map(({ id, text }) =>
-              isExtraVisible === id && <div key={id} css={[tw`border`]}>{text}</div>,
-            )}
-          </div>
+        </div>
+        {child.buttons}
+        <div css={[tw`absolute`]}>
+          {isPagesVisible && (child.pagesList)}
+          {[
+            { id: 1, text: <>{child.chatExtra}</> },
+            { id: 2, text: <>{child.addExtra}</> },
+            { id: 3, text: <>{child.replaceExtra}</> },
+            { id: 4, text: <>{child.translateExtra}</> },
+          ].map(({ id, text }) =>
+            isExtraVisible === id && <div key={id} css={[tw`border`]}>{text}</div>,
+          )}
         </div>
 
         <div css={['', tw`row-start-2 grid grid-cols-4`]}>

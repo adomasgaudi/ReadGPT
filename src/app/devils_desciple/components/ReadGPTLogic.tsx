@@ -54,18 +54,18 @@ export const FormInput = ({ handleSubmit, messageInput, handleEnter, isLoading, 
 
 export default function ReadGPTLogic() {
   const allPages = textContent.reduce((acc: any, chapter: any) => acc.concat(chapter.pages), [])
-  // const text = allPages
   const messageInput = useRef<HTMLTextAreaElement | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [dialogue, setDialogue] = useState<string[]>([])
   const [currentModel, setCurrentModel] = useState<string>('gpt-3.5-turbo')
   const [fullDialogue, setFullDialogue] = useState<any>([])
-  const [newText, setNewText] = useState<string>('')
-
-  const [selectedPagePos, setSelectedPagePos] = useState(0)
 
   const [pagePos, setPagePos] = useState(0)
   const [pagePartPos, setPagePartPos] = useState(0)
+  const [selectedPagePos, setSelectedPagePos] = useState(0)
+
+  const [newText, setNewText] = useState<string>('')
+
   const containerRef = useRef(null)
 
   // const [localStorageState, setLocalStorageState] = useState<any>({})
@@ -110,14 +110,14 @@ export default function ReadGPTLogic() {
       const text = allPages[0][0]
       const bookParts = text.split('。').filter((item: any) => item.trim() !== '')
       const results = []
-      console.log(bookParts)
+      // console.log(bookParts)
 
       for (let i = 0; i < bookParts.length; i++) {
         const result1 = await runSimpleGPT(`${simplifySentencePrompt}${bookParts[i]}\n Response:`)
         const awaitedResponse1 = await result1.response
         results.push(awaitedResponse1)
       }
-      console.log(results)
+      // console.log(results)
       setNewText(results.join('。'))
       if (typeof window !== 'undefined') {
         localStorage.setItem('allPages-1', JSON.stringify(results.join('。')))
@@ -140,7 +140,15 @@ export default function ReadGPTLogic() {
     }
   })
 
-  console.log({ final })
+  const partUp = () => setPagePartPos((prev: any) => prev - 1)
+  const partDown = () => setPagePartPos((prev: any) => prev + 1)
+
+  const isUpDisabled = pagePartPos === 0
+  const isDownDisabled = pagePartPos + 1 === final.length
+
+  const selectedText = final[pagePartPos]
+  // console.log({ selectedText })
+  // console.log({ final })
   return (
     <>
       <ReadINT
@@ -210,7 +218,7 @@ export default function ReadGPTLogic() {
 
                   <div ref={pageRefs.current[index]} key={index}>
                     <p css={[
-                      index !== selectedPagePos && 'color: lightgray;',
+                      index !== pagePartPos && 'color: lightgray;',
                       tw`text-xl `,
                       tw`p-2 pt-8`,
                       fontNotoSerifJp]}
@@ -236,6 +244,20 @@ export default function ReadGPTLogic() {
           sidebar: <>
             <div>
               hi sidebar
+            </div>
+          </>,
+          buttons: <>
+            {
+              <div css={[tw`absolute right-40`]}>
+                <button disabled={isUpDisabled} css={[isUpDisabled ? tw`text-gray` : tw`border`]} onClick={() => partUp()}>
+                  go up
+                </button>
+              </div>
+            }
+            <div css={[tw`absolute right-20`]}>
+              <button disabled={isDownDisabled} css={[isDownDisabled ? tw`text-gray` : tw`border`]} onClick={() => partDown()} >
+                go down
+              </button>
             </div>
           </>,
         }}
