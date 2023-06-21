@@ -170,75 +170,21 @@ export const readSimpleResponse = async (data: any) => {
   return currentResponse.join('')
 }
 
-export const isNoData = (data) => {
-  if (!data)
-    return true
-}
-export const runChatGPT = async ({
-  message,
-  dialogue,
-  model = 'gpt-3.5-turbo-16k-0613',
-  setDialogueFunc,
-  setFullDialogueFunc,
-  setIsLoadingFunc,
-  isConversation = true,
-}: any) => {
-  function buildMessage() {
-    let completeMessage = ''
 
-    if (isConversation) {
-      const ResponsesWithPrompts = dialogue.map(
-        (item, idx) => `${idx % 2 === 0 ? 'Prompt' : 'Response'}: ${item}`,
-      )
 
-      completeMessage = [...ResponsesWithPrompts, `Prompt: ${message}\n Response:`].join('\n')
-    }
-    else {
-      completeMessage = message
-    }
 
-    if (message !== undefined) {
-      setDialogueFunc(prev => [...prev, message])
-      if (setFullDialogueFunc !== false)
-        setFullDialogueFunc(prev => [...prev, completeMessage])
-    }
+//
 
-    return completeMessage
-  }
+//
 
-  async function sendRequest() {
-    const resp = await fetch('/api/response', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        message: completeMessage,
-        currentModel: model,
-      }),
-    })
+//
 
-    if (!resp.ok)
-      throw new Error(resp.statusText)
+//
 
-    if (isNoData(resp))
-      return null
+//
 
-    return resp.body
-  }
+//
 
-  const completeMessage = buildMessage()
-
-  if (!message)
-    return
-
-  const data = await sendRequest()
-
-  if (data === null)
-    return
-
-  readResponse(data, setDialogueFunc, setIsLoadingFunc, setFullDialogueFunc)
-}
 
 export const runChatGPTOneState = async ({
   message,

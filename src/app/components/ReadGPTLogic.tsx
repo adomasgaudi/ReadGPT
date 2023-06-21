@@ -8,9 +8,10 @@ import { faBars, faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 import { 悪魔の弟子 } from '../const/text'
 import ReadINT from './ReadINT'
 import SelectedTextPopup from './SelectedTextPopup'
-import { runChatGPT, runSimpleGPT } from '@/app/const/GPTLogic'
+import { runSimpleGPT } from '@/app/const/GPTLogic/GPTLogic'
 import { fontNotoSerifJp } from '@/app/css/twinStyles'
 import { contextPrompt, convertJPToENGPrompt, simplifySentencePrompt } from '@/app/const/prompt'
+import { runChatGPT } from '../const/GPTLogic/runChatGPT'
 
 const ins = {
   center: css`${tw`flex justify-center items-center`}`,
