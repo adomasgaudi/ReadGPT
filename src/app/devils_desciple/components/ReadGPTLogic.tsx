@@ -1,14 +1,15 @@
+'use client'
 import { createRef, useRef, useState } from 'react'
 import tw, { css } from 'twin.macro'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 
+import { 悪魔の弟子 } from '../../const/text'
 import ReadINT from './ReadINT'
-import { 悪魔の弟子 } from './text'
-import { runChatGPT, runSimpleGPT } from '@/app/components/FormLogic'
+import { runChatGPT, runSimpleGPT } from '@/app/const/GPTLogic'
 import { fontNotoSerifJp } from '@/app/css/twinStyles'
-import { simplifySentencePrompt } from '@/app/components/prompt'
+import { simplifySentencePrompt } from '@/app/const/prompt'
 
 const ins = {
   center: css`${tw`flex justify-center items-center`}`,
@@ -99,14 +100,15 @@ export default function ReadGPTLogic() {
       }
       console.log(results)
       setNewText(results.join('。'))
-      localStorage.setItem('allPages-1', JSON.stringify(results.join('。')))
+      // localStorage.setItem('allPages-1', JSON.stringify(results.join('。')))
     })()
   }
 
   const final = []
   allPages[0].forEach((page: any, index) => {
     console.log(`allPages-${index}`)
-    const storage = localStorage.getItem('allPages-1')
+    // const storage = localStorage.getItem('allPages-1')
+    const storage = null
     console.log({ storage })
     if (storage && index === 0) {
       final.push(storage)

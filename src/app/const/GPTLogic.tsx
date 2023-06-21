@@ -1,6 +1,4 @@
-export const book1 = `地方裁判所検事土田八郎殿。
-　一未決囚徒たる私、即ち島浦英三は、其の旧友にして嘗かつては兄弟より親しかりし土田検事殿に、此の手紙を送ります。
-　検事殿、あなたは私を無論思い出して居おらるる事でしょうね。仮令たとい他の検事によって取り調べられ、次で予審判事の手に移されてしまった私であっても、あの、世間を騒がした美人殺しの犯人として伝えられ、新聞紙上に其の名を謳うたわれたに違いない以上、同じ裁判所に居るあなたが、今度の事件に就て私の名を見ない筈はなく、又聞かない筈もありません。`
+'use client'
 
 export const IconSendArrow = () => <svg
   stroke='currentColor'
@@ -87,7 +85,7 @@ export const readResponse = async (
     setFullDialogueFunc((prev: any) => [...prev.slice(0, -1), currentResponse.join('')])
 
   // Store the response
-  localStorage.setItem('response', JSON.stringify(currentResponse.join('')))
+  // localStorage.setItem('response', JSON.stringify(currentResponse.join('')))
   setIsLoadingFunc(false)
 }
 

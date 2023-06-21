@@ -2,7 +2,7 @@
 import Link from 'next/link' // @ts-expect-error
 import tw, { css, styled } from 'twin.macro'
 import { Div_HScreen, In, In_Center, In_WHalf } from '../css/chunky'
-import { useCssOutline } from '../utils/useTools'
+// import { useCssOutline } from '../utils/useTools'
 
 const H1 = tw.h1`text-6xl`
 // const Button_X1 = ({ className, ...props }: any) => <button className={`text-main border-main hover:bg-accent ${className}`} {...props} />
@@ -33,7 +33,7 @@ const Button_X = styled.button(() => [
 ])
 
 const HomePage = () => {
-  useCssOutline(false)
+  // useCssOutline(false)
   return (
     <In>
       <Div_HScreen className='flex flex-col md:flex-row'>
