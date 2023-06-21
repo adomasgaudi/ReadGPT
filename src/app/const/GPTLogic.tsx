@@ -63,30 +63,42 @@ export interface ModelType {
 }
 
 export const readResponse = async (
-  data: any, setResponseFunc: any, setIsLoadingFunc: any, setFullDialogueFunc: any,
+  data: any, setDialogFunc: any, setIsLoadingFunc: any, setFullDialogueFunc: any,
 ) => {
-  // Step 1: Initialization
-  let done = false;
-  const reader = data.getReader();
-  const decoder = new TextDecoder();
-  let currentResponse: any = [];
+  const initialize = () => {
+    const done = false
+    const reader = data.getReader()
+    const decoder = new TextDecoder()
+    const currentResponse: any = []
 
-  setResponseFunc((prev: any) => [...prev, '']);
-  if (setFullDialogueFunc !== false) setFullDialogueFunc((prev: any) => [...prev, '']);
+    setDialogFunc((prev: any) => [...prev, ''])
+    if (setFullDialogueFunc !== false)
+      setFullDialogueFunc((prev: any) => [...prev, ''])
 
-  // Step 2: Reading Loop
-  while (!done) {
-    const { value, done: doneReading } = await reader.read();
-    done = doneReading;
-    const chunkValue = decoder.decode(value);
-    currentResponse = [...currentResponse, chunkValue];
-    setResponseFunc((prev: any) => [...prev.slice(0, -1), currentResponse.join('')]);
-    console.log('GPT');
+    return { done, reader, decoder, currentResponse }
   }
 
-  // Step 3: Finalization
-  if (setFullDialogueFunc !== false) setFullDialogueFunc((prev: any) => [...prev.slice(0, -1), currentResponse.join('')]);
-  setIsLoadingFunc(false);
+  const readingLoop = async (currentResponse: any, done: any, decoder: any, reader: any) => {
+    while (!done) {
+      const { value, done: doneReading } = await reader.read()
+      done = doneReading
+      const chunkValue = decoder.decode(value)
+      currentResponse = [...currentResponse, chunkValue]
+      setDialogFunc((prev: any) => [...prev.slice(0, -1), currentResponse.join('')])
+      console.log('GPT')
+    }
+    return currentResponse
+  }
+
+  const finalize = (currentResponse: any) => {
+    if (setFullDialogueFunc !== false)
+      setFullDialogueFunc((prev: any) => [...prev.slice(0, -1), currentResponse.join('')])
+    setIsLoadingFunc(false)
+  }
+
+  let { done, reader, decoder, currentResponse } = initialize()
+  currentResponse = await readingLoop(currentResponse, done, decoder, reader)
+  finalize(currentResponse)
 }
 
 //
@@ -162,7 +174,6 @@ export const isNoData = (data) => {
   if (!data)
     return true
 }
-
 export const runChatGPT = async ({
   message,
   dialogue,
@@ -172,50 +183,59 @@ export const runChatGPT = async ({
   setIsLoadingFunc,
   isConversation = true,
 }: any) => {
-  let completeMessage = ''
+  function buildMessage() {
+    let completeMessage = ''
 
-  if (isConversation) {
-    const ResponsesWithPrompts = dialogue.map(
-      (item, idx) => `${idx % 2 === 0 ? 'Prompt' : 'Response'}: ${item}`,
-    )
+    if (isConversation) {
+      const ResponsesWithPrompts = dialogue.map(
+        (item, idx) => `${idx % 2 === 0 ? 'Prompt' : 'Response'}: ${item}`,
+      )
 
-    completeMessage = [...ResponsesWithPrompts, `Prompt: ${message}\n Response:`].join('\n')
-  }
-  else {
-    completeMessage = message
+      completeMessage = [...ResponsesWithPrompts, `Prompt: ${message}\n Response:`].join('\n')
+    }
+    else {
+      completeMessage = message
+    }
+
+    if (message !== undefined) {
+      setDialogueFunc(prev => [...prev, message])
+      if (setFullDialogueFunc !== false)
+        setFullDialogueFunc(prev => [...prev, completeMessage])
+    }
+
+    return completeMessage
   }
 
-  if (message !== undefined) {
-    setDialogueFunc(prev => [...prev, message])
-    if (setFullDialogueFunc !== false)
-      setFullDialogueFunc(prev => [...prev, completeMessage])
+  async function sendRequest() {
+    const resp = await fetch('/api/response', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        message: completeMessage,
+        currentModel: model,
+      }),
+    })
+
+    if (!resp.ok)
+      throw new Error(resp.statusText)
+
+    if (isNoData(resp))
+      return null
+
+    return resp.body
   }
+
+  const completeMessage = buildMessage()
 
   if (!message)
     return
 
-  // console.log(completeMessage)
-  const resp = await fetch('/api/response', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      message: completeMessage,
-      currentModel: model,
-    }),
-  })
-  // console.log('Edge function returned.')
+  const data = await sendRequest()
 
-  // console.log(resp)
-
-  if (!resp.ok)
-    throw new Error(resp.statusText)
-
-  if (isNoData(resp))
+  if (data === null)
     return
-
-  const data = resp.body
 
   readResponse(data, setDialogueFunc, setIsLoadingFunc, setFullDialogueFunc)
 }

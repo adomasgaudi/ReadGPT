@@ -8,7 +8,7 @@ import { faBars, faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 import { 悪魔の弟子 } from '../const/text'
 import ReadINT from './ReadINT'
 import SelectedTextPopup from './SelectedTextPopup'
-import { runChatGPT, runChatGPTOneState, runSimpleGPT } from '@/app/const/GPTLogic'
+import { runChatGPT, runSimpleGPT } from '@/app/const/GPTLogic'
 import { fontNotoSerifJp } from '@/app/css/twinStyles'
 import { contextPrompt, convertJPToENGPrompt, simplifySentencePrompt } from '@/app/const/prompt'
 
@@ -93,13 +93,22 @@ export default function ReadGPTLogic() {
     e.preventDefault()
     const message = messageInput.current?.value
 
-    runChatGPTOneState({
+    runChatGPT({
       message,
-      dialogue: vars.dialogue,
+      dialogue,
       model: currentModel,
-      setVars,
-      vars,
+      setDialogueFunc: setDialogue,
+      setFullDialogueFunc: setFullDialogue,
+      setIsLoadingFunc: setIsLoading,
     })
+
+    // runChatGPTOneState({
+    //   message,
+    //   dialogue: vars.dialogue,
+    //   model: currentModel,
+    //   setVars,
+    //   vars,
+    // })
     messageInput.current!.value = ''
   }
 
@@ -222,8 +231,8 @@ export default function ReadGPTLogic() {
             </div>,
           chatExtra: <>
             chatextra:
-            {vars.isLoading
-              ? vars.dialogue.map((item: any, index: number) => {
+            {isLoading
+              ? dialogue.map((item: any, index: number) => {
                 return (
                   <div
                     key={index}
@@ -233,8 +242,8 @@ export default function ReadGPTLogic() {
                   </div>
                 )
               })
-              : vars.dialogue
-                ? vars.dialogue.map((item: string, index: number) => {
+              : dialogue
+                ? dialogue.map((item: string, index: number) => {
                   return (
                     <div
                       key={index}
@@ -252,7 +261,7 @@ export default function ReadGPTLogic() {
                 handleSubmit,
                 messageInput,
                 handleEnter: null,
-                isLoading: vars.isLoading,
+                isLoading,
               }}
               />
             </>,
