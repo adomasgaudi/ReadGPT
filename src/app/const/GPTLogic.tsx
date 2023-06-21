@@ -65,30 +65,81 @@ export interface ModelType {
 export const readResponse = async (
   data: any, setResponseFunc: any, setIsLoadingFunc: any, setFullDialogueFunc: any,
 ) => {
+  // Step 1: Initialization
+  let done = false;
+  const reader = data.getReader();
+  const decoder = new TextDecoder();
+  let currentResponse: any = [];
+
+  setResponseFunc((prev: any) => [...prev, '']);
+  if (setFullDialogueFunc !== false) setFullDialogueFunc((prev: any) => [...prev, '']);
+
+  // Step 2: Reading Loop
+  while (!done) {
+    const { value, done: doneReading } = await reader.read();
+    done = doneReading;
+    const chunkValue = decoder.decode(value);
+    currentResponse = [...currentResponse, chunkValue];
+    setResponseFunc((prev: any) => [...prev.slice(0, -1), currentResponse.join('')]);
+    console.log('GPT');
+  }
+
+  // Step 3: Finalization
+  if (setFullDialogueFunc !== false) setFullDialogueFunc((prev: any) => [...prev.slice(0, -1), currentResponse.join('')]);
+  setIsLoadingFunc(false);
+}
+
+//
+
+//
+
+//
+
+//
+
+export const readResponseOneState = async (
+  data: any, setVars: any,
+) => {
   const reader = data.getReader()
   const decoder = new TextDecoder()
   let done = false
 
   let currentResponse: any = []
-  setResponseFunc((prev: any) => [...prev, ''])
-  if (setFullDialogueFunc !== false)
-    setFullDialogueFunc((prev: any) => [...prev, ''])
+  setVars((prev: any) => ({ ...prev, dialogue: [...prev.dialogue, ''] }))
+  if (setVars !== false)
+    setVars((prev: any) => ({ ...prev, fullDialogue: [...prev.fullDialogue, ''] }))
+  setVars()
   while (!done) {
     const { value, done: doneReading } = await reader.read()
     done = doneReading
     const chunkValue = decoder.decode(value)
     currentResponse = [...currentResponse, chunkValue]
-    setResponseFunc((prev: any) => [...prev.slice(0, -1), currentResponse.join('')])
+    setVars((prev: any) => ({ ...prev, dialogue: [...prev.fullDialogue.slice(0, -1), currentResponse.join('')] }))
     console.log('GPT')
   }
-  if (setFullDialogueFunc !== false)
-    setFullDialogueFunc((prev: any) => [...prev.slice(0, -1), currentResponse.join('')])
+  if (setVars !== false)
+
+    setVars((prev: any) => ({ ...prev, fullDialogue: [...prev.fullDialogue.slice(0, -1), currentResponse.join('')] }))
 
   // Store the response
   // localStorage.setItem('response', JSON.stringify(currentResponse.join('')))
-  setIsLoadingFunc(false)
+
+  setVars((prev: any) => ({ ...prev, isLoading: false }))
 }
 
+//
+
+//
+
+//
+
+//
+
+//
+
+//
+
+//
 export const readSimpleResponse = async (data: any) => {
   const reader = data.getReader()
   const decoder = new TextDecoder()
@@ -167,6 +218,66 @@ export const runChatGPT = async ({
   const data = resp.body
 
   readResponse(data, setDialogueFunc, setIsLoadingFunc, setFullDialogueFunc)
+}
+
+export const runChatGPTOneState = async ({
+  message,
+  dialogue,
+  model = 'gpt-3.5-turbo-16k-0613',
+  setVars,
+  vars,
+  isConversation = true,
+}: any) => {
+  let completeMessage = ''
+
+  console.log(vars)
+  if (isConversation) {
+    if (vars.dialogue) {
+      const ResponsesWithPrompts = vars.dialogue.map(
+        (item, idx) => `${idx % 2 === 0 ? 'Prompt' : 'Response'}: ${item}`,
+        completeMessage = [...ResponsesWithPrompts, `Prompt: ${message}\n Response:`].join('\n'),
+      )
+    }
+  }
+  else {
+    completeMessage = message
+  }
+
+  if (message !== undefined) {
+    if (vars.dialogue) {
+      setVars((prev: any) => ({ ...prev, dialogue: [...prev.dialogue, message] }))
+    }
+    if (setVars !== false && vars.fullDialogue)
+      setVars((prev: any) => ({ ...prev, fullDialogue: [...prev.fullDialogue, message] }))
+  }
+
+  if (!message)
+    return
+
+  // console.log(completeMessage)
+  const resp = await fetch('/api/response', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      message: completeMessage,
+      currentModel: model,
+    }),
+  })
+  // console.log('Edge function returned.')
+
+  // console.log(resp)
+
+  if (!resp.ok)
+    throw new Error(resp.statusText)
+
+  if (isNoData(resp))
+    return
+
+  const data = resp.body
+
+  readResponseOneState(data, setVars)
 }
 
 export const runSimpleGPT: any = async (message: any) => {

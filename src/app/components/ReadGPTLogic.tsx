@@ -8,7 +8,7 @@ import { faBars, faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 import { 悪魔の弟子 } from '../const/text'
 import ReadINT from './ReadINT'
 import SelectedTextPopup from './SelectedTextPopup'
-import { runChatGPT, runSimpleGPT } from '@/app/const/GPTLogic'
+import { runChatGPT, runChatGPTOneState, runSimpleGPT } from '@/app/const/GPTLogic'
 import { fontNotoSerifJp } from '@/app/css/twinStyles'
 import { contextPrompt, convertJPToENGPrompt, simplifySentencePrompt } from '@/app/const/prompt'
 
@@ -54,20 +54,22 @@ export const FormInput = ({ handleSubmit, messageInput, handleEnter, isLoading, 
 //
 
 export default function ReadGPTLogic() {
-  const allPages = textContent.reduce((acc: any, chapter: any) => acc.concat(chapter.pages), [])
-
-  const [finalText, setFinalText] = useState<any>([])
   // GPT API Chat vars
   const messageInput = useRef<HTMLTextAreaElement | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [fullDialogue, setFullDialogue] = useState<any>([])
   const [dialogue, setDialogue] = useState<string[]>([])
+  const [vars, setVars] = useState<any>({})
 
   // GPT API Replace vars
   const messageInputReplace = useRef<HTMLTextAreaElement | null>(null)
   const [isLoadingReplace, setIsLoadingReplace] = useState<boolean>(false)
   const [fullDialogueReplace, setFullDialogueReplace] = useState<any>([])
   const [dialogueReplace, setDialogueReplace] = useState<string[]>([])
+
+  const allPages = textContent.reduce((acc: any, chapter: any) => acc.concat(chapter.pages), [])
+
+  const [finalText, setFinalText] = useState<any>([])
 
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false)
   // const [vars, setVars] = useState<any>({})
@@ -91,13 +93,12 @@ export default function ReadGPTLogic() {
     e.preventDefault()
     const message = messageInput.current?.value
 
-    runChatGPT({
+    runChatGPTOneState({
       message,
-      dialogue,
+      dialogue: vars.dialogue,
       model: currentModel,
-      setDialogueFunc: setDialogue,
-      setFullDialogueFunc: setFullDialogue,
-      setIsLoadingFunc: setIsLoading,
+      setVars,
+      vars,
     })
     messageInput.current!.value = ''
   }
@@ -220,8 +221,9 @@ export default function ReadGPTLogic() {
               </p>
             </div>,
           chatExtra: <>
-            {isLoading
-              ? dialogue.map((item: any, index: number) => {
+            chatextra:
+            {vars.isLoading
+              ? vars.dialogue.map((item: any, index: number) => {
                 return (
                   <div
                     key={index}
@@ -231,8 +233,8 @@ export default function ReadGPTLogic() {
                   </div>
                 )
               })
-              : dialogue
-                ? dialogue.map((item: string, index: number) => {
+              : vars.dialogue
+                ? vars.dialogue.map((item: string, index: number) => {
                   return (
                     <div
                       key={index}
@@ -244,15 +246,16 @@ export default function ReadGPTLogic() {
                 })
                 : null}
           </>,
-          chat: <>
-            <FormInput {...{
-              handleSubmit,
-              messageInput,
-              handleEnter: null,
-              isLoading,
-            }}
-            />
-          </>,
+          chat:
+            <>
+              <FormInput {...{
+                handleSubmit,
+                messageInput,
+                handleEnter: null,
+                isLoading: vars.isLoading,
+              }}
+              />
+            </>,
           addContent: <>hi addContent </>,
           replaceContent: <>
             <FormInput {...{
