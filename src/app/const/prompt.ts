@@ -56,7 +56,7 @@ export const simplifySentencePrompt = `Task: simplify this japanese sentence int
     Response: 検事さん、あなたは私を覚えていますね
     Prompt: `
 
-export const contextPrompt = (referenceText: string, message: any) => `I have a book reading website
+export const contextForText = `I have a book reading website
 In this website I am using ChatGPT to alter the text given.\n
 The book currently beeing read is a japanese book 悪魔の弟子 by
 浜尾四郎.\n
@@ -65,7 +65,4 @@ Example paragraph:\n
 若もしあなたが私に会ってくれたなら、恐らく此の手紙をあなたに書く必要はなかったかも知れません。私は私の旧友が、今私の収容されて居る刑務所が属して居る裁判所に居る事を、もっと早く思い出したなら、或いはこんなに永く苦しまなくてもよかったかも知れないのです。そうして恐らく私は、ここに書こうとする恐ろしい奇怪な経験を、もっともっと早く述べる事が出来たに違いないのです。 　土田検事殿、私は殺人犯人としてここに収容されて居ます。然し多分私は実は其の犯人ではありません。そうです。多分です。私は斯う云わなければならないのを悲しみます。\n
 Prompt: replace the first sentence with english\n
 Response: If I had been able to meet you in person, perhaps I wouldn't have had to write this letter. 私は私の旧友が、今私の収容されて居る刑務所が属して居る裁判所に居る事を、もっと早く思い出したなら、或いはこんなに永く苦しまなくてもよかったかも知れないのです。そうして恐らく私は、ここに書こうとする恐ろしい奇怪な経験を、もっともっと早く述べる事が出来たに違いないのです。 　土田検事殿、私は殺人犯人としてここに収容されて居ます。然し多分私は実は其の犯人ではありません。そうです。多分です。私は斯う云わなければならないのを悲しみます。\n
-Current paragraph: \n
-${referenceText}\n
-Prompt: ${message}\n
-Response: `
+`

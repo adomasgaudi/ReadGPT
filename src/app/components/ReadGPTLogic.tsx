@@ -11,7 +11,7 @@ import ReadINT from './ReadINT'
 import SelectedTextPopup from './SelectedTextPopup'
 import { runSimpleGPT } from '@/app/const/GPTLogic/GPTLogic'
 import { fontNotoSerifJp } from '@/app/css/twinStyles'
-import { contextPrompt, convertJPToENGPrompt, simplifySentencePrompt } from '@/app/const/prompt'
+import { contextForText, convertJPToENGPrompt, simplifySentencePrompt } from '@/app/const/prompt'
 
 const ins = {
   center: css`${tw`flex justify-center items-center`}`,
@@ -74,16 +74,9 @@ const buildCompleteMessage = (readDialogue: any, message: any, context: any) => 
 export default function ReadGPTLogic() {
   // GPT API Chat vars
   const messageInput = useRef<HTMLTextAreaElement | null>(null)
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [fullDialogue, setFullDialogue] = useState<any>([])
-  // const [dialogue, setDialogue] = useState<string[]>([])
-  // const [vars, setVars] = useState<any>({})
 
   // GPT API Replace vars
   const messageInputReplace = useRef<HTMLTextAreaElement | null>(null)
-  const [isLoadingReplace, setIsLoadingReplace] = useState<boolean>(false)
-  const [fullDialogueReplace, setFullDialogueReplace] = useState<any>([])
-  const [dialogueReplace, setDialogueReplace] = useState<string[]>([])
 
   const allPages = textContent.reduce((acc: any, chapter: any) => acc.concat(chapter.pages), [])
 
@@ -123,6 +116,7 @@ export default function ReadGPTLogic() {
 
   const [response, setResponse] = useState<any>('')
   const [dialogue, setDialogue] = useState<any>({ readable: [], usable: [] })
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -169,23 +163,41 @@ export default function ReadGPTLogic() {
 
   //
 
+  const [responseReplace, setResponseReplace] = useState<any>('')
+  const [dialogueReplace, setDialogueReplace] = useState<any>({ readable: [], usable: [] })
+  const [isLoadingReplace, setIsLoadingReplace] = useState<boolean>(false)
+
   const handleSubmitReplace = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const messageInput = messageInputReplace.current?.value
-    const finalPrompt = `${contextPrompt(selectedText, messageInput)}\n Response:`
+    const context = contextForText
 
-    // runChatGPT({
-    //   message: finalPrompt,
-    //   dialogue: dialogueReplace,
-    //   model: currentModel,
-    //   setDialogueFunc: setDialogueReplace,
-    //   setFullDialogueFunc: setFullDialogueReplace,
-    //   setIsLoadingFunc: setIsLoadingReplace,
-    // })
-    // console.log(fullDialogueReplace)
-    // console.log(dialogueReplace)
+    const completeMessage = buildCompleteMessage(dialogueReplace.readable, messageInput, context)
+
+    setDialogueReplace((prev: any) => ({
+      readable: [...prev.readable, messageInput, ''],
+      usable: [...prev.usable, completeMessage, ''],
+    }))
+
+    runChatGPT({
+      message: completeMessage,
+      setResponse: setResponseReplace,
+      setIsLoadingFunc: setIsLoadingReplace,
+      model: currentModel,
+    })
+
     messageInputReplace.current!.value = ''
   }
+  useEffect(() => {
+    if (responseReplace) {
+      setDialogueReplace((prev: any) => ({
+        ...prev,
+        readable: [...prev.readable.slice(0, -1), responseReplace],
+        usable: [...prev.usable.slice(0, -1), responseReplace],
+      }))
+    }
+    console.log({ dialogueReplace })
+  }, [responseReplace])
 
   const runReplace = () => {
     (async () => {
@@ -234,7 +246,7 @@ export default function ReadGPTLogic() {
 
   useEffect(() => {
     setFinalText((prev: any) => {
-      const altered = dialogueReplace.pop()
+      const altered = dialogueReplace.usable.pop()
       prev[pagePartPos] = altered
       return [...prev]
     })
@@ -263,7 +275,7 @@ export default function ReadGPTLogic() {
                 dialogue:
                 <div>
                   {isLoadingReplace
-                    ? fullDialogueReplace.map((item: any, index: number) => {
+                    ? dialogueReplace.usable.map((item: any, index: number) => {
                       return (
                         <div
                           key={index}
@@ -273,8 +285,8 @@ export default function ReadGPTLogic() {
                         </div>
                       )
                     })
-                    : fullDialogueReplace
-                      ? fullDialogueReplace.map((item: string, index: number) => {
+                    : dialogueReplace.usable
+                      ? dialogueReplace.usable.map((item: string, index: number) => {
                         return (
                           <div
                             key={index}
