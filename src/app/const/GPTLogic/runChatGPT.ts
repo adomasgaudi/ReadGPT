@@ -63,12 +63,10 @@ export const streamResponse = async (
 
 export const runChatGPT = async ({
   message,
-  useStateResponse,
+  setResponse,
   setIsLoadingFunc,
   model = 'gpt-3.5-turbo-16k-0613',
 }: any) => {
-  const [InitResponse, setResponse] = useStateResponse
-
   if (!message)
     return
 

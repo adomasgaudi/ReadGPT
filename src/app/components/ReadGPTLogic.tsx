@@ -42,6 +42,23 @@ export const FormInput = ({ handleSubmit, messageInput, handleEnter, isLoading, 
 
 //
 
+const buildCompleteMessage = (readDialogue: any, message: any, context: any) => {
+  let promptedMessages = ''
+
+  if (readDialogue.length > 0) {
+    promptedMessages = readDialogue.map((item: any, i: any) => {
+      return i % 2 === 0 ? `Prompt: ${item}\n` : `Response: ${item}\n`
+    }).join('')
+    promptedMessages += `Prompt: ${message}`
+  }
+  else {
+    promptedMessages = `Prompt: ${message}`
+  }
+
+  const completeMessage = `Context: ${context}\n${promptedMessages}\nResponse:`
+
+  return completeMessage
+}
 //
 
 //
@@ -59,8 +76,8 @@ export default function ReadGPTLogic() {
   const messageInput = useRef<HTMLTextAreaElement | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [fullDialogue, setFullDialogue] = useState<any>([])
-  const [dialogue, setDialogue] = useState<string[]>([])
-  const [vars, setVars] = useState<any>({})
+  // const [dialogue, setDialogue] = useState<string[]>([])
+  // const [vars, setVars] = useState<any>({})
 
   // GPT API Replace vars
   const messageInputReplace = useRef<HTMLTextAreaElement | null>(null)
@@ -90,30 +107,67 @@ export default function ReadGPTLogic() {
   const pageRefs = useRef([])
   pageRefs.current = allPages[pagePos].map((_: any, i: any) => pageRefs.current[i] ?? createRef())
 
+  //
+
+  //
+
+  //
+
+  //
+
+  //
+
+  //
+
+  //
+
   const [response, setResponse] = useState<any>('')
+  const [dialogue, setDialogue] = useState<any>({ readable: [], usable: [] })
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const message = messageInput.current?.value
+    const context = 'Try your best to answer the prompts'
 
-    // context: 'Answer to the best of your ability',
+    const completeMessage = buildCompleteMessage(dialogue.readable, message, context)
+
+    setDialogue((prev: any) => ({
+      readable: [...prev.readable, message, ''],
+      usable: [...prev.usable, completeMessage, ''],
+    }))
 
     runChatGPT({
-      message,
-      useStateResponse: [response, setResponse],
+      message: completeMessage,
+      setResponse,
       setIsLoadingFunc: setIsLoading,
       model: currentModel,
     })
 
-    // runChatGPTOneState({
-    //   message,
-    //   dialogue: vars.dialogue,
-    //   model: currentModel,
-    //   setVars,
-    //   vars,
-    // })
     messageInput.current!.value = ''
   }
+
+  //
+
+  //
+
+  //
+  useEffect(() => {
+    if (response) {
+      setDialogue((prev: any) => ({
+        ...prev,
+        readable: [...prev.readable.slice(0, -1), response],
+        usable: [...prev.usable.slice(0, -1), response],
+      }))
+    }
+  }, [response])
+
+  //
+
+  //
+
+  //
+
+  //
 
   const handleSubmitReplace = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -194,7 +248,7 @@ export default function ReadGPTLogic() {
     setTranslation(response)
   }
 
-  console.log({ response })
+  // console.log({ dialogue })
 
   return (
     <>
@@ -237,9 +291,9 @@ export default function ReadGPTLogic() {
           chatExtra: <>
             chatextra:
 
-            {response}
+            {/* {response} */}
             {isLoading
-              ? dialogue.map((item: any, index: number) => {
+              ? dialogue.readable.map((item: any, index: number) => {
                 return (
                   <div
                     key={index}
@@ -249,8 +303,8 @@ export default function ReadGPTLogic() {
                   </div>
                 )
               })
-              : dialogue
-                ? dialogue.map((item: string, index: number) => {
+              : dialogue.readable
+                ? dialogue.readable.map((item: string, index: number) => {
                   return (
                     <div
                       key={index}
