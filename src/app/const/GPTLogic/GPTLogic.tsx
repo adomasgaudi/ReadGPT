@@ -62,44 +62,7 @@ export interface ModelType {
   created: string
 }
 
-export const readResponse = async (
-  data: any, setDialogFunc: any, setIsLoadingFunc: any, setFullDialogueFunc: any,
-) => {
-  const initialize = () => {
-    const done = false
-    const reader = data.getReader()
-    const decoder = new TextDecoder()
-    const currentResponse: any = []
 
-    setDialogFunc((prev: any) => [...prev, ''])
-    if (setFullDialogueFunc !== false)
-      setFullDialogueFunc((prev: any) => [...prev, ''])
-
-    return { done, reader, decoder, currentResponse }
-  }
-
-  const readingLoop = async (currentResponse: any, done: any, decoder: any, reader: any) => {
-    while (!done) {
-      const { value, done: doneReading } = await reader.read()
-      done = doneReading
-      const chunkValue = decoder.decode(value)
-      currentResponse = [...currentResponse, chunkValue]
-      setDialogFunc((prev: any) => [...prev.slice(0, -1), currentResponse.join('')])
-      console.log('GPT')
-    }
-    return currentResponse
-  }
-
-  const finalize = (currentResponse: any) => {
-    if (setFullDialogueFunc !== false)
-      setFullDialogueFunc((prev: any) => [...prev.slice(0, -1), currentResponse.join('')])
-    setIsLoadingFunc(false)
-  }
-
-  let { done, reader, decoder, currentResponse } = initialize()
-  currentResponse = await readingLoop(currentResponse, done, decoder, reader)
-  finalize(currentResponse)
-}
 
 //
 

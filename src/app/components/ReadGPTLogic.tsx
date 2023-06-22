@@ -101,6 +101,7 @@ export default function ReadGPTLogic() {
       setDialogueFunc: setDialogue,
       setFullDialogueFunc: setFullDialogue,
       setIsLoadingFunc: setIsLoading,
+      fullDialogue,
     })
 
     // runChatGPTOneState({
