@@ -1,49 +1,16 @@
-export const isNoData = (data) => {
+export const isNoData = (data: any) => {
   if (!data)
     return true
 }
 
-const createCompleteMessage = (usedDialogue: any, dialogue: any, message: string) => {
-  let promptedMessages = ''
-
-  promptedMessages = [
-    ...usedDialogue,
-    `Prompt: ${message}\n Response:`,
-  ].join('\n')
-
-  return promptedMessages
-}
-
-const buildMessage = ({
-  isConversation,
-  message,
-  dialogue,
-  usedDialogue,
-}: any): { promptedMessages: any; newDialogue: any[]; newUsedDialogue: any[] } => {
-  //
-
-  let promptedMessages = ''
-  promptedMessages = isConversation
-    ? createCompleteMessage(usedDialogue, dialogue, message)
-    : `Prompt: ${message} \n Response:`
-
-  return {
-    promptedMessages,
-    newDialogue: [...dialogue, message],
-    newUsedDialogue: [...usedDialogue, promptedMessages],
-  }
-}
-
-const sendRequest = async (completeMessage: any, model: string, context: any) => {
-  const contextedMessages = `Context: ${context} \n ${completeMessage}`
-
+const sendRequest = async (message: any, model: string) => {
   const resp = await fetch('/api/response', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      message: contextedMessages,
+      message,
       currentModel: model,
     }),
   })
@@ -58,17 +25,13 @@ const sendRequest = async (completeMessage: any, model: string, context: any) =>
 }
 
 export const streamResponse = async (
-  data: any, setDialogFunc: any, setIsLoadingFunc: any, setFullDialogueFunc: any,
+  data: any, setResponse: any, setIsLoadingFunc: any,
 ) => {
-  const initialize = () => {
+  const VARS = () => {
     const done = false
     const reader = data.getReader()
     const decoder = new TextDecoder()
     const currentResponse: any = []
-
-    setDialogFunc((prev: any) => [...prev, ''])
-    if (setFullDialogueFunc !== false)
-      setFullDialogueFunc((prev: any) => [...prev, ''])
 
     return { done, reader, decoder, currentResponse }
   }
@@ -78,22 +41,18 @@ export const streamResponse = async (
       const { value, done: doneReading } = await reader.read()
       done = doneReading
       const chunkValue = decoder.decode(value)
-      currentResponse = [...currentResponse, chunkValue]
-      setDialogFunc((prev: any) => [...prev.slice(0, -1), currentResponse.join('')])
-      console.log('GPT token')
-    }
-    return currentResponse
-  }
 
-  const finalize = (currentResponse: any) => {
-    if (setFullDialogueFunc !== false)
-      setFullDialogueFunc((prev: any) => [...prev.slice(0, -1), currentResponse.join('')])
+      //
+      currentResponse = [...currentResponse, chunkValue]
+      setResponse(currentResponse.join(''))
+      console.log('GPT token')
+      // TODO: redux for GPT counter
+    }
     setIsLoadingFunc(false)
   }
 
-  let { done, reader, decoder, currentResponse } = initialize()
-  currentResponse = await readingLoop(currentResponse, done, decoder, reader)
-  finalize(currentResponse)
+  const { done, reader, decoder, currentResponse } = VARS()
+  readingLoop(currentResponse, done, decoder, reader)
 }
 
 //
@@ -104,34 +63,21 @@ export const streamResponse = async (
 
 export const runChatGPT = async ({
   message,
-  dialogue,
-  setDialogueFunc,
-  setFullDialogueFunc,
+  useStateResponse,
   setIsLoadingFunc,
   model = 'gpt-3.5-turbo-16k-0613',
-  isConversation = true,
-  fullDialogue,
 }: any) => {
-  const context = 'Answer to the best of your ability'
+  const [InitResponse, setResponse] = useStateResponse
+
   if (!message)
     return
 
-  const { promptedMessages, newDialogue, newUsedDialogue }
-    = buildMessage({
-      isConversation,
-      dialogue,
-      message,
-      usedDialogue: fullDialogue,
-    })
+  const response = await sendRequest(message, model)
 
-  const data = await sendRequest(promptedMessages, model, context)
-
-  if (data === null)
+  if (response === null)
     return
 
-  if (setFullDialogueFunc !== false && setDialogueFunc !== false) {
-    setDialogueFunc(newDialogue)
-    setFullDialogueFunc(newUsedDialogue)
-  }
-  streamResponse(data, setDialogueFunc, setIsLoadingFunc, setFullDialogueFunc)
+  setResponse(message)
+
+  streamResponse(response, setResponse, setIsLoadingFunc)
 }

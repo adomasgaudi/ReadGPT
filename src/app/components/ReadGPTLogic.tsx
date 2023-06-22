@@ -6,12 +6,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars, faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 
 import { 悪魔の弟子 } from '../const/text'
+import { runChatGPT } from '../const/GPTLogic/runChatGPT'
 import ReadINT from './ReadINT'
 import SelectedTextPopup from './SelectedTextPopup'
 import { runSimpleGPT } from '@/app/const/GPTLogic/GPTLogic'
 import { fontNotoSerifJp } from '@/app/css/twinStyles'
 import { contextPrompt, convertJPToENGPrompt, simplifySentencePrompt } from '@/app/const/prompt'
-import { runChatGPT } from '../const/GPTLogic/runChatGPT'
 
 const ins = {
   center: css`${tw`flex justify-center items-center`}`,
@@ -90,18 +90,19 @@ export default function ReadGPTLogic() {
   const pageRefs = useRef([])
   pageRefs.current = allPages[pagePos].map((_: any, i: any) => pageRefs.current[i] ?? createRef())
 
+  const [response, setResponse] = useState<any>('')
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const message = messageInput.current?.value
 
+    // context: 'Answer to the best of your ability',
+
     runChatGPT({
       message,
-      dialogue,
-      model: currentModel,
-      setDialogueFunc: setDialogue,
-      setFullDialogueFunc: setFullDialogue,
+      useStateResponse: [response, setResponse],
       setIsLoadingFunc: setIsLoading,
-      fullDialogue,
+      model: currentModel,
     })
 
     // runChatGPTOneState({
@@ -119,14 +120,14 @@ export default function ReadGPTLogic() {
     const messageInput = messageInputReplace.current?.value
     const finalPrompt = `${contextPrompt(selectedText, messageInput)}\n Response:`
 
-    runChatGPT({
-      message: finalPrompt,
-      dialogue: dialogueReplace,
-      model: currentModel,
-      setDialogueFunc: setDialogueReplace,
-      setFullDialogueFunc: setFullDialogueReplace,
-      setIsLoadingFunc: setIsLoadingReplace,
-    })
+    // runChatGPT({
+    //   message: finalPrompt,
+    //   dialogue: dialogueReplace,
+    //   model: currentModel,
+    //   setDialogueFunc: setDialogueReplace,
+    //   setFullDialogueFunc: setFullDialogueReplace,
+    //   setIsLoadingFunc: setIsLoadingReplace,
+    // })
     // console.log(fullDialogueReplace)
     // console.log(dialogueReplace)
     messageInputReplace.current!.value = ''
@@ -193,6 +194,8 @@ export default function ReadGPTLogic() {
     setTranslation(response)
   }
 
+  console.log({ response })
+
   return (
     <>
       <ReadINT
@@ -233,6 +236,8 @@ export default function ReadGPTLogic() {
             </div>,
           chatExtra: <>
             chatextra:
+
+            {response}
             {isLoading
               ? dialogue.map((item: any, index: number) => {
                 return (
