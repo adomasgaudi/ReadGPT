@@ -61,6 +61,43 @@ const buildCompleteMessage = (readDialogue: any, message: any, context: any) => 
 }
 //
 
+const runChat = ({
+  useDialogue,
+  messageInput,
+  setResponse,
+  setIsLoading,
+  context,
+}: any) => {
+  const [dialogue, setDialogue] = useDialogue
+  const message = messageInput.current?.value
+
+  const completeMessage = buildCompleteMessage(dialogue.readable, message, context)
+
+  setDialogue((prev: any) => ({
+    readable: [...prev.readable, message, ''],
+    usable: [...prev.usable, completeMessage, ''],
+  }))
+
+  runChatGPT({
+    message: completeMessage,
+    setResponse,
+    setIsLoadingFunc: setIsLoading,
+  })
+
+  messageInput.current!.value = ''
+}
+
+const useDialogueSetter = (setDialogue: any, response: any) => {
+  useEffect(() => {
+    if (response) {
+      setDialogue((prev: any) => ({
+        readable: [...prev.readable.slice(0, -1), response],
+        usable: [...prev.usable.slice(0, -1), response],
+      }))
+    }
+  }, [response])
+}
+
 //
 
 //
@@ -72,12 +109,6 @@ const buildCompleteMessage = (readDialogue: any, message: any, context: any) => 
 //
 
 export default function ReadGPTLogic() {
-  // GPT API Chat vars
-  const messageInput = useRef<HTMLTextAreaElement | null>(null)
-
-  // GPT API Replace vars
-  const messageInputReplace = useRef<HTMLTextAreaElement | null>(null)
-
   const allPages = textContent.reduce((acc: any, chapter: any) => acc.concat(chapter.pages), [])
 
   const [finalText, setFinalText] = useState<any>([])
@@ -114,90 +145,45 @@ export default function ReadGPTLogic() {
 
   //
 
+  const messageInput = useRef<HTMLTextAreaElement | null>(null)
   const [response, setResponse] = useState<any>('')
-  const [dialogue, setDialogue] = useState<any>({ readable: [], usable: [] })
+  const useDialogue = useState<any>({ readable: [], usable: [] })
+  const [dialogue, setDialogue] = useDialogue
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const message = messageInput.current?.value
-    const context = 'Try your best to answer the prompts'
-
-    const completeMessage = buildCompleteMessage(dialogue.readable, message, context)
-
-    setDialogue((prev: any) => ({
-      readable: [...prev.readable, message, ''],
-      usable: [...prev.usable, completeMessage, ''],
-    }))
-
-    runChatGPT({
-      message: completeMessage,
+    runChat({
+      useDialogue,
       setResponse,
-      setIsLoadingFunc: setIsLoading,
-      model: currentModel,
+      setIsLoading,
+      messageInput,
+      context: 'Try your best to answer the prompts',
     })
-
-    messageInput.current!.value = ''
   }
 
-  //
+  useDialogueSetter(useDialogue[1], response)
 
   //
 
-  //
-  useEffect(() => {
-    if (response) {
-      setDialogue((prev: any) => ({
-        ...prev,
-        readable: [...prev.readable.slice(0, -1), response],
-        usable: [...prev.usable.slice(0, -1), response],
-      }))
-    }
-  }, [response])
-
-  //
-
-  //
-
-  //
-
-  //
-
+  const messageInputReplace = useRef<HTMLTextAreaElement | null>(null)
   const [responseReplace, setResponseReplace] = useState<any>('')
-  const [dialogueReplace, setDialogueReplace] = useState<any>({ readable: [], usable: [] })
+  const useDialogueReplace = useState<any>({ readable: [], usable: [] })
+  const [dialogueReplace, setDialogueReplace] = useDialogueReplace
   const [isLoadingReplace, setIsLoadingReplace] = useState<boolean>(false)
 
   const handleSubmitReplace = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const messageInput = messageInputReplace.current?.value
-    const context = contextForText
-
-    const completeMessage = buildCompleteMessage(dialogueReplace.readable, messageInput, context)
-
-    setDialogueReplace((prev: any) => ({
-      readable: [...prev.readable, messageInput, ''],
-      usable: [...prev.usable, completeMessage, ''],
-    }))
-
-    runChatGPT({
-      message: completeMessage,
+    runChat({
+      useDialogue: useDialogueReplace,
       setResponse: setResponseReplace,
-      setIsLoadingFunc: setIsLoadingReplace,
-      model: currentModel,
+      setIsLoading: setIsLoadingReplace,
+      messageInput: messageInputReplace,
+      context: contextForText,
     })
-
-    messageInputReplace.current!.value = ''
   }
-  useEffect(() => {
-    if (responseReplace) {
-      setDialogueReplace((prev: any) => ({
-        ...prev,
-        readable: [...prev.readable.slice(0, -1), responseReplace],
-        usable: [...prev.usable.slice(0, -1), responseReplace],
-      }))
-    }
-    console.log({ dialogueReplace })
-  }, [responseReplace])
+
+  useDialogueSetter(useDialogueReplace[1], responseReplace)
 
   const runReplace = () => {
     (async () => {
@@ -250,7 +236,7 @@ export default function ReadGPTLogic() {
       prev[pagePartPos] = altered
       return [...prev]
     })
-  }, [dialogueReplace],
+  }, [setDialogueReplace],
   )
 
   const [translation, setTranslation] = useState()
