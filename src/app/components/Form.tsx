@@ -2,8 +2,8 @@
 import { useEffect, useRef, useState } from 'react'
 import useSWR from 'swr'
 import { fontNotoSerifJp } from '../css/twinStyles'
-import type { ModelType } from '../const/GPTLogic/GPTLogic'
-import { ClearHistoryButton, FormInput, ModelSelector, runChatGPT, runSimpleGPT } from '../const/GPTLogic/GPTLogic'
+import type { ModelType } from '../const/GPTLogic/GPTLogicOLD'
+import { ClearHistoryButton, FormInput, ModelSelector, runChatGPT, runSimpleGPT } from '../const/GPTLogic/GPTLogicOLD'
 import { convertJPToENGPrompt, convertTextToJSONArrayPrompt, separateByCommaPrompt, simplifySentencePrompt } from '../const/prompt'
 
 const Form = ({ text }: any) => {

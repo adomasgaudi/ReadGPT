@@ -4,7 +4,7 @@ import { ChakraProvider } from '@chakra-ui/react' // @ts-ignore
 import { css } from 'twin.macro'
 
 import { useWindowHeight } from '../utils/utils'
-import ReadGPTLogic from '../components/ReadGPTLogic'
+import ReadGPTLogic from '../components/ReadGPTFunction'
 
 // import { useCssOutline } from '@/app/utils/useTools'
 

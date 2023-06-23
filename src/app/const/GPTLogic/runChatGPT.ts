@@ -24,35 +24,30 @@ const sendRequest = async (message: any, model: string) => {
   return resp.body
 }
 
-export const streamResponse = async (
-  data: any, setResponse: any, setIsLoadingFunc: any,
+const runIterationMarker = () => console.log('ChatGPT')
+
+const streamLoop = async (
+  data: any,
+  setResponse: any,
+  setIsLoadingFunc: any,
 ) => {
-  const VARS = () => {
-    const done = false
-    const reader = data.getReader()
-    const decoder = new TextDecoder()
-    const currentResponse: any = []
+  const reader = data.getReader()
+  const decoder = new TextDecoder()
+  let done = false
+  let currentResponse: any = []
 
-    return { done, reader, decoder, currentResponse }
+  while (!done) {
+    const { value, done: doneReading } = await reader.read()
+    done = doneReading
+    const chunkValue = decoder.decode(value)
+    currentResponse = [...currentResponse, chunkValue]
+
+    setResponse(currentResponse.join(''))
+    runIterationMarker()
   }
+  setIsLoadingFunc(false)
 
-  const readingLoop = async (currentResponse: any, done: any, decoder: any, reader: any) => {
-    while (!done) {
-      const { value, done: doneReading } = await reader.read()
-      done = doneReading
-      const chunkValue = decoder.decode(value)
-
-      //
-      currentResponse = [...currentResponse, chunkValue]
-      setResponse(currentResponse.join(''))
-      console.log('GPT token')
-      // TODO: redux for GPT counter
-    }
-    setIsLoadingFunc(false)
-  }
-
-  const { done, reader, decoder, currentResponse } = VARS()
-  readingLoop(currentResponse, done, decoder, reader)
+  return currentResponse.join('')
 }
 
 //
@@ -70,12 +65,13 @@ export const runChatGPT = async ({
   if (!message)
     return
 
-  const response = await sendRequest(message, model)
+  const responseData = await sendRequest(message, model)
 
-  if (response === null)
+  if (responseData === null)
     return
 
-  setResponse(message)
+  setResponse('')
 
-  streamResponse(response, setResponse, setIsLoadingFunc)
+  const response = await streamLoop(responseData, setResponse, setIsLoadingFunc)
+  return response
 }
