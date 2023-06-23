@@ -3,6 +3,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useEffect } from 'react'
 import { runChatGPT } from '../const/GPTLogic/runChatGPT'
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 
 export const FormInput = ({ handleSubmit, messageInput, handleEnter, isLoading, placeholder }: any) =>
   <form
