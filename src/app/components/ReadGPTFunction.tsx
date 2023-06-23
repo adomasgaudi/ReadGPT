@@ -3,7 +3,8 @@ import { createRef, useEffect, useRef, useState } from 'react'
 import tw, { css } from 'twin.macro'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars } from '@fortawesome/free-solid-svg-icons'
+import { faBars, faCircle } from '@fortawesome/free-solid-svg-icons'
+import { faCircle as faCircleReg } from '@fortawesome/free-regular-svg-icons'
 
 import { 悪魔の弟子 } from '../const/text'
 import { runChatGPT } from '../const/GPTLogic/runChatGPT'
@@ -20,8 +21,6 @@ const ins = {
 }
 
 const textContent = 悪魔の弟子
-
-//
 
 //
 
@@ -54,12 +53,19 @@ export default function ReadGPTLogic() {
   const isUpDisabled = pagePartPos === 0
   const isDownDisabled = pagePartPos + 1 === finalText?.length
 
+  const [paragraphVersionPos, setParagraphVersionPos] = useState(0)
+
+  useEffect(() => {
+
+  }, [paragraphVersionPos])
+
   usePagesNLocalStorageToFinalText(
     setFinalText,
     setSelectedText,
     pagePartPos,
     allPages,
     finalText,
+    setParagraphVersionPos,
   )
 
   //
@@ -112,12 +118,25 @@ export default function ReadGPTLogic() {
 
   useDialogueSetter(useDialogueReplace[1], responseReplace)
 
+  // reset finaltext after handleREPLACE
   useEffect(() => {
-    setFinalText((prev: any) => {
-      const altered = dialogueReplace.usable.pop()
-      prev[pagePartPos] = altered
-      return [...prev]
-    })
+    const lastGeneratedAlteration = dialogueReplace.usable.pop()
+    console.log({ finalText })
+    console.log(lastGeneratedAlteration)
+    if (lastGeneratedAlteration) {
+      if (typeof window !== 'undefined') {
+        console.log('set local storage')
+        localStorage.setItem(`allPages-${pagePartPos}`, JSON.stringify(
+          [lastGeneratedAlteration],
+        ))
+      }
+
+      setFinalText((prev: any) => {
+        console.log({ prev })
+        prev[pagePartPos] = lastGeneratedAlteration
+        return [...prev]
+      })
+    }
   }, [dialogueReplace])
 
   //
@@ -141,6 +160,8 @@ export default function ReadGPTLogic() {
   }
 
   //
+
+  // console.log('finalText', finalText)
 
   return (
     <>
@@ -180,6 +201,15 @@ export default function ReadGPTLogic() {
                 </div>
               </p>
             </div>,
+          replaceInput: <>
+            <FormInput {...{
+              handleSubmit: handleSubmitReplace,
+              messageInput: messageInputReplace,
+              handleEnter: null,
+              isLoading: isLoadingReplace,
+            }}
+            />
+          </>,
           chatExtra: <>
             chatextra:
 
@@ -208,7 +238,7 @@ export default function ReadGPTLogic() {
                 })
                 : null}
           </>,
-          chat:
+          chatInput:
             <>
               <FormInput {...{
                 handleSubmit: handleSubmitChat,
@@ -218,16 +248,7 @@ export default function ReadGPTLogic() {
               }}
               />
             </>,
-          addContent: <>hi addContent </>,
-          replaceContent: <>
-            <FormInput {...{
-              handleSubmit: handleSubmitReplace,
-              messageInput: messageInputReplace,
-              handleEnter: null,
-              isLoading: isLoadingReplace,
-            }}
-            />
-          </>,
+
           pagesList:
             <>
               <div css={[tw`max-w-full w-full overflow-scroll`, tw`flex flex-row flex-nowrap`, tw`border-2`]}>
@@ -246,7 +267,7 @@ export default function ReadGPTLogic() {
 
               </div>
             </>,
-          pageContent:
+          main:
             <>
               <div ref={containerRef} css={[tw``]}>
                 {finalText.map((page: any, index: any) => (
@@ -275,6 +296,11 @@ export default function ReadGPTLogic() {
               <button onClick={() => setIsSidebarOpen(true)}>
                 <FontAwesomeIcon icon={faBars} />
               </button>
+              {[1, 2].map((item: any, index: any) =>
+                <button key={index} onClick={() => setParagraphVersionPos(index)}>
+                  <FontAwesomeIcon icon={item === 1 ? faCircle : faCircleReg} />
+                </button>)}
+              {paragraphVersionPos}
               <Link href="/">
                 <div className=''>
                   ReadGPT

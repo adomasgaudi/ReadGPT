@@ -2,8 +2,8 @@
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useEffect } from 'react'
-import { runChatGPT } from '../const/GPTLogic/runChatGPT'
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
+import { runChatGPT } from '../const/GPTLogic/runChatGPT'
 
 export const FormInput = ({ handleSubmit, messageInput, handleEnter, isLoading, placeholder }: any) =>
   <form
@@ -87,21 +87,31 @@ export const usePagesNLocalStorageToFinalText = (setFinalText: any,
   pagePartPos: any,
   allPages: any,
   finalText: any,
+  setParagraphVersionPos: any,
 ) => {
   useEffect(() => {
-    const updatedFinalText = [...finalText] // clone finalText array
+    const updatedFinalText: any = [''] // clone finalText array
 
     allPages[0].forEach((page: any, index: any) => {
       if (typeof window !== 'undefined') {
-        const storage = localStorage.getItem(`allPages-${index + 1}`)
-        if (storage && index === 0) {
-          updatedFinalText.push(storage) // update the cloned array
+        console.log(`allPages-${index}`)
+        const storage: any
+          = JSON.parse(localStorage.getItem(`allPages-${index}`))
+
+        if (!!storage && index === 0) {
+          updatedFinalText.push(storage[0]) // update the cloned array
+          setParagraphVersionPos(1)
         }
         else {
           updatedFinalText.push(page) // update the cloned array
         }
       }
     })
+
+    const array1 = updatedFinalText
+    array1.shift()
+
+    console.log('uupuuuuuuuuuuuuuuuup', array1, 'pppppppp')
 
     setFinalText(updatedFinalText)
     setSelectedText(updatedFinalText[pagePartPos])

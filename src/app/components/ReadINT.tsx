@@ -139,7 +139,7 @@ export default function ReadINT({ child }: any) {
       <div css={[tw`row-start-2 grid grid-rows-[1fr, 50px] max-w-[800px] mx-auto relative`]}>
         <div css={['background: white;', tw`row-start-1 grid grid-rows-[1fr] max-h-[500px] overflow-scroll`]}>
           <div css={[tw` row-start-1 `]}>
-            {child.pageContent}
+            {child.main}
             {/* {buttonUpLogic()}
             {buttonDownLogic()} */}
 
@@ -150,9 +150,7 @@ export default function ReadINT({ child }: any) {
           {isPagesVisible && (child.pagesList)}
           {[
             { id: 1, text: <>{child.chatExtra}</> },
-            { id: 2, text: <>{child.addExtra}</> },
             { id: 3, text: <>{child.replaceExtra}</> },
-            { id: 4, text: <>{child.translateExtra}</> },
           ].map(({ id, text }) =>
             isExtraVisible === id && <div key={id} css={[tw`border`]}>{text}</div>,
           )}
@@ -181,17 +179,7 @@ export default function ReadINT({ child }: any) {
           {isChoice === 1 && <>
             <div
               css={[tw`col-span-3 `, ss.border]}
-            >{child.chat}</div>
-            <div
-              css={[tw`col-span-1 `, ss.border]}
-              onClick={() => setIsChoice(0)}
-            >back</div>
-          </>}
-
-          {isChoice === 2 && <>
-            <div
-              css={[tw`col-span-3 `, ss.border]}
-            >{child.addContent}</div>
+            >{child.chatInput}</div>
             <div
               css={[tw`col-span-1 `, ss.border]}
               onClick={() => setIsChoice(0)}
@@ -201,16 +189,7 @@ export default function ReadINT({ child }: any) {
           {isChoice === 3 && <>
             <div
               css={[tw`col-span-3 `, ss.border]}
-            >{child.replaceContent}</div>
-            <div
-              css={[tw`col-span-1 `, ss.border]}
-              onClick={() => setIsChoice(0)}
-            >back</div>
-          </>}
-          {isChoice === 4 && <>
-            <div
-              css={[tw`col-span-3 `, ss.border]}
-            >{child.translate}</div>
+            >{child.replaceInput}</div>
             <div
               css={[tw`col-span-1 `, ss.border]}
               onClick={() => setIsChoice(0)}
