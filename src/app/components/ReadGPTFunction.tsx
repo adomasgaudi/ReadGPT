@@ -8,10 +8,10 @@ import { faCircle as faCircleReg } from '@fortawesome/free-regular-svg-icons'
 
 import { 悪魔の弟子 } from '../const/text'
 import { runChatGPT } from '../const/GPTLogic/runChatGPT'
+import { fontNotoSerifJp } from '../css/twinStyles'
 import ReadINT from './ReadINT'
 import SelectedTextPopup from './SelectedTextPopup'
 import { FormInput, runChat, useDialogueSetter } from './ReadGPTLogic'
-import { fontNotoSerifJp } from '@/app/css/twinStyles'
 import { contextForText } from '@/app/const/prompt'
 
 const ins = {
@@ -47,46 +47,50 @@ function clearStrings(array: any): any {
   })
 }
 
-function mergeArrays(bookBase: any, bookVariants: any) {
-  const mergedArray: any = []
+function mergeArrays(book1: any, book2: any) {
+  const mergedBook: any = []
 
-  bookBase.forEach((page, index) => {
-    const bookVarPage = bookVariants[index]
+  book1.forEach((page: any, indexpage: any) => {
     const mergedPage: any = []
-    page.forEach((part: any, index2: any) => {
-      const bookVarPart = bookVarPage[index2]
-      console.log({ bookVarPart, part })
-      const mergedPart: any = []
-      // bookVarPart.forEach((variation: any, index3: any) => {
-      //   mergedPart.push([part, variation])
-      // })
+    page.forEach((part: any, indexpart: any) => {
+      const partof2 = book2[indexpage][indexpart][0]
+      console.log({ partof2, part })
+      if (!partof2)
+        return
+      const mergedPart = part.concat(partof2)
       mergedPage.push(mergedPart)
     })
+    mergedBook.push(mergedPage)
   })
 
-  return mergedArray
+  return mergedBook
 }
 
 const textContent = 悪魔の弟子
 
-const useEffectOnStart = (allPages) => {
-  const [fullBook, setFullBook] = useState<any>([])
-
+const useEffectOnStart = (allPages, setFullBook) => {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const allJSONVariants = JSON.parse(
         localStorage.getItem('ReadGPT-DevilsDisciple'),
       )
-      console.log({ allJSONVariants })
+      // console.log({ allJSONVariants })
+
+      //
+
       const convertedAllPages = convertARR(allPages)
       const clearedStringsArray = clearStrings(convertedAllPages)
-      console.log(clearedStringsArray, allPages)
+      // console.log({ convertedAllPages })
+
+      //
+
       if (!allJSONVariants) {
         localStorage.setItem('ReadGPT-DevilsDisciple', JSON.stringify(clearedStringsArray))
       }
       // console.log({ convertedAllPages })
-      // const fullBookConst = allJSONVariants ? mergeArrays(convertedAllPages, allJSONVariants) : convertedAllPages
+      const fullBookConst = allJSONVariants ? mergeArrays(convertedAllPages, allJSONVariants) : convertedAllPages
       // console.log({ fullBookConst })
+      setFullBook(fullBookConst)
     }
   }, [])
 }
@@ -99,6 +103,7 @@ const useEffectOnStart = (allPages) => {
 //
 
 export default function ReadGPTLogic() {
+  const [fullBook, setFullBook] = useState<any>([])
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false)
   const allPages = textContent.reduce((acc: any, chapter: any) => acc.concat(chapter.pages), [])
 
@@ -120,9 +125,10 @@ export default function ReadGPTLogic() {
   const isUpDisabled = pagePartPos === 0
   const isDownDisabled = pagePartPos + 1 === finalText?.length
 
-  const [paragraphVersionPos, setParagraphVersionPos] = useState(0)
+  const [paragraphVersionPos, setParagraphVersionPos] = useState(1)
 
-  useEffectOnStart(allPages)
+  useEffectOnStart(allPages, setFullBook)
+
   useEffect(() => {
 
   }, [paragraphVersionPos])
@@ -329,7 +335,7 @@ export default function ReadGPTLogic() {
     }
   }, [])
 
-  console.log([...Array(4)].map(() => null))
+  // console.log([...Array(4)].map(() => null))
 
   const [allVariants, setAllVariants] = useState<any>([])
 
@@ -341,6 +347,8 @@ export default function ReadGPTLogic() {
   if (allVariants.allPages) {
     partVariantsShort = allVariants?.allPages[0].parts[pagePartPos].variants
   }
+
+  console.log({ fullBook })
   return (
     <>
       <ReadINT
@@ -447,8 +455,8 @@ export default function ReadGPTLogic() {
             </>,
           main:
             <>
-              <div ref={containerRef} css={[tw``]}>
-                {finalText.map((page: any, index: any) => (
+              {/* <div ref={containerRef} css={[tw``]}>
+                {fullBook && fullBook[pagePos].map((page: any, index: any) => (
 
                   <div ref={pageRefs.current[index]} key={index}>
                     <p css={[
@@ -462,7 +470,21 @@ export default function ReadGPTLogic() {
                   </div>
 
                 ))}
-              </div>
+              </div> */}
+              {fullBook && fullBook[pagePos] && fullBook[pagePos].map((part: any, index: any) => (
+
+                <div ref={pageRefs.current[index]} key={index}>
+                  <p css={[
+                    index !== pagePartPos && 'color: lightgray;',
+                    tw`text-xl `,
+                    tw`p-2 pt-8`,
+                    fontNotoSerifJp]}
+                  >
+                    {part[index === pagePartPos ? paragraphVersionPos : 0]}
+                  </p>
+                </div>
+              ))
+              }
               <SelectedTextPopup {...{
                 handleButtonClick: handleSelectedTranslation,
                 returnResp: responseSelectTranslate,
@@ -477,9 +499,8 @@ export default function ReadGPTLogic() {
               {isLoadingReplace ? 'loading' : 'not'}
               -- part: {partVariants} ---
 
-              {allVariants.allPages
-
-                && [...Array(partVariantsShort.length + 1)].map((item: any, index: any) =>
+              {fullBook && fullBook[pagePos] && fullBook[pagePos][pagePartPos]
+                && [...Array(fullBook[pagePos][pagePartPos].length)].map((item: any, index: any) =>
                   <button key={index} onClick={() => setParagraphVersionPos(index)}>
                     <FontAwesomeIcon icon={index === 1 ? faCircle : faCircleReg} />
                   </button>)
