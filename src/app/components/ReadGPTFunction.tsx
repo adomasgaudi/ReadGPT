@@ -12,7 +12,7 @@ import { fontNotoSerifJp } from '../css/twinStyles'
 import ReadINT from './ReadINT'
 import SelectedTextPopup from './SelectedTextPopup'
 import { FormInput, runChat, useDialogueSetter } from './ReadGPTLogic'
-import { contextForText } from '@/app/const/prompt'
+import { contextForText, convertJPToENGPrompt } from '@/app/const/prompt'
 
 const ins = {
   center: css`${tw`flex justify-center items-center`}`,
@@ -53,12 +53,15 @@ function mergeArrays(book1: any, book2: any) {
   book1.forEach((page: any, indexpage: any) => {
     const mergedPage: any = []
     page.forEach((part: any, indexpart: any) => {
-      const partof2 = book2[indexpage][indexpart][0]
-      console.log({ partof2, part })
-      if (!partof2)
-        return
-      const mergedPart = part.concat(partof2)
-      mergedPage.push(mergedPart)
+      if (book2[indexpage][indexpart]) {
+        const partof2 = book2[indexpage][indexpart]
+        console.log({ partof2, part })
+        if (!partof2)
+          return
+        const mergedPart = part.concat(partof2)
+        console.log({ mergedPart })
+        mergedPage.push(mergedPart)
+      }
     })
     mergedBook.push(mergedPage)
   })
@@ -87,10 +90,15 @@ const useEffectOnStart = (allPages, setFullBook) => {
       if (!allJSONVariants) {
         localStorage.setItem('ReadGPT-DevilsDisciple', JSON.stringify(clearedStringsArray))
       }
-      // console.log({ convertedAllPages })
-      const fullBookConst = allJSONVariants ? mergeArrays(convertedAllPages, allJSONVariants) : convertedAllPages
-      // console.log({ fullBookConst })
-      setFullBook(fullBookConst)
+      // console.log({ convertedAllPages, allJSONVariants })
+      if (allJSONVariants && convertedAllPages) {
+        if (allJSONVariants.length !== 0 && convertedAllPages.length !== 0) {
+          const fullBookConst = allJSONVariants ? mergeArrays(convertedAllPages, allJSONVariants) : convertedAllPages
+          // console.log({ fullBookConst })
+
+          setFullBook(fullBookConst)
+        }
+      }
     }
   }, [])
 }
@@ -125,64 +133,9 @@ export default function ReadGPTLogic() {
   const isUpDisabled = pagePartPos === 0
   const isDownDisabled = pagePartPos + 1 === finalText?.length
 
-  const [paragraphVersionPos, setParagraphVersionPos] = useState(1)
+  const [paragraphVersionPos, setParagraphVersionPos] = useState(0)
 
   useEffectOnStart(allPages, setFullBook)
-
-  useEffect(() => {
-
-  }, [paragraphVersionPos])
-
-  // useEffect(() => {
-  //   if (typeof window !== 'undefined') {
-  //     const updatedFinalText: any = [''] // clone finalText array
-
-  //     allPages[0].forEach((page: any, index: any) => {
-  //       console.log(`allPages-${index}`)
-  //       const storage: any
-  //         = JSON.parse(localStorage.getItem(`allPages-0-${pagePartPos}-${index}`))
-
-  //       if (!!storage && index === 0) {
-  //         updatedFinalText.push(storage[0]) // update the cloned array
-  //         setParagraphVersionPos(1)
-  //       }
-  //       else {
-  //         updatedFinalText.push(page) // update the cloned array
-  //       }
-  //     })
-
-  //     const array1 = updatedFinalText
-  //     array1.shift()
-
-  //     // console.log('uupuuuuuuuuuuuuuuuup', array1, 'pppppppp')
-
-  //     setFinalText(updatedFinalText)
-  //   }
-  // }, [])
-
-  // useEffect(() => {
-  //   if (typeof window !== 'undefined') {
-  //     const updatedFinalText: any = ['']
-
-  //     const storage = JSON.parse(localStorage.getItem(
-  //       `allPages-0-${pagePartPos}-${paragraphVersionPos}`,
-  //     ))
-
-  //     finalText.forEach((part: any, index: any) => {
-  //       if (index === paragraphVersionPos) {
-  //         if (storage.length > 0)
-  //           updatedFinalText.push(storage[0])
-  //       }
-  //       else { updatedFinalText.push(part) }
-  //     })
-  //     const array1 = updatedFinalText
-  //     // array1.shift()
-
-  //     console.log('uupuuuuuuuuuuuuuuuup', array1, 'pppppppp')
-
-  //     setFinalText(array1)
-  //   }
-  // }, [paragraphVersionPos])
 
   //
 
@@ -198,6 +151,7 @@ export default function ReadGPTLogic() {
 
   const handleSubmitChat = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    const message = messageInput.current?.value
     runChat({
       useDialogue,
       setResponse,
@@ -221,89 +175,46 @@ export default function ReadGPTLogic() {
   const [dialogueReplace, setDialogueReplace] = useDialogueReplace
   const [isLoadingReplace, setIsLoadingReplace] = useState<boolean>(false)
 
-  const handleSubmitReplace = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  const handleSubmitReplace = async (e?: React.FormEvent<HTMLFormElement>, text: any) => {
+    if (e)
+      e.preventDefault()
+    const currentVers = fullBook[pagePos][pagePartPos][paragraphVersionPos]
+    const message = text || messageInputReplace.current?.value
     runChat({
       useDialogue: useDialogueReplace,
       setResponse: setResponseReplace,
       setIsLoading: setIsLoadingReplace,
-      messageInput: messageInputReplace,
-      context: contextForText,
+      message,
+      context: contextForText(currentVers),
     })
   }
 
   useDialogueSetter(useDialogueReplace[1], responseReplace)
 
-  useEffect(() => {
-
-  }, [])
-
-  // reset finaltext after handleREPLACE
-
-  //
+  // console.log({ responseReplace, dialogueReplace })
+  // reset fullbook after handleREPLACE
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const lastGeneratedAlteration = dialogueReplace.usable[dialogueReplace.usable.length - 1]
-      // if (!isLoadingReplace) {
-      //   localStorage.setItem('ReadGPT-DevilsDisciple', JSON.stringify([]))
-      // }
+      // console.log('last generated', lastGeneratedAlteration)
+
+      if (lastGeneratedAlteration) {
+        const pushedVari = JSON.parse(
+          localStorage.getItem('ReadGPT-DevilsDisciple'),
+        )
+
+        pushedVari[pagePos][pagePartPos][0].push(lastGeneratedAlteration)
+        // console.log('pushedVariants', pushedVari)
+        if (!isLoadingReplace) {
+          localStorage.setItem('ReadGPT-DevilsDisciple', JSON.stringify(pushedVari))
+        }
+        const merged = mergeArrays(pushedVari, allPages)
+        // console.log({ merged, pushedVari, allPages })
+        setFullBook(merged)
+      }
     }
   }, [dialogueReplace, isLoadingReplace])
-  // useEffect(() => {
-  //   if (typeof window !== 'undefined') {
-  //     const lastGeneratedAlteration = dialogueReplace.usable[dialogueReplace.usable.length - 1]
-  //     // console.log({ finalText })
-  //     console.log('--------------', dialogueReplace)
-
-  //     const allKeys = Object.keys(localStorage)
-  //     const filteredKeys = allKeys.filter(key => key.startsWith(`allPages-0-${pagePartPos}`))
-
-  //     if (!isLoadingReplace) {
-  //       console.log('hhhhhhhhhhhhhh', dialogueReplace)
-  //       console.log('filter', filteredKeys)
-  //       if (lastGeneratedAlteration) {
-  //         console.log('set local storage')
-  //         // if (filteredKeys.length > 0) {
-  //         const variant = filteredKeys.length + 1
-  //         localStorage.setItem('allPages', JSON.stringify(
-  //           {
-  //             allPages: [
-  //               {
-  //                 page: 1,
-  //                 parts: [
-  //                   {
-  //                     part: 1,
-  //                     variants: [
-  //                       { variant: 1, text: lastGeneratedAlteration },
-  //                     ],
-  //                   },
-  //                   {
-  //                     part: 2,
-  //                     variants: [
-  //                       { variant: 1, text: lastGeneratedAlteration },
-  //                     ],
-  //                   },
-  //                 ],
-  //               },
-  //             ],
-  //           },
-  //         ))
-  //       }
-  //       console.log('set localstorage')
-  //     }
-  //     console.log({ isLoadingReplace })
-  //     if (lastGeneratedAlteration) {
-  //       setFinalText((prevFinalText: any) => {
-  //         // console.log({ prevFinalText })
-  //         prevFinalText[pagePartPos] = lastGeneratedAlteration
-  //         return [...prevFinalText]
-  //       })
-  //     }
-  //   }
-  // }, [dialogueReplace, isLoadingReplace])
-
-  //
 
   // SELECTED BUTTON TRANSLATE
 
@@ -314,7 +225,7 @@ export default function ReadGPTLogic() {
   const [_, setIsLoadingSelectTranslate] = useState<boolean>(false)
 
   const handleSelectedTranslation = async (text: any) => {
-    const completeMessage = `Translate this text to english ${text}`
+    const completeMessage = `${convertJPToENGPrompt}${text}\nResponse:`
 
     runChatGPT({
       message: completeMessage,
@@ -388,13 +299,17 @@ export default function ReadGPTLogic() {
               </p>
             </div>,
           replaceInput: <>
-            <FormInput {...{
-              handleSubmit: handleSubmitReplace,
-              messageInput: messageInputReplace,
-              handleEnter: null,
-              isLoading: isLoadingReplace,
-            }}
-            />
+            <div css={[tw`flex`]}>
+
+              <FormInput {...{
+                handleSubmit: handleSubmitReplace,
+                messageInput: messageInputReplace,
+                handleEnter: null,
+                isLoading: isLoadingReplace,
+              }}
+              />
+              <button onClick={() => handleSubmitReplace(null, 'texthello')} css={[tw`mx-2 border px-2`]}>simplify</button>
+            </div>
           </>,
           chatExtra: <>
             chatextra:

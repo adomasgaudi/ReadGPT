@@ -46,7 +46,7 @@ export default function SelectedTextPopup({ handleButtonClick, returnResp }: any
   return (
     <div
       ref={popupRef}
-      style={{ position: 'fixed', background: 'white', border: '1px solid black', padding: '10px' }}
+      style={{ position: 'fixed', background: 'white', border: '1px solid black', padding: '10px', zIndex: 20 }}
     >
       <span className='mr-4'>
         {selection}: {response}

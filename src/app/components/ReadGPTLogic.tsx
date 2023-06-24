@@ -5,16 +5,15 @@ import { useEffect } from 'react'
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 import { runChatGPT } from '../const/GPTLogic/runChatGPT'
 
-export const FormInput = ({ handleSubmit, messageInput, handleEnter, isLoading, placeholder }: any) =>
+export const FormInput = ({ handleSubmit, messageInput, handleEnter, isLoading }: any) =>
   <form
     onSubmit={handleSubmit}
     className='flex h-full'
   >
     <textarea
       name='Message'
-      placeholder={placeholder || 'Type a message...'}
+      placeholder={'Replace this...'}
       ref={messageInput}
-      onKeyDown={handleEnter}
     />
     <button
       disabled={isLoading}
@@ -47,13 +46,13 @@ export const buildCompleteMessage = (readDialogue: any, message: any, context: a
 
 export const runChat = ({
   useDialogue,
-  messageInput,
+  message,
   setResponse,
   setIsLoading,
   context,
 }: any) => {
   const [dialogue, setDialogue] = useDialogue
-  const message = messageInput.current?.value
+
 
   const completeMessage = buildCompleteMessage(dialogue.readable, message, context)
 
@@ -78,41 +77,7 @@ export const useDialogueSetter = (setDialogue: any, response: any) => {
         readable: [...prev.readable.slice(0, -1), response],
         usable: [...prev.usable.slice(0, -1), response],
       }))
+      // console.log('response', response)
     }
   }, [response])
-}
-
-export const usePagesNLocalStorageToFinalText = (
-  setFinalText: any,
-  pagePartPos: any,
-  allPages: any,
-  finalText: any,
-  setParagraphVersionPos: any,
-) => {
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const updatedFinalText: any = [''] // clone finalText array
-
-      allPages[0].forEach((page: any, index: any) => {
-        console.log(`allPages-${index}`)
-        const storage: any
-          = JSON.parse(localStorage.getItem(`allPages-0-${pagePartPos}-${index}`))
-
-        if (!!storage && index === 0) {
-          updatedFinalText.push(storage[0]) // update the cloned array
-          setParagraphVersionPos(1)
-        }
-        else {
-          updatedFinalText.push(page) // update the cloned array
-        }
-      })
-
-      const array1 = updatedFinalText
-      array1.shift()
-
-      // console.log('uupuuuuuuuuuuuuuuuup', array1, 'pppppppp')
-
-      setFinalText(updatedFinalText)
-    }
-  }, [])
 }
