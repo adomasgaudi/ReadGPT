@@ -70,7 +70,7 @@ const Form = ({ text }: any) => {
     const storedResponse = localStorage.getItem('response')
     if (storedResponse) {
       // setResponse(JSON.parse(storedResponse))
-      console.log('storedResponse', storedResponse)
+      // console.log('storedResponse', storedResponse)
     }
   })
 
@@ -90,13 +90,13 @@ const Form = ({ text }: any) => {
     setCurrentModel(e.target.value)
   }
 
-  console.log(text.split('。').filter((item: any) => item.trim() !== ''))
+  // console.log(text.split('。').filter((item: any) => item.trim() !== ''))
   useEffect(() => {
     const storedResults = localStorage.getItem('textSimplified')
 
     if (storedResults) {
       const parsedResults = JSON.parse(storedResults)
-      console.log(parsedResults)
+      // console.log(parsedResults)
       setNewText(parsedResults.join('。'))
       return
     }
@@ -110,7 +110,7 @@ const Form = ({ text }: any) => {
         const awaitedResponse1 = await result1.response
         results.push(awaitedResponse1)
       }
-      console.log(results)
+      // console.log(results)
       setNewText(results.join('。'))
       localStorage.setItem('textSimplified', JSON.stringify(results))
     })()

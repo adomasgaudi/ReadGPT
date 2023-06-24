@@ -36,6 +36,8 @@ const streamLoop = async (
   let done = false
   let currentResponse: any = []
 
+  setIsLoadingFunc(true)
+
   while (!done) {
     const { value, done: doneReading } = await reader.read()
     done = doneReading

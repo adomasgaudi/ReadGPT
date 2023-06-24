@@ -82,21 +82,21 @@ export const useDialogueSetter = (setDialogue: any, response: any) => {
   }, [response])
 }
 
-export const usePagesNLocalStorageToFinalText = (setFinalText: any,
-  setSelectedText: any,
+export const usePagesNLocalStorageToFinalText = (
+  setFinalText: any,
   pagePartPos: any,
   allPages: any,
   finalText: any,
   setParagraphVersionPos: any,
 ) => {
   useEffect(() => {
-    const updatedFinalText: any = [''] // clone finalText array
+    if (typeof window !== 'undefined') {
+      const updatedFinalText: any = [''] // clone finalText array
 
-    allPages[0].forEach((page: any, index: any) => {
-      if (typeof window !== 'undefined') {
+      allPages[0].forEach((page: any, index: any) => {
         console.log(`allPages-${index}`)
         const storage: any
-          = JSON.parse(localStorage.getItem(`allPages-${index}`))
+          = JSON.parse(localStorage.getItem(`allPages-0-${pagePartPos}-${index}`))
 
         if (!!storage && index === 0) {
           updatedFinalText.push(storage[0]) // update the cloned array
@@ -105,15 +105,14 @@ export const usePagesNLocalStorageToFinalText = (setFinalText: any,
         else {
           updatedFinalText.push(page) // update the cloned array
         }
-      }
-    })
+      })
 
-    const array1 = updatedFinalText
-    array1.shift()
+      const array1 = updatedFinalText
+      array1.shift()
 
-    console.log('uupuuuuuuuuuuuuuuuup', array1, 'pppppppp')
+      // console.log('uupuuuuuuuuuuuuuuuup', array1, 'pppppppp')
 
-    setFinalText(updatedFinalText)
-    setSelectedText(updatedFinalText[pagePartPos])
+      setFinalText(updatedFinalText)
+    }
   }, [])
 }

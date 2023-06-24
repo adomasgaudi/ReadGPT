@@ -10,7 +10,7 @@ import { 悪魔の弟子 } from '../const/text'
 import { runChatGPT } from '../const/GPTLogic/runChatGPT'
 import ReadINT from './ReadINT'
 import SelectedTextPopup from './SelectedTextPopup'
-import { FormInput, runChat, useDialogueSetter, usePagesNLocalStorageToFinalText } from './ReadGPTLogic'
+import { FormInput, runChat, useDialogueSetter } from './ReadGPTLogic'
 import { fontNotoSerifJp } from '@/app/css/twinStyles'
 import { contextForText } from '@/app/const/prompt'
 
@@ -20,8 +20,76 @@ const ins = {
   e4: css`${tw`flex justify-between items-end p-2`}`,
 }
 
+const convertARR = (allPages: any) => {
+  const final: any = []
+  allPages.forEach((page: any) => {
+    const finalPage: any = []
+    page.forEach((part: any) => {
+      finalPage.push([part])
+    })
+    final.push(finalPage)
+  })
+  return final
+}
+
+function clearStrings(array: any): any {
+  if (!Array.isArray(array)) {
+    return []
+  }
+
+  return array.map((item) => {
+    if (Array.isArray(item)) {
+      return clearStrings(item)
+    }
+    else {
+      return []
+    }
+  })
+}
+
+function mergeArrays(bookBase: any, bookVariants: any) {
+  const mergedArray: any = []
+
+  bookBase.forEach((page, index) => {
+    const bookVarPage = bookVariants[index]
+    const mergedPage: any = []
+    page.forEach((part: any, index2: any) => {
+      const bookVarPart = bookVarPage[index2]
+      console.log({ bookVarPart, part })
+      const mergedPart: any = []
+      // bookVarPart.forEach((variation: any, index3: any) => {
+      //   mergedPart.push([part, variation])
+      // })
+      mergedPage.push(mergedPart)
+    })
+  })
+
+  return mergedArray
+}
+
 const textContent = 悪魔の弟子
 
+const useEffectOnStart = (allPages) => {
+  const [fullBook, setFullBook] = useState<any>([])
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const allJSONVariants = JSON.parse(
+        localStorage.getItem('ReadGPT-DevilsDisciple'),
+      )
+      console.log({ allJSONVariants })
+      const convertedAllPages = convertARR(allPages)
+      const clearedStringsArray = clearStrings(convertedAllPages)
+      console.log(clearedStringsArray, allPages)
+      if (!allJSONVariants) {
+        localStorage.setItem('ReadGPT-DevilsDisciple', JSON.stringify(clearedStringsArray))
+      }
+      // console.log({ convertedAllPages })
+      // const fullBookConst = allJSONVariants ? mergeArrays(convertedAllPages, allJSONVariants) : convertedAllPages
+      // console.log({ fullBookConst })
+    }
+  }, [])
+}
 //
 
 //
@@ -38,7 +106,6 @@ export default function ReadGPTLogic() {
   const [pagePos, setPagePos] = useState(0)
   const [pagePartPos, setPagePartPos] = useState(0)
   const [selectedPagePos, setSelectedPagePos] = useState(0)
-  const [selectedText, setSelectedText] = useState<any>()
   const [newText, setNewText] = useState<string>('')
 
   const containerRef = useRef(null)
@@ -55,18 +122,61 @@ export default function ReadGPTLogic() {
 
   const [paragraphVersionPos, setParagraphVersionPos] = useState(0)
 
+  useEffectOnStart(allPages)
   useEffect(() => {
 
   }, [paragraphVersionPos])
 
-  usePagesNLocalStorageToFinalText(
-    setFinalText,
-    setSelectedText,
-    pagePartPos,
-    allPages,
-    finalText,
-    setParagraphVersionPos,
-  )
+  // useEffect(() => {
+  //   if (typeof window !== 'undefined') {
+  //     const updatedFinalText: any = [''] // clone finalText array
+
+  //     allPages[0].forEach((page: any, index: any) => {
+  //       console.log(`allPages-${index}`)
+  //       const storage: any
+  //         = JSON.parse(localStorage.getItem(`allPages-0-${pagePartPos}-${index}`))
+
+  //       if (!!storage && index === 0) {
+  //         updatedFinalText.push(storage[0]) // update the cloned array
+  //         setParagraphVersionPos(1)
+  //       }
+  //       else {
+  //         updatedFinalText.push(page) // update the cloned array
+  //       }
+  //     })
+
+  //     const array1 = updatedFinalText
+  //     array1.shift()
+
+  //     // console.log('uupuuuuuuuuuuuuuuuup', array1, 'pppppppp')
+
+  //     setFinalText(updatedFinalText)
+  //   }
+  // }, [])
+
+  // useEffect(() => {
+  //   if (typeof window !== 'undefined') {
+  //     const updatedFinalText: any = ['']
+
+  //     const storage = JSON.parse(localStorage.getItem(
+  //       `allPages-0-${pagePartPos}-${paragraphVersionPos}`,
+  //     ))
+
+  //     finalText.forEach((part: any, index: any) => {
+  //       if (index === paragraphVersionPos) {
+  //         if (storage.length > 0)
+  //           updatedFinalText.push(storage[0])
+  //       }
+  //       else { updatedFinalText.push(part) }
+  //     })
+  //     const array1 = updatedFinalText
+  //     // array1.shift()
+
+  //     console.log('uupuuuuuuuuuuuuuuuup', array1, 'pppppppp')
+
+  //     setFinalText(array1)
+  //   }
+  // }, [paragraphVersionPos])
 
   //
 
@@ -95,7 +205,7 @@ export default function ReadGPTLogic() {
 
   //
 
-  // handle REPLACE
+  // Handle REPLACE
 
   //
 
@@ -118,26 +228,74 @@ export default function ReadGPTLogic() {
 
   useDialogueSetter(useDialogueReplace[1], responseReplace)
 
-  // reset finaltext after handleREPLACE
   useEffect(() => {
-    const lastGeneratedAlteration = dialogueReplace.usable.pop()
-    console.log({ finalText })
-    console.log(lastGeneratedAlteration)
-    if (lastGeneratedAlteration) {
-      if (typeof window !== 'undefined') {
-        console.log('set local storage')
-        localStorage.setItem(`allPages-${pagePartPos}`, JSON.stringify(
-          [lastGeneratedAlteration],
-        ))
-      }
 
-      setFinalText((prev: any) => {
-        console.log({ prev })
-        prev[pagePartPos] = lastGeneratedAlteration
-        return [...prev]
-      })
+  }, [])
+
+  // reset finaltext after handleREPLACE
+
+  //
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const lastGeneratedAlteration = dialogueReplace.usable[dialogueReplace.usable.length - 1]
+      // if (!isLoadingReplace) {
+      //   localStorage.setItem('ReadGPT-DevilsDisciple', JSON.stringify([]))
+      // }
     }
-  }, [dialogueReplace])
+  }, [dialogueReplace, isLoadingReplace])
+  // useEffect(() => {
+  //   if (typeof window !== 'undefined') {
+  //     const lastGeneratedAlteration = dialogueReplace.usable[dialogueReplace.usable.length - 1]
+  //     // console.log({ finalText })
+  //     console.log('--------------', dialogueReplace)
+
+  //     const allKeys = Object.keys(localStorage)
+  //     const filteredKeys = allKeys.filter(key => key.startsWith(`allPages-0-${pagePartPos}`))
+
+  //     if (!isLoadingReplace) {
+  //       console.log('hhhhhhhhhhhhhh', dialogueReplace)
+  //       console.log('filter', filteredKeys)
+  //       if (lastGeneratedAlteration) {
+  //         console.log('set local storage')
+  //         // if (filteredKeys.length > 0) {
+  //         const variant = filteredKeys.length + 1
+  //         localStorage.setItem('allPages', JSON.stringify(
+  //           {
+  //             allPages: [
+  //               {
+  //                 page: 1,
+  //                 parts: [
+  //                   {
+  //                     part: 1,
+  //                     variants: [
+  //                       { variant: 1, text: lastGeneratedAlteration },
+  //                     ],
+  //                   },
+  //                   {
+  //                     part: 2,
+  //                     variants: [
+  //                       { variant: 1, text: lastGeneratedAlteration },
+  //                     ],
+  //                   },
+  //                 ],
+  //               },
+  //             ],
+  //           },
+  //         ))
+  //       }
+  //       console.log('set localstorage')
+  //     }
+  //     console.log({ isLoadingReplace })
+  //     if (lastGeneratedAlteration) {
+  //       setFinalText((prevFinalText: any) => {
+  //         // console.log({ prevFinalText })
+  //         prevFinalText[pagePartPos] = lastGeneratedAlteration
+  //         return [...prevFinalText]
+  //       })
+  //     }
+  //   }
+  // }, [dialogueReplace, isLoadingReplace])
 
   //
 
@@ -161,8 +319,28 @@ export default function ReadGPTLogic() {
 
   //
 
-  // console.log('finalText', finalText)
+  const [partVariants, setPartVariants] = useState<any>([])
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const allKeys = Object.keys(localStorage)
+      const filteredKeys = allKeys.filter(key => key.startsWith(`allPages-0-${pagePartPos}`))
 
+      setPartVariants(filteredKeys.length)
+    }
+  }, [])
+
+  console.log([...Array(4)].map(() => null))
+
+  const [allVariants, setAllVariants] = useState<any>([])
+
+  useEffect(() => {
+
+  }, [paragraphVersionPos])
+
+  let partVariantsShort
+  if (allVariants.allPages) {
+    partVariantsShort = allVariants?.allPages[0].parts[pagePartPos].variants
+  }
   return (
     <>
       <ReadINT
@@ -174,7 +352,7 @@ export default function ReadGPTLogic() {
                 new: {newText}
 
                 dialogue:
-                <div>
+                {/* <div>
                   {isLoadingReplace
                     ? dialogueReplace.usable.map((item: any, index: number) => {
                       return (
@@ -198,7 +376,7 @@ export default function ReadGPTLogic() {
                         )
                       })
                       : null}
-                </div>
+                </div> */}
               </p>
             </div>,
           replaceInput: <>
@@ -296,10 +474,16 @@ export default function ReadGPTLogic() {
               <button onClick={() => setIsSidebarOpen(true)}>
                 <FontAwesomeIcon icon={faBars} />
               </button>
-              {[1, 2].map((item: any, index: any) =>
-                <button key={index} onClick={() => setParagraphVersionPos(index)}>
-                  <FontAwesomeIcon icon={item === 1 ? faCircle : faCircleReg} />
-                </button>)}
+              {isLoadingReplace ? 'loading' : 'not'}
+              -- part: {partVariants} ---
+
+              {allVariants.allPages
+
+                && [...Array(partVariantsShort.length + 1)].map((item: any, index: any) =>
+                  <button key={index} onClick={() => setParagraphVersionPos(index)}>
+                    <FontAwesomeIcon icon={index === 1 ? faCircle : faCircleReg} />
+                  </button>)
+              }
               {paragraphVersionPos}
               <Link href="/">
                 <div className=''>
