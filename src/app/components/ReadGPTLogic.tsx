@@ -53,7 +53,6 @@ export const runChat = ({
 }: any) => {
   const [dialogue, setDialogue] = useDialogue
 
-
   const completeMessage = buildCompleteMessage(dialogue.readable, message, context)
 
   setDialogue((prev: any) => ({
@@ -66,8 +65,6 @@ export const runChat = ({
     setResponse,
     setIsLoadingFunc: setIsLoading,
   })
-
-  messageInput.current!.value = ''
 }
 
 export const useDialogueSetter = (setDialogue: any, response: any) => {
@@ -77,7 +74,6 @@ export const useDialogueSetter = (setDialogue: any, response: any) => {
         readable: [...prev.readable.slice(0, -1), response],
         usable: [...prev.usable.slice(0, -1), response],
       }))
-      // console.log('response', response)
     }
   }, [response])
 }

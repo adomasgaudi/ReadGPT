@@ -20,31 +20,22 @@ const ins = {
   e4: css`${tw`flex justify-between items-end p-2`}`,
 }
 
-const convertARR = (allPages: any) => {
-  const final: any = []
-  allPages.forEach((page: any) => {
-    const finalPage: any = []
-    page.forEach((part: any) => {
-      finalPage.push([part])
-    })
-    final.push(finalPage)
-  })
-  return final
-}
+// const convertARR = (allPages: any) => {
+//   const final: any = []
+//   allPages.forEach((page: any) => {
+//     const finalPage: any = []
+//     page.forEach((part: any) => {
+//       finalPage.push([part])
+//     })
+//     final.push(finalPage)
+//   })
+//   return final
+// }
 
 function clearStrings(array: any): any {
-  if (!Array.isArray(array)) {
-    return []
-  }
-
-  return array.map((item) => {
-    if (Array.isArray(item)) {
-      return clearStrings(item)
-    }
-    else {
-      return []
-    }
-  })
+  return Array.isArray(array)
+    ? array.map(item => Array.isArray(item) ? clearStrings(item) : undefined)
+    : undefined
 }
 
 function mergeArrays(book1: any, book2: any) {
@@ -55,11 +46,11 @@ function mergeArrays(book1: any, book2: any) {
     page.forEach((part: any, indexpart: any) => {
       if (book2[indexpage][indexpart]) {
         const partof2 = book2[indexpage][indexpart]
-        console.log({ partof2, part })
+        // console.log({ partof2, part })
         if (!partof2)
           return
         const mergedPart = part.concat(partof2)
-        console.log({ mergedPart })
+        // console.log({ mergedPart })
         mergedPage.push(mergedPart)
       }
     })
@@ -71,38 +62,31 @@ function mergeArrays(book1: any, book2: any) {
 
 const textContent = 悪魔の弟子
 
-const useEffectOnStart = (allPages, setFullBook) => {
+const useEffectOnStart = (allPages: any, setFullBook: any, pagePos: any) => {
   useEffect(() => {
+    const clearedStringsArray = clearStrings(allPages)
     if (typeof window !== 'undefined') {
-      const allJSONVariants = JSON.parse(
+      const DevilsDescipleVariants = JSON.parse(
         localStorage.getItem('ReadGPT-DevilsDisciple'),
       )
-      // console.log({ allJSONVariants })
-
-      //
-
-      const convertedAllPages = convertARR(allPages)
-      const clearedStringsArray = clearStrings(convertedAllPages)
-      // console.log({ convertedAllPages })
-
-      //
-
-      if (!allJSONVariants) {
+      if (!DevilsDescipleVariants) {
+        setFullBook(allPages)
         localStorage.setItem('ReadGPT-DevilsDisciple', JSON.stringify(clearedStringsArray))
       }
-      // console.log({ convertedAllPages, allJSONVariants })
-      if (allJSONVariants && convertedAllPages) {
-        if (allJSONVariants.length !== 0 && convertedAllPages.length !== 0) {
-          const fullBookConst = allJSONVariants ? mergeArrays(convertedAllPages, allJSONVariants) : convertedAllPages
-          // console.log({ fullBookConst })
-
-          setFullBook(fullBookConst)
+      else {
+        if (DevilsDescipleVariants[pagePos]) {
+          setFullBook(allPages)
+          const pageHasVariants = DevilsDescipleVariants[pagePos].flat(Infinity).some(Boolean)
+          if (pageHasVariants) {
+            const merged = mergeArrays(allPages, DevilsDescipleVariants)
+            // console.log({ merged, allPages, DevilsDescipleVariants })
+            setFullBook(merged)
+          }
         }
       }
     }
   }, [])
 }
-//
 
 //
 
@@ -135,7 +119,7 @@ export default function ReadGPTLogic() {
 
   const [paragraphVersionPos, setParagraphVersionPos] = useState(0)
 
-  useEffectOnStart(allPages, setFullBook)
+  useEffectOnStart(allPages, setFullBook, pagePos)
 
   //
 
@@ -196,25 +180,57 @@ export default function ReadGPTLogic() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const lastGeneratedAlteration = dialogueReplace.usable[dialogueReplace.usable.length - 1]
-      // console.log('last generated', lastGeneratedAlteration)
-
-      if (lastGeneratedAlteration) {
-        const pushedVari = JSON.parse(
-          localStorage.getItem('ReadGPT-DevilsDisciple'),
-        )
-
-        pushedVari[pagePos][pagePartPos][0].push(lastGeneratedAlteration)
-        // console.log('pushedVariants', pushedVari)
-        if (!isLoadingReplace) {
-          localStorage.setItem('ReadGPT-DevilsDisciple', JSON.stringify(pushedVari))
+      if (!isLoadingReplace) {
+        const lastGeneratedAlteration = dialogueReplace.usable[dialogueReplace.usable.length - 1]
+        if (lastGeneratedAlteration && lastGeneratedAlteration.length > 3) {
+          // console.log('LASTTTO', lastGeneratedAlteration)
+          const DevilsDesciple = JSON.parse(
+            localStorage.getItem('ReadGPT-DevilsDisciple'),
+          )
+          const newarr = DevilsDesciple
+          const newFull = fullBook
+          newarr[pagePos][pagePartPos].push(lastGeneratedAlteration)
+          newFull[pagePos][pagePartPos].push(lastGeneratedAlteration)
+          console.log({ newarr, newFull })
+          localStorage.setItem('ReadGPT-DevilsDisciple', JSON.stringify(newarr))
+          setFullBook(newFull)
         }
-        const merged = mergeArrays(pushedVari, allPages)
-        // console.log({ merged, pushedVari, allPages })
-        setFullBook(merged)
       }
     }
-  }, [dialogueReplace, isLoadingReplace])
+  }, [isLoadingReplace])
+  // useEffect(() => {
+  //   if (typeof window !== 'undefined') {
+  //     if (!isLoadingReplace) {
+  //       const lastGeneratedAlteration = dialogueReplace.usable[dialogueReplace.usable.length - 1]
+  //       if (lastGeneratedAlteration && lastGeneratedAlteration.length > 3) {
+  //         // console.log('LASTTTO', lastGeneratedAlteration)
+  //         const DevilsDesciple = JSON.parse(
+  //           localStorage.getItem('ReadGPT-DevilsDisciple'),
+  //         )
+  //         const newarr = DevilsDesciple
+  //         const newFull = fullBook
+  //         newarr[pagePos][pagePartPos].push(lastGeneratedAlteration)
+  //         newFull[pagePos][pagePartPos].push(lastGeneratedAlteration)
+  //         console.log({ newarr, newFull })
+  //         localStorage.setItem('ReadGPT-DevilsDisciple', JSON.stringify(newarr))
+  //         setFullBook(newFull)
+  //       }
+  //     }
+
+  //     //     if (lastGeneratedAlteration) {
+  //     //
+
+  //     //       pushedVari[pagePos][pagePartPos][0].push(lastGeneratedAlteration)
+  //     //       // console.log('pushedVariants', pushedVari)
+  //     //       if (!isLoadingReplace) {
+  //     //         localStorage.setItem('ReadGPT-DevilsDisciple', JSON.stringify(pushedVari))
+  //     //       }
+  //     //       const merged = mergeArrays(pushedVari, allPages)
+  //     //       // console.log({ merged, pushedVari, allPages })
+  //     //       setFullBook(merged)
+  //     //     }
+  //   }
+  // }, [dialogueReplace, isLoadingReplace])
 
   // SELECTED BUTTON TRANSLATE
 
@@ -236,30 +252,9 @@ export default function ReadGPTLogic() {
 
   //
 
-  const [partVariants, setPartVariants] = useState<any>([])
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const allKeys = Object.keys(localStorage)
-      const filteredKeys = allKeys.filter(key => key.startsWith(`allPages-0-${pagePartPos}`))
+  //
 
-      setPartVariants(filteredKeys.length)
-    }
-  }, [])
-
-  // console.log([...Array(4)].map(() => null))
-
-  const [allVariants, setAllVariants] = useState<any>([])
-
-  useEffect(() => {
-
-  }, [paragraphVersionPos])
-
-  let partVariantsShort
-  if (allVariants.allPages) {
-    partVariantsShort = allVariants?.allPages[0].parts[pagePartPos].variants
-  }
-
-  console.log({ fullBook })
+  // console.log({ fullBook })
   return (
     <>
       <ReadINT
@@ -412,7 +407,6 @@ export default function ReadGPTLogic() {
                 <FontAwesomeIcon icon={faBars} />
               </button>
               {isLoadingReplace ? 'loading' : 'not'}
-              -- part: {partVariants} ---
 
               {fullBook && fullBook[pagePos] && fullBook[pagePos][pagePartPos]
                 && [...Array(fullBook[pagePos][pagePartPos].length)].map((item: any, index: any) =>

@@ -66,6 +66,4 @@ Example paragraph:
 Prompt: replace the first sentence with english
 Response: If I had been able to meet you in person, perhaps I wouldn't have had to write this letter. 私は私の旧友が、今私の収容されて居る刑務所が属して居る裁判所に居る事を、もっと早く思い出したなら、或いはこんなに永く苦しまなくてもよかったかも知れないのです。そうして恐らく私は、ここに書こうとする恐ろしい奇怪な経験を、もっともっと早く述べる事が出来たに違いないのです。 土田検事殿、私は殺人犯人としてここに収容されて居ます。然し多分私は実は其の犯人ではありません。そうです。多分です。私は斯う云わなければならないのを悲しみます。
 NOW:
-Current paragraph: ${currentVers}
-task: 
-`
+Current paragraph: ${currentVers}`
