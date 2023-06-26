@@ -4,7 +4,7 @@ import tw, { css } from 'twin.macro'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars, faCircle } from '@fortawesome/free-solid-svg-icons'
-import { faCircle as faCircleReg } from '@fortawesome/free-regular-svg-icons'
+import { faCircle as faCircleReg, faCircleXmark } from '@fortawesome/free-regular-svg-icons'
 
 import { 悪魔の弟子 } from '../const/text'
 import { runChatGPT } from '../const/GPTLogic/runChatGPT'
@@ -117,7 +117,7 @@ export default function ReadGPTLogic() {
   const isUpDisabled = pagePartPos === 0
   const isDownDisabled = pagePartPos + 1 === finalText?.length
 
-  const [paragraphVersionPos, setParagraphVersionPos] = useState(0)
+  const [partVersionPos, setPartVersionPos] = useState(0)
 
   useEffectOnStart(allPages, setFullBook, pagePos)
 
@@ -140,7 +140,7 @@ export default function ReadGPTLogic() {
       useDialogue,
       setResponse,
       setIsLoading,
-      messageInput,
+      message,
       context: 'Try your best to answer the prompts',
     })
   }
@@ -162,7 +162,7 @@ export default function ReadGPTLogic() {
   const handleSubmitReplace = async (e?: React.FormEvent<HTMLFormElement>, text: any) => {
     if (e)
       e.preventDefault()
-    const currentVers = fullBook[pagePos][pagePartPos][paragraphVersionPos]
+    const currentVers = fullBook[pagePos][pagePartPos][partVersionPos]
     const message = text || messageInputReplace.current?.value
     runChat({
       useDialogue: useDialogueReplace,
@@ -175,7 +175,6 @@ export default function ReadGPTLogic() {
 
   useDialogueSetter(useDialogueReplace[1], responseReplace)
 
-  // console.log({ responseReplace, dialogueReplace })
   // reset fullbook after handleREPLACE
 
   useEffect(() => {
@@ -194,6 +193,7 @@ export default function ReadGPTLogic() {
           console.log({ newarr, newFull })
           localStorage.setItem('ReadGPT-DevilsDisciple', JSON.stringify(newarr))
           setFullBook(newFull)
+          console.log({ fullBook, dialogueReplace })
         }
       }
     }
@@ -255,6 +255,16 @@ export default function ReadGPTLogic() {
   //
 
   // console.log({ fullBook })
+  const removeLocalStorage = () => {
+    const DevilsDesciple = JSON.parse(
+      localStorage.getItem('ReadGPT-DevilsDisciple'),
+    )
+    const newarr = DevilsDesciple
+    newarr[pagePos][pagePartPos].splice(partVersionPos, 1)
+    console.log({ newarr })
+    localStorage.setItem('ReadGPT-DevilsDisciple', JSON.stringify(newarr))
+  }
+
   return (
     <>
       <ReadINT
@@ -306,7 +316,7 @@ export default function ReadGPTLogic() {
               <button onClick={() => handleSubmitReplace(null, 'texthello')} css={[tw`mx-2 border px-2`]}>simplify</button>
             </div>
           </>,
-          chatExtra: <>
+          chatExtra: <div css={['background: white;']}>
             chatextra:
 
             {/* {response} */}
@@ -333,7 +343,7 @@ export default function ReadGPTLogic() {
                   )
                 })
                 : null}
-          </>,
+          </div>,
           chatInput:
             <>
               <FormInput {...{
@@ -386,11 +396,11 @@ export default function ReadGPTLogic() {
                 <div ref={pageRefs.current[index]} key={index}>
                   <p css={[
                     index !== pagePartPos && 'color: lightgray;',
-                    tw`text-xl `,
+                    tw`text-3xl `,
                     tw`p-2 pt-8`,
                     fontNotoSerifJp]}
                   >
-                    {part[index === pagePartPos ? paragraphVersionPos : 0]}
+                    {part[index === pagePartPos ? partVersionPos : 0]}
                   </p>
                 </div>
               ))
@@ -410,11 +420,15 @@ export default function ReadGPTLogic() {
 
               {fullBook && fullBook[pagePos] && fullBook[pagePos][pagePartPos]
                 && [...Array(fullBook[pagePos][pagePartPos].length)].map((item: any, index: any) =>
-                  <button key={index} onClick={() => setParagraphVersionPos(index)}>
+                  <button key={index} onClick={() => setPartVersionPos(index)}>
                     <FontAwesomeIcon icon={index === 1 ? faCircle : faCircleReg} />
                   </button>)
               }
-              {paragraphVersionPos}
+              <button onClick={() => removeLocalStorage()}>
+                <FontAwesomeIcon icon={faCircleXmark} />
+              </button>
+
+              {partVersionPos}
               <Link href="/">
                 <div className=''>
                   ReadGPT
