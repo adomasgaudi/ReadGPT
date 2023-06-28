@@ -84,7 +84,7 @@ const useEffectOnStart = (allPages: any, setFullBook: any, pagePos: any) => {
 
 export default function ReadGPTLogic() {
   const [fullBook, setFullBook] = useState<any>([])
-  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false)
+  const useSidebar = useState<boolean>(false)
   const allPages = textContent.reduce((acc: any, chapter: any) => acc.concat(chapter.pages), [])
 
   const [finalText, setFinalText] = useState<any>([])
@@ -219,6 +219,7 @@ export default function ReadGPTLogic() {
   return (
     <>
       <ReadINT
+        {...{ useSidebar }}
         child={{
           replaceExtra:
             <div css={['background: white;']}>
@@ -319,22 +320,19 @@ export default function ReadGPTLogic() {
             </>,
           header:
             <>
-              <button onClick={() => setIsSidebarOpen(true)}>
+              <button onClick={() => useSidebar[1](true)}>
                 <FontAwesomeIcon icon={faBars} />
               </button>
-              {isLoadingReplace ? 'loading' : 'not'}
 
               {fullBook && fullBook[pagePos] && fullBook[pagePos][pagePartPos]
                 && [...Array(fullBook[pagePos][pagePartPos].length)].map((item: any, index: any) =>
                   <button key={index} onClick={() => setPartVersionPos(index)}>
-                    <FontAwesomeIcon icon={index === 1 ? faCircle : faCircleReg} />
+                    <FontAwesomeIcon icon={index === partVersionPos ? faCircle : faCircleReg} />
                   </button>)
               }
               <button onClick={() => removeLocalStorage()}>
                 <FontAwesomeIcon icon={faCircleXmark} />
               </button>
-
-              {partVersionPos}
               <Link href="/">
                 <div className=''>
                   ReadGPT

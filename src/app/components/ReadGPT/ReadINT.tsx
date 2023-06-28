@@ -41,8 +41,8 @@ const ButtonSidebarClose = ({ setIsSidebarOpen }: any) =>
 
 //
 
-export default function ReadINT({ child }: any) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+export default function ReadINT({ child, useSidebar }: any) {
+  const [isSidebarOpen, setIsSidebarOpen] = useSidebar
   const [isPagesVisible, setIsPagesVisible] = useState(false)
   const [isExtraVisible, setIsExtraVisible] = useState(0)
   const [isChoice, setIsChoice] = useState(0)
@@ -51,17 +51,15 @@ export default function ReadINT({ child }: any) {
 
     <SidebarHeader
       {...{ isSidebarOpen }}
-      childHeader={
-        <>
+      childs={{
+        header: <>
           {child.header}
-        </>
-      }
-      childSidebar={
-        <>
+        </>,
+        sidebar: <>
           <ButtonSidebarClose {...{ setIsSidebarOpen }} />
           {child.sidebar}
-        </>
-      }
+        </>,
+      }}
     >
       <div css={[tw`row-start-2 grid grid-rows-[1fr, 50px] max-w-[800px] mx-auto relative`]}>
         <div css={['background: white;', tw`row-start-1 grid grid-rows-[1fr] max-h-[500px] overflow-scroll`]}>

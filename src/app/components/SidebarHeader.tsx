@@ -14,18 +14,18 @@ const ss = {
 
 const SidebarContainer = tw.div`absolute top-0 left-0 w-[85%] max-w-[400px] z-10`
 
-export default function SidebarHeader({ children, childHeader, childSidebar, isSidebarOpen }: any) {
+export default function SidebarHeader({ children, childs, isSidebarOpen }: any) {
   const height = useWindowHeight()
 
   return (
     <div css={[' ', tw`h-full grid grid-rows-[40px,1fr]`]}>
       <header css={[ss.e3in, ss.e3stl, tw`row-start-1`]}>
-        {childHeader}
+        {childs.header}
       </header>
 
       {isSidebarOpen && (
         <SidebarContainer css={[ss.e1stl]} style={{ height }}>
-          {childSidebar}
+          {childs.sidebar}
         </SidebarContainer>
       )}
       {children}
