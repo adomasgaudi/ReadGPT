@@ -6,11 +6,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars, faCircle } from '@fortawesome/free-solid-svg-icons'
 import { faCircle as faCircleReg, faCircleXmark } from '@fortawesome/free-regular-svg-icons'
 
-import { 悪魔の弟子 } from '../const/text'
-import { runChatGPT } from '../const/GPTLogic/runChatGPT'
-import { fontNotoSerifJp } from '../css/twinStyles'
+import { 悪魔の弟子 } from '../../const/text'
+import { runChatGPT } from '../../const/GPTLogic/runChatGPT'
+import { fontNotoSerifJp } from '../../css/twinStyles'
+import SelectedTextPopup from '../SelectedTextPopup'
 import ReadINT from './ReadINT'
-import SelectedTextPopup from './SelectedTextPopup'
 import { FormInput, runChat, useDialogueSetter } from './ReadGPTLogic'
 import { contextForText, convertJPToENGPrompt } from '@/app/const/prompt'
 
@@ -19,18 +19,6 @@ const ins = {
   e3: css`${tw`flex justify-between items-start p-2 pl-5 pr-9`}`,
   e4: css`${tw`flex justify-between items-end p-2`}`,
 }
-
-// const convertARR = (allPages: any) => {
-//   const final: any = []
-//   allPages.forEach((page: any) => {
-//     const finalPage: any = []
-//     page.forEach((part: any) => {
-//       finalPage.push([part])
-//     })
-//     final.push(finalPage)
-//   })
-//   return final
-// }
 
 function clearStrings(array: any): any {
   return Array.isArray(array)
@@ -198,39 +186,6 @@ export default function ReadGPTLogic() {
       }
     }
   }, [isLoadingReplace])
-  // useEffect(() => {
-  //   if (typeof window !== 'undefined') {
-  //     if (!isLoadingReplace) {
-  //       const lastGeneratedAlteration = dialogueReplace.usable[dialogueReplace.usable.length - 1]
-  //       if (lastGeneratedAlteration && lastGeneratedAlteration.length > 3) {
-  //         // console.log('LASTTTO', lastGeneratedAlteration)
-  //         const DevilsDesciple = JSON.parse(
-  //           localStorage.getItem('ReadGPT-DevilsDisciple'),
-  //         )
-  //         const newarr = DevilsDesciple
-  //         const newFull = fullBook
-  //         newarr[pagePos][pagePartPos].push(lastGeneratedAlteration)
-  //         newFull[pagePos][pagePartPos].push(lastGeneratedAlteration)
-  //         console.log({ newarr, newFull })
-  //         localStorage.setItem('ReadGPT-DevilsDisciple', JSON.stringify(newarr))
-  //         setFullBook(newFull)
-  //       }
-  //     }
-
-  //     //     if (lastGeneratedAlteration) {
-  //     //
-
-  //     //       pushedVari[pagePos][pagePartPos][0].push(lastGeneratedAlteration)
-  //     //       // console.log('pushedVariants', pushedVari)
-  //     //       if (!isLoadingReplace) {
-  //     //         localStorage.setItem('ReadGPT-DevilsDisciple', JSON.stringify(pushedVari))
-  //     //       }
-  //     //       const merged = mergeArrays(pushedVari, allPages)
-  //     //       // console.log({ merged, pushedVari, allPages })
-  //     //       setFullBook(merged)
-  //     //     }
-  //   }
-  // }, [dialogueReplace, isLoadingReplace])
 
   // SELECTED BUTTON TRANSLATE
 
@@ -250,10 +205,6 @@ export default function ReadGPTLogic() {
     })
   }
 
-  //
-
-  //
-
   // console.log({ fullBook })
   const removeLocalStorage = () => {
     const DevilsDesciple = JSON.parse(
@@ -271,37 +222,8 @@ export default function ReadGPTLogic() {
         child={{
           replaceExtra:
             <div css={['background: white;']}>
-              {/* <button css={[tw`m-2`, tw`border`]} onClick={() => runReplace()}>simplify to n5</button> */}
-              <p>
-                new: {newText}
+              <button css={[tw`m-2`, tw`border`]} onClick={() => runReplace()}>simplify to n5</button>
 
-                dialogue:
-                {/* <div>
-                  {isLoadingReplace
-                    ? dialogueReplace.usable.map((item: any, index: number) => {
-                      return (
-                        <div
-                          key={index}
-                          css={[index % 2 === 0 ? tw`text-right` : '']}
-                        >
-                          <p>{item}</p>
-                        </div>
-                      )
-                    })
-                    : dialogueReplace.usable
-                      ? dialogueReplace.usable.map((item: string, index: number) => {
-                        return (
-                          <div
-                            key={index}
-                            css={[index % 2 === 0 ? tw`text-right` : '']}
-                          >
-                            <p>{item}</p>
-                          </div>
-                        )
-                      })
-                      : null}
-                </div> */}
-              </p>
             </div>,
           replaceInput: <>
             <div css={[tw`flex`]}>
@@ -375,28 +297,12 @@ export default function ReadGPTLogic() {
             </>,
           main:
             <>
-              {/* <div ref={containerRef} css={[tw``]}>
-                {fullBook && fullBook[pagePos].map((page: any, index: any) => (
-
-                  <div ref={pageRefs.current[index]} key={index}>
-                    <p css={[
-                      index !== pagePartPos && 'color: lightgray;',
-                      tw`text-xl `,
-                      tw`p-2 pt-8`,
-                      fontNotoSerifJp]}
-                    >
-                      {page}
-                    </p>
-                  </div>
-
-                ))}
-              </div> */}
               {fullBook && fullBook[pagePos] && fullBook[pagePos].map((part: any, index: any) => (
 
                 <div ref={pageRefs.current[index]} key={index}>
                   <p css={[
                     index !== pagePartPos && 'color: lightgray;',
-                    tw`text-3xl `,
+                    tw`text-2xl `,
                     tw`p-2 pt-8`,
                     fontNotoSerifJp]}
                   >

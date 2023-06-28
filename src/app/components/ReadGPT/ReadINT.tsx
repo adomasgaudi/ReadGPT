@@ -1,16 +1,23 @@
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faXmark } from '@fortawesome/free-solid-svg-icons'
 
-// @ts-ignore
+import { faXmark } from '@fortawesome/free-solid-svg-icons'// @ts-ignore
 import tw, { css } from 'twin.macro'
-import SidebarHeader from './SidebarHeader'
+import SidebarHeader from '../SidebarHeader'
 
 const ins = {
   center: css`${tw`flex justify-center items-center`}`,
   e3: css`${tw`flex justify-between items-start p-2 pl-5 pr-9`}`,
   e4: css`${tw`flex justify-between items-end p-2`}`,
-  // e4: css`${tw`flex justify-center items-center `}`,
+}
+
+const ss = {
+  e1: css`border-bottom: 1px solid #e2e8f0;`,
+  e2: css`background: white; ${tw`border-2 rounded`}`,
+  e3: css` border-bottom: 1px solid #e2e8f0;`,
+  e4: css`${tw`rounded-full`}`,
+  e5: css`background: #f7f6f7; ${tw`border rounded-full border-[#000]`}`,
+  border: css`border: 1px solid #e2e8f0;`,
 }
 
 const ButtonSidebarClose = ({ setIsSidebarOpen }: any) =>
@@ -24,61 +31,6 @@ const ButtonSidebarClose = ({ setIsSidebarOpen }: any) =>
   >
     <FontAwesomeIcon icon={faXmark} />
   </button>
-
-const ss = {
-  e1: css`border-bottom: 1px solid #e2e8f0;`,
-  e2: css`background: white; ${tw`border-2 rounded`}`,
-  e3: css` border-bottom: 1px solid #e2e8f0;`,
-  e4: css`${tw`rounded-full`}`,
-  e5: css`background: #f7f6f7; ${tw`border rounded-full border-[#000]`}`,
-  border: css`border: 1px solid #e2e8f0;`,
-}
-
-// const gradientStyles = (deg: any) => css`
-//   background: red;
-//   background: linear-gradient(
-//     ${deg}deg, #f7f6f7 20%,
-//     #f7f6f7aa 65%,
-//     #f7f6f700 100%
-//   );
-//   `
-
-// const ButtonUpBlock = ({ setPagePartPos, pagePartPos, setSelectedPagePos }: any) =>
-//   <div css={[tw`absolute top-0 w-full -mb-10 z-10`, ins.center, gradientStyles(180)]} >
-//     <button
-//       css={[ss.e4, tw`h-[50px] w-[50px]`]}
-//       onClick={() => {
-//         setPagePartPos((prev: any) => prev - 1)
-//         setSelectedPagePos((prev: any) => prev - 1)
-//       }}
-//       disabled={pagePartPos === 0}
-//     >
-//       <FontAwesomeIcon icon={faCaretUp} />
-//     </button>
-//   </div>
-
-// const ButtonDownBlock = ({
-//   setPagePartPos, pagePartPos, allPages, selectedPagePos, setSelectedPagePos, setIsPagesVisible,
-// }: any) =>
-//   <div css={[tw`absolute bottom-10 w-full -mb-10 z-10`, ins.e4, gradientStyles(0)]} >
-//     <button css={[tw`w-[50px]`]}>
-
-//     </button>
-//     <button
-//       css={[ss.e4, ss.e5, tw`w-[50px] m-2`]}
-//       onClick={() => {
-//         setPagePartPos((prev: any) => prev + 1)
-//         setSelectedPagePos((prev: any) => prev + 1)
-//       }}
-//       disabled={pagePartPos + 1 === allPages[selectedPagePos].length}
-//     >
-//       <FontAwesomeIcon icon={faCaretDown} />
-//     </button>
-//     <button css={[tw`w-[50px]`, ss.e5]} onClick={() => setIsPagesVisible((prev: any) => !prev)}>
-//       <FontAwesomeIcon icon={faBars} />
-//     </button>
-//   </div>
-
 //
 
 //
@@ -91,34 +43,9 @@ const ss = {
 
 export default function ReadINT({ child }: any) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-  const [pagePos, setPagePos] = useState(0)
-  const [pagePartPos, setPagePartPos] = useState(0)
   const [isPagesVisible, setIsPagesVisible] = useState(false)
   const [isExtraVisible, setIsExtraVisible] = useState(0)
   const [isChoice, setIsChoice] = useState(0)
-
-  const [selectedPagePos, setSelectedPagePos] = useState(0)
-  const containerRef = useRef(null)
-
-  // useEffect(() => {
-  //   if (containerRef.current) {
-  //     const scrollHeight = containerRef.current.scrollHeight
-  //     const elementHeight = containerRef.current.offsetHeight
-  //     const numberOfElements = allPages[pagePos].length
-
-  //     const scrollPos = (scrollHeight - elementHeight) / (numberOfElements - 1) * pagePartPos
-
-  //     containerRef.current.scrollTo({ top: scrollPos, behavior: 'smooth' })
-  //   }
-  // }, [pagePartPos])
-
-  // const buttonDownLogic = () => pagePartPos + 1 !== allPages[selectedPagePos].length
-  //   && <ButtonDownBlock {...{
-  //     setPagePartPos, setSelectedPagePos, pagePartPos, allPages, selectedPagePos, setIsPagesVisible,
-  //   }}
-  //   />
-  // const buttonUpLogic = () => pagePartPos !== 0
-  //   && <ButtonUpBlock {...{ setPagePartPos, setSelectedPagePos, pagePartPos }} />
 
   return (
 

@@ -28,9 +28,7 @@ export default function SidebarHeader({ children, childHeader, childSidebar, isS
           {childSidebar}
         </SidebarContainer>
       )}
-      {/* <div > */}
       {children}
-      {/* </div> */}
     </div>
   )
 }

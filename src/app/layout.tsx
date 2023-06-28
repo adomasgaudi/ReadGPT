@@ -1,4 +1,4 @@
-import LayoutWrapper from './components/LayoutWrapper'
+import LayoutWrapper from './components/ReadGPT/LayoutWrapper'
 import './css/globals.css'
 
 export const metadata = {
