@@ -3,15 +3,15 @@ import { createRef, useEffect, useRef, useState } from 'react'
 import tw, { css } from 'twin.macro'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars, faCircle } from '@fortawesome/free-solid-svg-icons'
+import { faArrowDown, faArrowUp, faBars, faCircle } from '@fortawesome/free-solid-svg-icons'
 import { faCircle as faCircleReg, faCircleXmark } from '@fortawesome/free-regular-svg-icons'
 
-import { 悪魔の弟子 } from '../../const/text'
 import { runChatGPT } from '../../const/GPTLogic/runChatGPT'
 import { fontNotoSerifJp } from '../../css/twinStyles'
 import SelectedTextPopup from '../SelectedTextPopup'
 import ReadINT from './ReadINT'
 import { FormInput, runChat, useDialogueSetter } from './ReadGPTLogic'
+import { alice_in_wonderland } from '@/app/const/booksText/alice_in_wonderland'
 import { contextForText, convertJPToENGPrompt } from '@/app/const/prompt'
 
 const ins = {
@@ -48,7 +48,7 @@ function mergeArrays(book1: any, book2: any) {
   return mergedBook
 }
 
-const textContent = 悪魔の弟子
+const textContent = alice_in_wonderland
 
 const useEffectOnStart = (allPages: any, setFullBook: any, pagePos: any) => {
   useEffect(() => {
@@ -97,17 +97,22 @@ export default function ReadGPTLogic() {
   const pageRefs = useRef([])
   pageRefs.current = allPages[pagePos].map((_: any, i: any) => pageRefs.current[i] ?? createRef())
 
-  //
-
-  const partUp = () => setPagePartPos((prev: any) => prev - 1)
-  const partDown = () => setPagePartPos((prev: any) => prev + 1)
-
   const isUpDisabled = pagePartPos === 0
   const isDownDisabled = pagePartPos + 1 === finalText?.length
 
   const [partVersionPos, setPartVersionPos] = useState(0)
 
   useEffectOnStart(allPages, setFullBook, pagePos)
+  //
+
+  const partUp = () => {
+    setPagePartPos((prev: any) => prev - 1)
+    setPartVersionPos(0)
+  }
+  const partDown = () => {
+    setPagePartPos((prev: any) => prev + 1)
+    setPartVersionPos(0)
+  }
 
   //
 
@@ -345,16 +350,16 @@ export default function ReadGPTLogic() {
             </div>
           </>,
           buttons: <>
-            {
-              <div css={['background: white;', tw`absolute right-40 mr-2`]}>
-                <button disabled={isUpDisabled} css={[isUpDisabled ? tw`text-gray` : tw`border p-1`]} onClick={() => partUp()}>
-                  go up
-                </button>
-              </div>
-            }
-            <div css={['background: white;', tw`absolute right-20 `]}>
-              <button disabled={isDownDisabled} css={[isDownDisabled ? tw`text-gray` : tw`border p-1`]} onClick={() => partDown()} >
-                go down
+
+            <div css={['background: white;', tw`absolute top-0 left-[50%] mr-2`]}>
+              <button disabled={isUpDisabled} css={[isUpDisabled ? tw`text-gray` : tw`border p-1`]} onClick={() => partUp()}>
+                <FontAwesomeIcon icon={faArrowUp} />
+              </button>
+            </div>
+
+            <div css={['background: white;', tw`absolute bottom-0 left-[50%] pointer-events-none`]}>
+              <button disabled={isDownDisabled} css={[isDownDisabled ? tw`text-gray` : tw`w-12 h-12 border rounded-full p-3`]} onClick={() => partDown()} >
+                <FontAwesomeIcon icon={faArrowDown} />
               </button>
             </div>
           </>,

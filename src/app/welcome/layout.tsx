@@ -2,8 +2,8 @@ import LayoutWrapper from '../components/ReadGPT/LayoutWrapper'
 import '../css/globals.css'
 
 export const metadata = {
-  title: 'The big bad title',
-  description: 'Website description goes here',
+  title: 'Elaborate',
+  description: 'Read with GPT-3.5',
 }
 
 export default function RootLayout({
