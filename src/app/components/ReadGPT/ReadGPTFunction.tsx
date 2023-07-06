@@ -11,8 +11,8 @@ import { fontNotoSerifJp } from '../../css/twinStyles'
 import SelectedTextPopup from '../SelectedTextPopup'
 import ReadINT from './ReadINT'
 import { FormInput, runChat, useDialogueSetter } from './ReadGPTLogic'
-import { alice_in_wonderland } from '@/app/const/booksText/alice_in_wonderland'
 import { contextForText, convertJPToENGPrompt } from '@/app/const/prompt'
+import { the_count_of_monte_cristo } from '@/app/const/booksText/count_of_monte_christo'
 
 const ins = {
   center: css`${tw`flex justify-center items-center`}`,
@@ -48,7 +48,7 @@ function mergeArrays(book1: any, book2: any) {
   return mergedBook
 }
 
-const textContent = alice_in_wonderland
+const textContent = the_count_of_monte_cristo
 
 const useEffectOnStart = (allPages: any, setFullBook: any, pagePos: any) => {
   useEffect(() => {
@@ -351,13 +351,13 @@ export default function ReadGPTLogic() {
           </>,
           buttons: <>
 
-            <div css={['background: white;', tw`absolute top-0 left-[50%] mr-2`]}>
+            <div css={['background: white;', tw`absolute top-0 left-[50%] mr-2 pointer-events-auto`]}>
               <button disabled={isUpDisabled} css={[isUpDisabled ? tw`text-gray` : tw`border p-1`]} onClick={() => partUp()}>
                 <FontAwesomeIcon icon={faArrowUp} />
               </button>
             </div>
 
-            <div css={['background: white;', tw`absolute bottom-0 left-[50%] pointer-events-none`]}>
+            <div css={['background: white;', tw`absolute bottom-0 left-[50%] pointer-events-auto`]}>
               <button disabled={isDownDisabled} css={[isDownDisabled ? tw`text-gray` : tw`w-12 h-12 border rounded-full p-3`]} onClick={() => partDown()} >
                 <FontAwesomeIcon icon={faArrowDown} />
               </button>

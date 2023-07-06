@@ -63,8 +63,7 @@ export default function ReadINT({ child, useSidebar }: any) {
     >
       <div css={[tw`row-start-2 grid grid-rows-[1fr, 50px] max-w-[800px] mx-auto`]}>
         <div css={[tw`relative`]}>
-          <div css={[tw`absolute w-full h-full z-20 pointer-events-none`]}>
-
+          <div css={[tw`absolute w-full h-full max-h-[500px] z-20 pointer-events-none`]}>
             {child.buttons}
           </div>
           <div css={['background: white;', tw`row-start-1 grid grid-rows-[1fr] max-h-[500px] overflow-scroll relative`]}>
