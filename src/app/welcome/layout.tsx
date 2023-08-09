@@ -1,9 +1,9 @@
-import LayoutWrapper from '../components/ReadGPT/LayoutWrapper'
-import '../css/globals.css'
+import LayoutWrapper from '../components/LayoutWrapper'
+import '../css/allthat.css'
 
 export const metadata = {
-  title: 'Elaborate',
-  description: 'Read with GPT-3.5',
+  title: 'The big bad title',
+  description: 'Website description goes here',
 }
 
 export default function RootLayout({

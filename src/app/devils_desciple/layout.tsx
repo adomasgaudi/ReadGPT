@@ -1,7 +1,7 @@
-import '../css/globals.css'
+import '../css/allthat.css'
 
 export const metadata = {
-  title: 'Elaborate',
+  title: 'ReadGPT',
   description: 'Read with GPT-3.5',
 }
 
