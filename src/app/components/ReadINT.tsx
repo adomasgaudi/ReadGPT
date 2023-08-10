@@ -156,23 +156,23 @@ export default function ReadINT({ child, useIsSidebarOpen }: any) {
           )}
         </div>
 
-        <div css={['', tw`row-start-2 grid grid-cols-4`]}>
+        <div css={[tw`row-start-2 grid grid-cols-2 md:grid-cols-4`]}>
           {isChoice === 0
             && <>
               <div
-                css={[tw`col-span-1 `, ss.border]}
+                css={[tw`col-span-1 flex justify-center items-center cursor-pointer`, ss.border]}
                 onClick={() => {
                   setIsExtraVisible(prev => prev !== 1 ? 1 : 0)
                   setIsChoice(1)
                 }}
-              >chat</div>
+              ><h3 css={tw`m-0`}>Basic Chat</h3> </div>
               <div
-                css={[tw`col-span-1 `, ss.border]}
+                css={[tw`col-span-1 flex justify-center items-center cursor-pointer `, ss.border]}
                 onClick={() => {
                   setIsExtraVisible(prev => prev !== 3 ? 3 : 0)
                   setIsChoice(3)
                 }}
-              >replace</div>
+              ><h3 css={tw`m-0`}>Replace Chat</h3></div>
             </>
           }
 

@@ -1,8 +1,7 @@
 'use client'
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useEffect } from 'react'
-import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
+import tw from 'twin.macro'
 import { runChatGPT } from '../const/GPTLogic/runChatGPT'
 
 export const FormInput = ({ handleSubmit, messageInput, handleEnter, isLoading }: any) =>
@@ -12,14 +11,16 @@ export const FormInput = ({ handleSubmit, messageInput, handleEnter, isLoading }
   >
     <textarea
       name='Message'
-      placeholder={'Replace this...'}
+      placeholder={'Write here ...'}
       ref={messageInput}
     />
     <button
       disabled={isLoading}
       type='submit'
     >
-      <FontAwesomeIcon icon={faPaperPlane} />
+      <div css={tw`mx-2`}>
+        {/* <FontAwesomeIcon icon={faPaperPlane} /> */}
+      </div>
     </button>
   </form>
 

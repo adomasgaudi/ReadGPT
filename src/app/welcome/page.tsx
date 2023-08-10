@@ -30,9 +30,8 @@ const hoverStyles = css`
 //   <button css={[tw`border py-1 px-3 mr-3 mt-3 font-bold`, hoverStyles]} />
 // )
 
-const Button_X = styled.button(() => [
-  tw`border py-1 px-3 mr-3 mt-3 font-bold`,
-  hoverStyles,
+const Div_X = styled.div(() => [
+  tw`border py-1 px-3 mr-3 mt-3 font-bold flex text-center justify-center items-center my-5 hover:(text-blue-500 border-blue-600 py-5 my-0) transition-all duration-500`,
 ])
 
 const HomePage = () => {
@@ -48,15 +47,17 @@ const HomePage = () => {
           <div css={tw`-mt-40`}>
             <p>Elaborate is an experimental book <span css={tw`text-blue-400`}>powered by ChatGPT</span> that morphs under the user's request. Simplify the original work, replace it with a different language, and morph two languages together. Fluidity allows for exploration. Explore it as you please.</p>
           </div>
-          {/* <div className='flex w-full '>
-              <Button_X>Simplify</Button_X>
-              <Button_X>French</Button_X>
-            </div> */}
+          <div className='grid grid-cols-2 w-full '>
+            <Div_X>Simplify</Div_X>
+            <Div_X>French to English</Div_X>
+            <Div_X>English to Spanish and simplify</Div_X>
+            <Div_X>Continue the story</Div_X>
+          </div>
         </In_Center>
       </div>
       <div css={tw`min-h-[100vh] justify-center items-center text-center`}>
         <Link href="/">
-          <H1 css={[hoverStyles, tw`p-2`]}>Please, explore</H1>
+          <H1 css={[tw`p-2 hover:(text-blue-400 outline)`]}>Please, explore</H1>
         </Link>
       </div>
     </Snappers.P3 >
