@@ -12,7 +12,7 @@ import { fontNotoSerifJp } from '../css/twinstyles/twinStyles'
 import ReadINT from './ReadINT'
 import SelectedTextPopup from './SelectedTextPopup'
 import { FormInput, runChat, useDialogueSetter } from './ReadGPTLogic'
-import { contextForText, convertJPToENGPrompt } from '@/app/const/prompt'
+import { contextForText, convertFREoENGPrompt, convertJPToENGPrompt } from '@/app/const/prompt'
 
 const ins = {
   center: css`${tw`flex justify-center items-center`}`,
@@ -243,7 +243,7 @@ export default function ReadGPTLogic() {
   const [_, setIsLoadingSelectTranslate] = useState<boolean>(false)
 
   const handleSelectedTranslation = async (text: any) => {
-    const completeMessage = `${convertJPToENGPrompt}${text}\nResponse:`
+    const completeMessage = `${convertFREoENGPrompt}${text}\nResponse:`
 
     runChatGPT({
       message: completeMessage,

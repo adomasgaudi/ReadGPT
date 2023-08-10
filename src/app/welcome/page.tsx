@@ -46,7 +46,7 @@ const HomePage = () => {
 
         <In_Center className='flex flex-col w-full'>
           <div css={tw`-mt-40`}>
-            <p>Elaborate is an experimental book that morphs under the user's request. Simplify the original work, replace it with a different language, and morph two languages together. Fluidity allows for exploration. Explore it as you please.</p>
+            <p>Elaborate is an experimental book <span css={tw`text-blue-400`}>powered by ChatGPT</span> that morphs under the user's request. Simplify the original work, replace it with a different language, and morph two languages together. Fluidity allows for exploration. Explore it as you please.</p>
           </div>
           {/* <div className='flex w-full '>
               <Button_X>Simplify</Button_X>
