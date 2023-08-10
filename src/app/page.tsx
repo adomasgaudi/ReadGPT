@@ -29,11 +29,12 @@ const App = () => {
       </div>
       <div className='pt-[100px]'>
         {[
-          { href: '/devils_desciple', title: '悪魔の弟子 The Devil\'s Desciple' },
-          { href: '/alice_in_wonderland', title: 'Alice in Wonderland' },
+          { href: '/les_trois_mousquetaires', title: 'Les trois mousquetaires', translation: 'The Three Musketeers', lang: 'French' },
         ].map((item, index) =>
           <Link key={index} href={item.href}>
-            <div className="m-2 border p-2"> {item.title}</div>
+            <div className="my-2 border rounded p-2">
+              <p css={tw`text-xl text-black`}>{item.title} <span css={tw`text-sm text-blue-400 italic`}>{item.lang}</span></p>
+              <p css={tw`text-sm mt-0`}>{item.translation}</p></div>
           </Link>,
         )}
       </div>

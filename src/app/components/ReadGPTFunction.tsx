@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars, faCircle } from '@fortawesome/free-solid-svg-icons'
 import { faCircle as faCircleReg, faCircleXmark } from '@fortawesome/free-regular-svg-icons'
 
-import { 悪魔の弟子 } from '../const/text'
+import { les_trois_mousquetaires } from '../const/texts'
 import { runChatGPT } from '../const/GPTLogic/runChatGPT'
 import { fontNotoSerifJp } from '../css/twinstyles/twinStyles'
 import ReadINT from './ReadINT'
@@ -60,7 +60,7 @@ function mergeArrays(book1: any, book2: any) {
   return mergedBook
 }
 
-const textContent = 悪魔の弟子
+const textContent = les_trois_mousquetaires
 
 const useEffectOnStart = (allPages: any, setFullBook: any, pagePos: any) => {
   useEffect(() => {
