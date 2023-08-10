@@ -2,7 +2,6 @@
 import Link from 'next/link' // @ts-expect-error
 import tw, { css, styled } from 'twin.macro'
 import { Div_HScreen, In, In_Center, In_WHalf } from '../css/chunky'
-
 // import { useCssOutline } from '../utils/useTools'
 
 const H1 = tw.h1`text-6xl`
@@ -47,39 +46,8 @@ const HomePage = () => {
         <In_WHalf className='p-5'>
           <In_Center className='flex flex-col w-full'>
             <div>
-              <p>ReadGPT is an experimental AI enhanced book-reading website. ReadGPT can help the readers with any questions they might have while reading a book, as well as the ability to morph the orginal version to aid in foreign language comprehension.</p>
-              <p>
-                For now the working features are:
-                <ul>
-                  <li>
-                    standard chat bot for any conversation
-                  </li>
-                  <li>
-                    Ability to replace original text by detailing the alteration
-                  </li>
-                </ul>
-              </p>
-              <p>
-                Upcoming soon features:
-                <ul>
-                  <li>
-                    Buttons for specific common prompts
-                  </li>
-                  <li>
-                    Added functionality of text via gpt generated json. First use will be to generate furigana or color words by difficulty.
-                  </li>
-                </ul>
-              </p>
-              <p>
-                Upcoming future features:
-                <ul>
-                  <li>
-                    Smartphone selected text keyboard extra buttons.
-                  </li>
-                </ul>
-              </p>
+              <p>ReadGPT is a book that morphs under the users request. Simplify the original work, replace it with a different language, morph two languages together. Fluidity allows for exploration. Only you know what you want from this read. Read! </p>
             </div>
-
             <div className='flex w-full '>
               <Button_X>simplify</Button_X>
               <Button_X>japanese</Button_X>

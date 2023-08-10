@@ -1,0 +1,106 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Knewave&family=Nunito+Sans:ital,wght@0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,600;1,700;1,800;1,900&family=Potta+One&family=Prompt:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Radio+Canada:wght@300;400;500;600;700&family=Rubik+Glitch&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&family=Noto+Serif+JP:wght@200;300;400;500;600;700;900&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+:root {
+  --scrollbar-width: 14px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+html {
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  scroll-behavior: smooth;
+}
+
+body {
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
+@layer base {
+  p {
+    @apply text-sm;
+  }
+  h1 {
+    @apply font-[800] text-3xl mt-10;
+  }
+  h2 {
+    @apply font-[800] text-2xl mt-10;
+  }
+  h3 {
+    @apply font-[800] text-xl mt-10;
+  }
+  a {
+    @apply text-inherit decoration-0;
+  }
+}
+@layer base {
+  p {
+    @apply text-base text-[var(--text-main)] font-[500] leading-7 mt-3;
+  }
+  h1 {
+    @apply font-[800] text-2xl md:text-3xl lg:text-4xl lg:leading-[1] mt-10 text-[var(--head-main)];
+  }
+  h2 {
+    @apply font-[800] text-2xl md:text-3xl lg:text-4xl lg:leading-[1] mt-10 text-[var(--head-main)];
+  }
+  h3 {
+    @apply font-[900] text-2xl mb-5 mt-20 mt-10 text-[var(--head-main)];
+  }
+}
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbcbcb;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #bdbdbd;
+}
+
+*::-moz-selection {
+  background: #3ec3af;
+  color: #36555f;
+}
+
+*::selection {
+  background: #3ec3af;
+  color: #36555f;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+}
+
+.light {
+  --bg-main: hsl(0, 0%, 98%);
+  --ghost: hsl(0,0%,98%);
+  --text-main: hsl(0, 0%, 47%);
+  --head-main: hsl(0, 0%, 33%);
+  --accent: hsl(171, 53%, 90%);
+  transition-duration: 1s;
+}
+
+.dark {
+  --bg-main: hsl(0, 0%, 20%);
+  --ghost: hsl(0,0%,22%);
+  --text-main: hsl(0, 0%, 90%);
+  --head-main: hsl(0, 0%, 83%);
+  --accent: hsl(245, 94%, 38%);
+}/*# sourceMappingURL=allthat.css.map */
