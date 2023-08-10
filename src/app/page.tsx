@@ -31,10 +31,15 @@ const App = () => {
         {[
           { href: '/les_trois_mousquetaires', title: 'Les trois mousquetaires', translation: 'The Three Musketeers', lang: 'French' },
         ].map((item, index) =>
-          <Link key={index} href={item.href}>
-            <div className="my-2 border rounded p-2">
-              <p css={tw`text-xl text-black`}>{item.title} <span css={tw`text-sm text-blue-400 italic`}>{item.lang}</span></p>
-              <p css={tw`text-sm mt-0`}>{item.translation}</p></div>
+          <Link key={index} href={item.href} >
+            <div css={tw`border rounded grid grid-cols-6 p-2 my-2 `}>
+
+              <div className="col-span-5">
+                <p css={tw`text-xl text-black`}>{item.title} <span css={tw`text-sm text-blue-400 italic`}>{item.lang}</span></p>
+                <p css={tw`text-sm mt-0`}>{item.translation}</p>
+              </div>
+              <div><p css={tw`text-red-400`}>I'm Buggy!</p></div>
+            </div>
           </Link>,
         )}
       </div>

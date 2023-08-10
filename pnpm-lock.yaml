@@ -36,8 +36,8 @@ dependencies:
     specifier: ^0.2.0
     version: 0.2.0(@fortawesome/fontawesome-svg-core@1.2.0)(react@18.2.0)
   '@netlify/plugin-nextjs':
-    specifier: ^4.39.1
-    version: 4.39.1
+    specifier: ^4.39.3
+    version: 4.39.3
   '@reduxjs/toolkit':
     specifier: ^1.8.2
     version: 1.8.2(react-redux@8.0.2)(react@18.2.0)
@@ -2095,8 +2095,8 @@ packages:
       - supports-color
     dev: false
 
-  /@netlify/plugin-nextjs@4.39.1:
-    resolution: {integrity: sha512-gdpTDRYJg8g55MQBy1JMcVJ3UgHC71M/u7BccI9oqvizVtV7ESgyCdJgGFPfZJJGCgWe2ANfQCk1wgA0yosnow==}
+  /@netlify/plugin-nextjs@4.39.3:
+    resolution: {integrity: sha512-WbGW1CQ8jOW59gjAQVaG3Vcn6B4CoXfu8NV9DSDV0bvzHkapGfPV9YOa0u/2ipMO+9NG7yu3UNq3RLFHwk0F4Q==}
     engines: {node: '>=12.0.0'}
     dependencies:
       '@netlify/esbuild': 0.14.39
