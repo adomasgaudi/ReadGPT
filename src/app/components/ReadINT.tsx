@@ -89,8 +89,8 @@ const ss = {
 
 //
 
-export default function ReadINT({ child }: any) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+export default function ReadINT({ child, useIsSidebarOpen }: any) {
+  const [isSidebarOpen, setIsSidebarOpen] = useIsSidebarOpen
   const [pagePos, setPagePos] = useState(0)
   const [pagePartPos, setPagePartPos] = useState(0)
   const [isPagesVisible, setIsPagesVisible] = useState(false)

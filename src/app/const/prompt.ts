@@ -10,6 +10,11 @@ export const convertFREoENGPrompt = `Task: convert french into english
     Response: pragraph
     Prompt: `
 
+export const getFRAEtymology = `Task: what is the etymological root of this word
+    Prompt: paragraphe
+    Response: para - "beside", graphein "to write"
+    Prompt: `
+
 export const convertTextToJSONArrayPrompt = `Task: convert text to json
     Prompt: 未決, 囚徒, たる, 私,、, 即ち, 島浦, 英三, は,、, 其の, 旧友, に, して, 嘗かつて, は, 兄弟, より, 親しかりし, 土田, 検事, 殿, に,、, 此の, 手紙, を, 送ります
     Response: [

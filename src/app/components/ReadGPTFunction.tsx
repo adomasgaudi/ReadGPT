@@ -12,7 +12,7 @@ import { fontNotoSerifJp } from '../css/twinstyles/twinStyles'
 import ReadINT from './ReadINT'
 import SelectedTextPopup from './SelectedTextPopup'
 import { FormInput, runChat, useDialogueSetter } from './ReadGPTLogic'
-import { contextForText, convertFREoENGPrompt, convertJPToENGPrompt } from '@/app/const/prompt'
+import { contextForText, convertFREoENGPrompt, getFRAEtymology } from '@/app/const/prompt'
 
 const ins = {
   center: css`${tw`flex justify-center items-center`}`,
@@ -251,6 +251,15 @@ export default function ReadGPTLogic() {
       setIsLoadingFunc: setIsLoadingSelectTranslate,
     })
   }
+  const handleSelectedEtymology = async (text: any) => {
+    const completeMessage = `${getFRAEtymology}${text}\nResponse:`
+
+    runChatGPT({
+      message: completeMessage,
+      setResponse: setResponseSelectTranslate,
+      setIsLoadingFunc: setIsLoadingSelectTranslate,
+    })
+  }
 
   //
 
@@ -270,6 +279,7 @@ export default function ReadGPTLogic() {
   return (
     <>
       <ReadINT
+        useIsSidebarOpen={[isSidebarOpen, setIsSidebarOpen]}
         child={{
           replaceExtra:
             <div css={['background: white;']}>
@@ -410,6 +420,7 @@ export default function ReadGPTLogic() {
               }
               <SelectedTextPopup {...{
                 handleButtonClick: handleSelectedTranslation,
+                handleSecondButtonClick: handleSelectedEtymology,
                 returnResp: responseSelectTranslate,
               }}
               />
@@ -418,9 +429,9 @@ export default function ReadGPTLogic() {
           header:
             <>
               <button onClick={() => setIsSidebarOpen(true)}>
-                <FontAwesomeIcon icon={faBars} />
+                Explanation
               </button>
-              {isLoadingReplace ? 'loading' : 'not'}
+              {isLoadingReplace ? 'loading' : ''}
 
               {fullBook && fullBook[pagePos] && fullBook[pagePos][pagePartPos]
                 && [...Array(fullBook[pagePos][pagePartPos].length)].map((item: any, index: any) =>
@@ -441,8 +452,21 @@ export default function ReadGPTLogic() {
 
             </>,
           sidebar: <>
-            <div>
-              hi sidebar
+            <div css={tw`px-3 max-h-full overflow-scroll `}>
+              <h3>Explanation</h3>
+              <p>Currently the sidebar is not used so I will explain stuff here.</p>
+              <p>Obviously this is an unfinished project, a lot of things are not working and many features are missing!</p>
+              <h3>Popup</h3>
+              <p>What is working is the popup, which pops up if you select any text. currently it will pop up on literaly any text, in the future it will only work on the intended text. Somehow that was easier. When open, you can press the book, ignore the previous text. You can test it right here! Select me! By pressing the book, you will translate the text. The timeline icon will try to explain the etymology of the word. Obviously I have many ideas here on what other function could I add here. Sorry the response div is annoying. </p>
+              <h3>Basic Chat</h3>
+              <p>Then there is the basic chat. This acts as a basic ChatGPT so that you don't have to leave to search for something random. The Chat remembers what you've said to it and uses the ChatGPT4 api. </p>
+              <h3>Replace Chat (Buggy!!)</h3>
+              <p>Then we have the replace function. This is the main idea of the whole thing. It takes the text that I provide as the original book text and converts it to something. I've pre-prompted it so that it has a general sense of what the app should do and then on top of that you're supposed to add your own specific requirements and replace the text with anything you like. So you can simplify, translate or anything else. The limit is your imagination. By executing this command it will save the response into localstorage and it will show a new bubble at the top indicating a new version available. This again is very buggy. The text does not load bit by bit. The completed results only show after you've pressed the up and down buttons. I know. I need help. You can also press the x button to delete the localstorage, but good luck with that its basically a roulette. Best just delete the localstorage from the dev tools. </p>
+              <h3>CSS</h3>
+              <h3>Parts and Pages</h3>
+              <p>The books are divided into pages and those are divided into parts. This is because for now ChatGPT is not great at manipulating text if you give it complex instructions. Also I thought that you might want to change the text part by part and use different replacement ideas for different parts. So I divided it into parts. </p>
+              <p>Lastly, just a quick appology for the unfinished css. Just use your imagination of what it could be and be happy:)</p>
+              <div css={tw`mt-40`}></div>
             </div>
           </>,
           buttons:
