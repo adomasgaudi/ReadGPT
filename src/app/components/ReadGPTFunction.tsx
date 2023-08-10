@@ -45,6 +45,7 @@ function mergeArrays(book1: any, book2: any) {
     const mergedPage: any = []
     page.forEach((part: any, indexpart: any) => {
       if (book2[indexpage][indexpart]) {
+        console.log('book2', book2)
         const partof2 = book2[indexpage][indexpart]
         // console.log({ partof2, part })
         if (!partof2)
@@ -61,24 +62,25 @@ function mergeArrays(book1: any, book2: any) {
 }
 
 const textContent = les_trois_mousquetaires
+const bookCodeName = 'lesTroisMousquetaires'
 
 const useEffectOnStart = (allPages: any, setFullBook: any, pagePos: any) => {
   useEffect(() => {
     const clearedStringsArray = clearStrings(allPages)
     if (typeof window !== 'undefined') {
-      const DevilsDescipleVariants = JSON.parse(
-        localStorage.getItem('ReadGPT-DevilsDisciple'),
+      const CurrentBookVariants = JSON.parse(
+        localStorage.getItem(`ReadGPT-${bookCodeName}`),
       )
-      if (!DevilsDescipleVariants) {
+      if (!CurrentBookVariants) {
         setFullBook(allPages)
-        localStorage.setItem('ReadGPT-DevilsDisciple', JSON.stringify(clearedStringsArray))
+        localStorage.setItem(`readgpt-${bookCodeName}`, JSON.stringify(clearedStringsArray))
       }
       else {
-        if (DevilsDescipleVariants[pagePos]) {
+        if (CurrentBookVariants[pagePos]) {
           setFullBook(allPages)
-          const pageHasVariants = DevilsDescipleVariants[pagePos].flat(Infinity).some(Boolean)
+          const pageHasVariants = CurrentBookVariants[pagePos].flat(Infinity).some(Boolean)
           if (pageHasVariants) {
-            const merged = mergeArrays(allPages, DevilsDescipleVariants)
+            const merged = mergeArrays(allPages, CurrentBookVariants)
             // console.log({ merged, allPages, DevilsDescipleVariants })
             setFullBook(merged)
           }
@@ -184,14 +186,14 @@ export default function ReadGPTLogic() {
         if (lastGeneratedAlteration && lastGeneratedAlteration.length > 3) {
           // console.log('LASTTTO', lastGeneratedAlteration)
           const DevilsDesciple = JSON.parse(
-            localStorage.getItem('ReadGPT-DevilsDisciple'),
+            localStorage.getItem(`readgpt-${bookCodeName}`),
           )
           const newarr = DevilsDesciple
           const newFull = fullBook
           newarr[pagePos][pagePartPos].push(lastGeneratedAlteration)
           newFull[pagePos][pagePartPos].push(lastGeneratedAlteration)
           console.log({ newarr, newFull })
-          localStorage.setItem('ReadGPT-DevilsDisciple', JSON.stringify(newarr))
+          localStorage.setItem(`readgpt-${bookCodeName}`, JSON.stringify(newarr))
           setFullBook(newFull)
           console.log({ fullBook, dialogueReplace })
         }
@@ -205,14 +207,14 @@ export default function ReadGPTLogic() {
   //       if (lastGeneratedAlteration && lastGeneratedAlteration.length > 3) {
   //         // console.log('LASTTTO', lastGeneratedAlteration)
   //         const DevilsDesciple = JSON.parse(
-  //           localStorage.getItem('ReadGPT-DevilsDisciple'),
+  //           localStorage.getItem(`readgpt-${bookCodeName}`),
   //         )
   //         const newarr = DevilsDesciple
   //         const newFull = fullBook
   //         newarr[pagePos][pagePartPos].push(lastGeneratedAlteration)
   //         newFull[pagePos][pagePartPos].push(lastGeneratedAlteration)
   //         console.log({ newarr, newFull })
-  //         localStorage.setItem('ReadGPT-DevilsDisciple', JSON.stringify(newarr))
+  //         localStorage.setItem(`readgpt-${bookCodeName}`, JSON.stringify(newarr))
   //         setFullBook(newFull)
   //       }
   //     }
@@ -223,7 +225,7 @@ export default function ReadGPTLogic() {
   //     //       pushedVari[pagePos][pagePartPos][0].push(lastGeneratedAlteration)
   //     //       // console.log('pushedVariants', pushedVari)
   //     //       if (!isLoadingReplace) {
-  //     //         localStorage.setItem('ReadGPT-DevilsDisciple', JSON.stringify(pushedVari))
+  //     //         localStorage.setItem(`readgpt-${bookCodeName}`, JSON.stringify(pushedVari))
   //     //       }
   //     //       const merged = mergeArrays(pushedVari, allPages)
   //     //       // console.log({ merged, pushedVari, allPages })
@@ -257,12 +259,12 @@ export default function ReadGPTLogic() {
   // console.log({ fullBook })
   const removeLocalStorage = () => {
     const DevilsDesciple = JSON.parse(
-      localStorage.getItem('ReadGPT-DevilsDisciple'),
+      localStorage.getItem(`readgpt-${bookCodeName}`),
     )
     const newarr = DevilsDesciple
     newarr[pagePos][pagePartPos].splice(partVersionPos, 1)
     console.log({ newarr })
-    localStorage.setItem('ReadGPT-DevilsDisciple', JSON.stringify(newarr))
+    localStorage.setItem(`readgpt-${bookCodeName}`, JSON.stringify(newarr))
   }
 
   return (
@@ -372,6 +374,7 @@ export default function ReadGPTLogic() {
                 ))}
 
               </div>
+
             </>,
           main:
             <>
@@ -410,6 +413,7 @@ export default function ReadGPTLogic() {
                 returnResp: responseSelectTranslate,
               }}
               />
+
             </>,
           header:
             <>
@@ -431,29 +435,31 @@ export default function ReadGPTLogic() {
               {partVersionPos}
               <Link href="/">
                 <div className=''>
-                  ReadGPT
+                  Elaborate
                 </div>
               </Link>
+
             </>,
           sidebar: <>
             <div>
               hi sidebar
             </div>
           </>,
-          buttons: <>
-            {
-              <div css={['background: white;', tw`absolute right-40 mr-2`]}>
-                <button disabled={isUpDisabled} css={[isUpDisabled ? tw`text-gray-500` : tw`border p-1`]} onClick={() => partUp()}>
-                  go up
+          buttons:
+            <>
+              {
+                <div css={['background: white;', tw`absolute right-40 mr-2`]}>
+                  <button disabled={isUpDisabled} css={[isUpDisabled ? tw`text-gray-500` : tw`border p-1`]} onClick={() => partUp()}>
+                    go up
+                  </button>
+                </div>
+              }
+              <div css={['background: white;', tw`absolute right-20 `]}>
+                <button disabled={isDownDisabled} css={[isDownDisabled ? tw`text-gray-500` : tw`border p-1`]} onClick={() => partDown()} >
+                  go down
                 </button>
               </div>
-            }
-            <div css={['background: white;', tw`absolute right-20 `]}>
-              <button disabled={isDownDisabled} css={[isDownDisabled ? tw`text-gray-500` : tw`border p-1`]} onClick={() => partDown()} >
-                go down
-              </button>
-            </div>
-          </>,
+            </>,
         }}
       />
     </>

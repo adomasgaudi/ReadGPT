@@ -1,7 +1,10 @@
 'use client'
-import Link from 'next/link' // @ts-expect-error
+// @ts-expect-error
 import tw, { css, styled } from 'twin.macro'
-import { Div_HScreen, In, In_Center, In_WHalf } from '../css/chunky'
+import Link from 'next/link'
+import { In_Center } from '../css/chunky'
+import { Snappers } from '../css/twinstyles/snapper'
+
 // import { useCssOutline } from '../utils/useTools'
 
 const H1 = tw.h1`text-6xl`
@@ -15,8 +18,8 @@ const H1 = tw.h1`text-6xl`
 
 const hoverStyles = css`
   &&:hover {
-    background: var(--accent-main);
-    color: var(--accent-text);
+    background: var(--accent);
+    color: var(--heading-main);
   }
   background: var(--bg-main);
   color: var(--text-main);
@@ -35,33 +38,28 @@ const Button_X = styled.button(() => [
 const HomePage = () => {
   // useCssOutline(false)
   return (
-    <In>
-      <Div_HScreen className='flex flex-col md:flex-row'>
-        <In_WHalf>
-          <In_Center>
-            <h1 className='text-6xl'>ReadGPT</h1>
-          </In_Center>
-        </In_WHalf>
+    <Snappers.P3 cssIn={[tw``]}>
+      <div css={tw`grid grid-cols-1 gap-4 md:grid-cols-2 min-h-[100vh]`}>
+        <div css={tw`flex justify-center items-center`}>
+          <h1 className='text-6xl -mt-40'>Elaborate Please</h1>
+        </div>
 
-        <In_WHalf className='p-5'>
-          <In_Center className='flex flex-col w-full'>
-            <div>
-              <p>ReadGPT is a book that morphs under the users request. Simplify the original work, replace it with a different language, morph two languages together. Fluidity allows for exploration. Only you know what you want from this read. Read! </p>
-            </div>
-            <div className='flex w-full '>
-              <Button_X>simplify</Button_X>
-              <Button_X>japanese</Button_X>
-            </div>
-          </In_Center>
-        </In_WHalf>
-      </Div_HScreen>
-
-      <Div_HScreen className='flex flex-row justify-center items-center'>
+        <In_Center className='flex flex-col w-full'>
+          <div css={tw`-mt-40`}>
+            <p>Elaborate is an experimental book that morphs under the user's request. Simplify the original work, replace it with a different language, and morph two languages together. Fluidity allows for exploration. Explore it as you please.</p>
+          </div>
+          {/* <div className='flex w-full '>
+              <Button_X>Simplify</Button_X>
+              <Button_X>French</Button_X>
+            </div> */}
+        </In_Center>
+      </div>
+      <div css={tw`min-h-[100vh] justify-center items-center text-center`}>
         <Link href="/">
-          <H1 css={[hoverStyles, tw`p-2`]}>Explore</H1>
+          <H1 css={[hoverStyles, tw`p-2`]}>Please, explore</H1>
         </Link>
-      </Div_HScreen>
-    </In>
+      </div>
+    </Snappers.P3 >
   )
 }
 

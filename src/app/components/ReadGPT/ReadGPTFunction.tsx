@@ -55,11 +55,11 @@ const useEffectOnStart = (allPages: any, setFullBook: any, pagePos: any) => {
     const clearedStringsArray = clearStrings(allPages)
     if (typeof window !== 'undefined') {
       const DevilsDescipleVariants = JSON.parse(
-        localStorage.getItem('ReadGPT-DevilsDisciple'),
+        localStorage.getItem(`readgpt-${bookCodeName}`),
       )
       if (!DevilsDescipleVariants) {
         setFullBook(allPages)
-        localStorage.setItem('ReadGPT-DevilsDisciple', JSON.stringify(clearedStringsArray))
+        localStorage.setItem(`readgpt-${bookCodeName}`, JSON.stringify(clearedStringsArray))
       }
       else {
         if (DevilsDescipleVariants[pagePos]) {
@@ -177,14 +177,14 @@ export default function ReadGPTLogic() {
         if (lastGeneratedAlteration && lastGeneratedAlteration.length > 3) {
           // console.log('LASTTTO', lastGeneratedAlteration)
           const DevilsDesciple = JSON.parse(
-            localStorage.getItem('ReadGPT-DevilsDisciple'),
+            localStorage.getItem(`readgpt-${bookCodeName}`),
           )
           const newarr = DevilsDesciple
           const newFull = fullBook
           newarr[pagePos][pagePartPos].push(lastGeneratedAlteration)
           newFull[pagePos][pagePartPos].push(lastGeneratedAlteration)
           console.log({ newarr, newFull })
-          localStorage.setItem('ReadGPT-DevilsDisciple', JSON.stringify(newarr))
+          localStorage.setItem(`readgpt-${bookCodeName}`, JSON.stringify(newarr))
           setFullBook(newFull)
           console.log({ fullBook, dialogueReplace })
         }
@@ -213,12 +213,12 @@ export default function ReadGPTLogic() {
   // console.log({ fullBook })
   const removeLocalStorage = () => {
     const DevilsDesciple = JSON.parse(
-      localStorage.getItem('ReadGPT-DevilsDisciple'),
+      localStorage.getItem(`readgpt-${bookCodeName}`),
     )
     const newarr = DevilsDesciple
     newarr[pagePos][pagePartPos].splice(partVersionPos, 1)
     console.log({ newarr })
-    localStorage.setItem('ReadGPT-DevilsDisciple', JSON.stringify(newarr))
+    localStorage.setItem(`readgpt-${bookCodeName}`, JSON.stringify(newarr))
   }
 
   return (
